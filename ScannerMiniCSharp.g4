@@ -45,10 +45,10 @@ RIGHT_SQUARE_BRACKETR :   ']';//
 LEFT_SQUARE_BRACKET :   '[';//
 RIGHT_CURLY_BRACKET :   '}';//
 LEFT_CURLY_BRACKET :   '{';//
-ASTERISK    :   '*';//repetido
+
 
 COMMA       :   ',';//
-HYPHEN      :   '-';//
+
 DOT         :   '.';//
 FORWARD_SLASH   :   '/';//
 COLON   :   ':' ;//
@@ -59,9 +59,9 @@ AT  :   '@';//
 UNDERSCORE  :   '_';//
 //Tokens para operadores
 SUM :   '+';//
-SUBTRACTION :   '-'; //repetifo
-MULTIPLICATION  :   '*';//repetido
-DIVISION    :   '/';//repetifo
+SUBTRACTION :   '-'; //
+MULTIPLICATION  :   '*';//
+DIVISION    :   '/';//
 PERCENTAGE  :   '%';//
 EQUAL_EQUAL   :   '==';//
 INEQUALITY      :   '!=';//
@@ -85,7 +85,7 @@ SPECIAL_CHARACTERS  :   EXCLAMATION_DOWN
     |   QUOTATION_MARKS
     |   LEFT_PARENTHESIS
     |   RIGHT_PARENTHESIS
-    |   ASTERISK
+    |   MULTIPLICATION
     |   SUM
     |   SUBTRACTION
     |   DOT
@@ -97,6 +97,36 @@ SPECIAL_CHARACTERS  :   EXCLAMATION_DOWN
     |   GREATER_THAN
     |   QUESTION_SIGN
     |   AT;
+
+fragment
+OPERATORS   :   SUM
+            |   SUBTRACTION
+            |   MULTIPLICATION
+            |   DIVISION
+            |   PERCENTAGE
+            |   EQUAL_EQUAL
+            |   INEQUALITY
+            |   GREATER_THAN
+            |   GREATER_THAN_OR_EQUAL
+            |   LESS_THAN
+            |   LESS_THAN_OR_EQUAL
+            |   AND
+            |   OR
+            |   OR
+            |   EQUAL
+            |   PLUS_PLUS
+            |   MINUS_MINUS
+            |   SEMICOLON
+            |   COMMA
+            |   AT
+            |   LEFT_PARENTHESIS
+            |   RIGHT_PARENTHESIS
+            |   LEFT_SQUARE_BRACKET
+            |   RIGHT_SQUARE_BRACKETR
+            |   LEFT_CURLY_BRACKET
+            |   RIGHT_CURLY_BRACKET;
+
+
 //Patrones Tokens
 IDENT : LETTER ( LETTER | DIGIT | UNDERSCORE )*;//
 NUMBER  :   DIGIT (DIGIT)*;//
