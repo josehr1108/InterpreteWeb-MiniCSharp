@@ -24,9 +24,17 @@ FOREACH :   'foreach';//
 FOR     :   'for';//
 TRUE    :   'true';//
 FALSE   :   'false';//
+
+//Patrones Tokens
+IDENT : LETTER ( LETTER | DIGIT | UNDERSCORE )*;//
+NUMBER  :   DIGIT (DIGIT)*;//
+CHAR_CONST  : QUOTATION_MARKS ( PRINTABLE_CHAR | '\n' | '\r' ) QUOTATION_MARKS;//
+PRINTABLE_CHAR : LETTER | DIGIT | SPECIAL_CHARACTERS;//
+
 // Tokens para caracteres
 LETTER  :   'A'..'Z' | 'a'..'z';//
 DIGIT   :	'0'..'9';//
+
 
 EXCLAMATION_UP      :   '¡';//no
 EXCLAMATION_DOWN    :   '!';//
@@ -127,11 +135,6 @@ OPERATORS   :   SUM
             |   RIGHT_CURLY_BRACKET;
 
 
-//Patrones Tokens
-IDENT : LETTER ( LETTER | DIGIT | UNDERSCORE )*;//
-NUMBER  :   DIGIT (DIGIT)*;//
-CHAR_CONST  : QUOTATION_MARKS ( PRINTABLE_CHAR | '\n' | '\r' ) QUOTATION_MARKS;//
-PRINTABLE_CHAR : LETTER | DIGIT | SPECIAL_CHARACTERS;//
 
 //Comentarios y espacios vacios
 LINE_COMMENT:   '//' .*? '\r'? '\n' -> skip ;
