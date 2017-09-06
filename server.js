@@ -32,6 +32,10 @@ let errors = [];
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+app.get('/',function (){
+    res.send("ok");
+});
+
 app.post('/parse',function (req, res) {
     errors = [];
     let listener = new ErrorListener(errors);
