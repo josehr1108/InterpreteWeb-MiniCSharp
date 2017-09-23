@@ -1,4 +1,4 @@
-// Generated from C:/Users/josah/Documents/MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
+// Generated from C:/Users/josah/Documents/InterpreteWeb-MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 

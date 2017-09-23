@@ -45,9 +45,11 @@ app.post('/parse',function (req, res) {
     let lexer = new ScannerMiniCSharp.ScannerMiniCSharp(chars);
     let tokens  = new antlr4.CommonTokenStream(lexer);
     let parser = new ParserMiniCSharp.ParserMiniCSharp(tokens);
+
     parser.buildParseTrees = true;
     parser.removeErrorListeners();
     parser.addErrorListener(listener);
+
     let tree = parser.program();
     res.status(200).json({data: errors});
 });

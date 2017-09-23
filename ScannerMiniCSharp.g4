@@ -1,80 +1,90 @@
 lexer grammar ScannerMiniCSharp;
 
 //Tokens palabras reservadas
+CLASS   :   'class';
+CONST   :   'const';
+//Tokens Tipos de datos
+CHAR    :   'char';
+INT     :   'int';
+FLOAT   :   'float';
+BOOL    :   'bool' ;
+STRING  :   'string';
 
-CHAR    :   'char';  //
-INT     :   'int';   //
-FLOAT   :   'float'; //
-BOOL    :   'bool' ;  ///
-STRING  :   'string'; //
+//Tokens Statement
+IF      :   'if';
+ELSE    :   'else';
+FOR     :   'for';
+WHILE   :   'while';
+FOREACH :   'foreach';
+BREAK   :   'break';
+RETURN  :   'return';
+READ    :   'read';
+WRITE   :   'write';
 
-BREAK   :   'break';//
-CLASS   :   'class';//
+//Tokens Factor
 
-CONST   :   'const';//
-ELSE    :   'else';//
-IF      :   'if';//
-NEW     :   'new';//
-READ    :   'read';//
-RETURN  :   'return';//
-VOID    :   'void';//
-WHILE   :   'while';//
-WRITE   :   'write';//
-FOREACH :   'foreach';//
-FOR     :   'for';//
-TRUE    :   'true';//
-FALSE   :   'false';//
-// Tokens para caracteres
-LETTER  :   'A'..'Z' | 'a'..'z';//
-DIGIT   :	'0'..'9';//
+NEW     :   'new';
+TRUE    :   'true';
+FALSE   :   'false';
 
-EXCLAMATION_UP      :   '¡';//no
-EXCLAMATION_DOWN    :   '!';//
+//Token MethodDecl
+VOID    :   'void';
 
-DOUBLE_QUOTATION_MARKS     :   '"';//
+//Tokens de agrupamiento
+RIGHT_PARENTHESIS   :   '(';
+LEFT_PARENTHESIS    :   '(';
+RIGHT_SQUARE_BRACKETR :   ']';
+LEFT_SQUARE_BRACKET :   '[';
+RIGHT_CURLY_BRACKET :   '}';
+LEFT_CURLY_BRACKET :   '{';
 
-NUMBER_SIGN  :   '#';//
+//Tokens de simbolos
+EXCLAMATION_UP      :   '¡';
+EXCLAMATION_DOWN    :   '!';
+DOUBLE_QUOTATION_MARKS     :   '"';
+NUMBER_SIGN  :   '#';
+DOLLAR_SIGN  :   '$';
+AMPERSAND   :   '&';
+QUOTATION_MARKS :   '\'';
+COMMA       :   ',';
+DOT         :   '.';
+COLON   :   ':' ;
+SEMICOLON   :   ';';
+QUESTION_SIGN   :   '?';
+AT  :   '@';
+UNDERSCORE  :   '_';
 
-DOLLAR_SIGN  :   '$';//
-
-AMPERSAND   :   '&';//
-QUOTATION_MARKS :   '\'';//
-RIGHT_PARENTHESIS   :   '(';//
-LEFT_PARENTHESIS    :   '(';//
-RIGHT_SQUARE_BRACKETR :   ']';//
-LEFT_SQUARE_BRACKET :   '[';//
-RIGHT_CURLY_BRACKET :   '}';//
-LEFT_CURLY_BRACKET :   '{';//
-
-
-COMMA       :   ',';//
-
-DOT         :   '.';//
-FORWARD_SLASH   :   '/';//
-COLON   :   ':' ;//
-SEMICOLON   :   ';';//
-
-QUESTION_SIGN   :   '?';//
-AT  :   '@';//
-UNDERSCORE  :   '_';//
 //Tokens para operadores
-SUM :   '+';//
-SUBTRACTION :   '-'; //
-MULTIPLICATION  :   '*';//
-DIVISION    :   '/';//
-PERCENTAGE  :   '%';//
-EQUAL_EQUAL   :   '==';//
-INEQUALITY      :   '!=';//
-GREATER_THAN    :   '>';//
-GREATER_THAN_OR_EQUAL   :   '>=';//
-LESS_THAN   :   '<';//
-LESS_THAN_OR_EQUAL  :   '<=';//
-AND :   '&&';//
-OR  :   '||';//
-EQUAL   :   '=';//
-PLUS_PLUS   :   '++';//
-MINUS_MINUS :   '--';//
+SUM :   '+';
+SUBTRACTION :   '-';
+MULTIPLICATION  :   '*';
+DIVISION    :   '/';
+PERCENTAGE  :   '%';
+ASIGN    :   '=';
 
+//Tokens para operaciones logicas
+EQUAL_EQUAL   :   '==';
+INEQUALITY      :   '!=';
+GREATER_THAN    :   '>';
+GREATER_THAN_OR_EQUAL   :   '>=';
+LESS_THAN   :   '<';
+LESS_THAN_OR_EQUAL  :   '<=';
+AND :   '&&';
+OR  :   '||';
+PLUS_PLUS   :   '++';
+MINUS_MINUS :   '--';
+
+//Patrones Tokens
+IDENT : LETTER ( LETTER | DIGIT | UNDERSCORE )*;
+NUMBER  :   DIGIT (DIGIT)*;
+CHAR_CONST  : QUOTATION_MARKS ( PRINTABLE_CHAR | '\n' | '\r' ) QUOTATION_MARKS;
+PRINTABLE_CHAR : LETTER | DIGIT | SPECIAL_CHARACTERS;
+
+// Tokens para caracteres
+LETTER  :   'A'..'Z' | 'a'..'z';
+DIGIT   :	'0'..'9';
+
+//Tokens fragment de caracteres especiales
 fragment
 SPECIAL_CHARACTERS  :   EXCLAMATION_DOWN
     |   DOUBLE_QUOTATION_MARKS
@@ -93,12 +103,13 @@ SPECIAL_CHARACTERS  :   EXCLAMATION_DOWN
     |   COLON
     |   SEMICOLON
     |   LESS_THAN
-    |   EQUAL
+    |   ASIGN
     |   GREATER_THAN
     |   QUESTION_SIGN
     |   AT;
 
-fragment
+//Tokens fragment de operadores
+/*fragment
 OPERATORS   :   SUM
             |   SUBTRACTION
             |   MULTIPLICATION
@@ -127,11 +138,7 @@ OPERATORS   :   SUM
             |   RIGHT_CURLY_BRACKET;
 
 
-//Patrones Tokens
-IDENT : LETTER ( LETTER | DIGIT | UNDERSCORE )*;//
-NUMBER  :   DIGIT (DIGIT)*;//
-CHAR_CONST  : QUOTATION_MARKS ( PRINTABLE_CHAR | '\n' | '\r' ) QUOTATION_MARKS;//
-PRINTABLE_CHAR : LETTER | DIGIT | SPECIAL_CHARACTERS;//
+*/
 
 //Comentarios y espacios vacios
 LINE_COMMENT:   '//' .*? '\r'? '\n' -> skip ;
