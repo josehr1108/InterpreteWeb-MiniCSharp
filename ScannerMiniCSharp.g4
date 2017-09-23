@@ -54,7 +54,6 @@ QUESTION_SIGN   :   '?';
 AT  :   '@';
 UNDERSCORE  :   '_';
 
-<<<<<<< HEAD
 //Tokens para operadores
 SUM :   '+';
 SUBTRACTION :   '-';
@@ -74,62 +73,6 @@ AND :   '&&';
 OR  :   '||';
 PLUS_PLUS   :   '++';
 MINUS_MINUS :   '--';
-=======
-CHAR    :   'char';  //
-INT     :   'int';   //
-FLOAT   :   'float'; //
-BOOL    :   'bool' ;  ///
-STRING  :   'string'; //
-
-BREAK   :   'break';//
-CLASS   :   'class';//
-
-CONST   :   'const';//
-ELSE    :   'else';//
-IF      :   'if';//
-NEW     :   'new';//
-READ    :   'read';//
-RETURN  :   'return';//
-VOID    :   'void';//
-WHILE   :   'while';//
-WRITE   :   'write';//
-FOREACH :   'foreach';//
-FOR     :   'for';//
-TRUE    :   'true';//
-FALSE   :   'false';//
-
-//Patrones Tokens
-IDENT : LETTER ( LETTER | DIGIT | UNDERSCORE )*;//
-NUMBER  :   DIGIT (DIGIT)*;//
-CHAR_CONST  : QUOTATION_MARKS ( PRINTABLE_CHAR | '\n' | '\r' ) QUOTATION_MARKS;//
-PRINTABLE_CHAR : LETTER | DIGIT | SPECIAL_CHARACTERS;//
-
-// Tokens para caracteres
-LETTER  :   'A'..'Z' | 'a'..'z';//
-DIGIT   :	'0'..'9';//
-
-
-EXCLAMATION_UP      :   '¡';//no
-EXCLAMATION_DOWN    :   '!';//
-
-DOUBLE_QUOTATION_MARKS     :   '"';//
-
-NUMBER_SIGN  :   '#';//
-
-DOLLAR_SIGN  :   '$';//
-
-AMPERSAND   :   '&';//
-QUOTATION_MARKS :   '\'';//
-RIGHT_PARENTHESIS   :   '(';//
-LEFT_PARENTHESIS    :   '(';//
-RIGHT_SQUARE_BRACKETR :   ']';//
-LEFT_SQUARE_BRACKET :   '[';//
-RIGHT_CURLY_BRACKET :   '}';//
-LEFT_CURLY_BRACKET :   '{';//
-
-
-COMMA       :   ',';//
->>>>>>> origin/master
 
 //Patrones Tokens
 IDENT : LETTER ( LETTER | DIGIT | UNDERSCORE )*;
@@ -195,10 +138,7 @@ OPERATORS   :   SUM
             |   RIGHT_CURLY_BRACKET;
 
 
-<<<<<<< HEAD
 */
-=======
->>>>>>> origin/master
 
 //Comentarios y espacios vacios
 LINE_COMMENT:   '//' .*? '\r'? '\n' -> skip ;
