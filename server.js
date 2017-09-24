@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const antlr4 = require('antlr4');
 const ParserMiniCSharp = require('./generated/ParserMiniCSharp.js');
 const ScannerMiniCSharp = require('./generated/ScannerMiniCSharp.js');
+const OwnParserVisitor = require('./own_modules/OwnParserVisitor');
 
 const app = express();
 
@@ -45,12 +46,15 @@ app.post('/parse',function (req, res) {
     let lexer = new ScannerMiniCSharp.ScannerMiniCSharp(chars);
     let tokens  = new antlr4.CommonTokenStream(lexer);
     let parser = new ParserMiniCSharp.ParserMiniCSharp(tokens);
+    let visitor = new OwnParserVisitor.OwnParserVisitor();
 
     parser.buildParseTrees = true;
     parser.removeErrorListeners();
     parser.addErrorListener(listener);
 
     let tree = parser.program();
+    visitor.visit(tree);
+
     res.status(200).json({data: errors});
 });
 

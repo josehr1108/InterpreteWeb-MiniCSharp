@@ -12,17 +12,17 @@ classDecl	: CLASS IDENT LEFT_CURLY_BRACKET ( varDecl )* RIGHT_CURLY_BRACKET;
 methodDecl	: ( type | VOID ) IDENT LEFT_PARENTHESIS  ( formPars )? RIGHT_PARENTHESIS ( varDecl )* block;
 formPars	: type IDENT ( COMMA type IDENT )*;
 type		: IDENT | CHAR | INT | FLOAT | BOOL | STRING;
-statement	: designator ( ASIGN expr | LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS  | PLUS_PLUS | MINUS_MINUS ) SEMICOLON
-		    |  IF LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement ( ELSE statement )
-		    |  FOR LEFT_PARENTHESIS expr SEMICOLON  (condition)? SEMICOLON  (statement)? RIGHT_PARENTHESIS statement
-		    |  WHILE LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement
-		    |  FOREACH
-		    |  BREAK SEMICOLON
-		    |  RETURN ( expr )? SEMICOLON
-		    |  READ LEFT_PARENTHESIS designator RIGHT_PARENTHESIS SEMICOLON
-		    |  WRITE LEFT_PARENTHESIS expr ( COMMA NUMBER )? RIGHT_PARENTHESIS SEMICOLON
-		    |  block
-		    |  SEMICOLON;
+statement	: designator ( ASIGN expr | LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS  | PLUS_PLUS | MINUS_MINUS ) SEMICOLON          #firstdesignatorstatement
+		    |  IF LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement ( ELSE statement )                                             #ifstatement
+		    |  FOR LEFT_PARENTHESIS expr SEMICOLON  (condition)? SEMICOLON  (statement)? RIGHT_PARENTHESIS statement                    #forstatement
+		    |  WHILE LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement                                                             #whilestatement
+		    |  FOREACH RIGHT_PARENTHESIS type IDENT IN IDENT RIGHT_PARENTHESIS block                                                    #foreachstatement
+		    |  BREAK SEMICOLON                                                                                                          #breakstatement
+            |  RETURN ( expr )? SEMICOLON                                                                                               #returnstatement
+		    |  READ LEFT_PARENTHESIS designator RIGHT_PARENTHESIS SEMICOLON                                                             #readstatement
+		    |  WRITE LEFT_PARENTHESIS expr ( COMMA NUMBER )? RIGHT_PARENTHESIS SEMICOLON                                                #writestatement
+		    |  block                                                                                                                    #blockstatement
+		    |  SEMICOLON;                                                                                                               #semicolonstatement
 block       : LEFT_CURLY_BRACKET ( statement )* RIGHT_CURLY_BRACKET;
 actPars	    : expr ( COMMA expr )*;
 condition	: condTerm ( OR condTerm )*;

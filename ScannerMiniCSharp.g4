@@ -20,6 +20,7 @@ BREAK   :   'break';
 RETURN  :   'return';
 READ    :   'read';
 WRITE   :   'write';
+IN      :   'in';
 
 //Tokens Factor
 
