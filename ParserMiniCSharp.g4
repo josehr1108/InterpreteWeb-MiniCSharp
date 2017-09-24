@@ -9,18 +9,18 @@ program	    : CLASS IDENT ( constDecl | varDecl | classDecl )* LEFT_CURLY_BRACKE
 constDecl   : CONST type IDENT ASIGN ( NUMBER | CHAR_CONST ) SEMICOLON;
 varDecl	    : type IDENT ( COMMA IDENT ) SEMICOLON;
 classDecl	: CLASS IDENT LEFT_CURLY_BRACKET ( varDecl )* RIGHT_CURLY_BRACKET;
-methodDecl	: ( type | VOID ) IDENT LEFT_PARENTHESIS  ( formPars ) RIGHT_PARENTHESIS ( varDecl )* block;
+methodDecl	: ( type | VOID ) IDENT LEFT_PARENTHESIS  ( formPars )? RIGHT_PARENTHESIS ( varDecl )* block;
 formPars	: type IDENT ( COMMA type IDENT )*;
 type		: IDENT | CHAR | INT | FLOAT | BOOL | STRING;
-statement	: designator ( ASIGN expr | LEFT_PARENTHESIS ( actPars ) RIGHT_PARENTHESIS  | PLUS_PLUS | MINUS_MINUS ) SEMICOLON
+statement	: designator ( ASIGN expr | LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS  | PLUS_PLUS | MINUS_MINUS ) SEMICOLON
 		    |  IF LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement ( ELSE statement )
-		    |  FOR LEFT_PARENTHESIS expr SEMICOLON  (condition) SEMICOLON  (statement) RIGHT_PARENTHESIS statement
+		    |  FOR LEFT_PARENTHESIS expr SEMICOLON  (condition)? SEMICOLON  (statement)? RIGHT_PARENTHESIS statement
 		    |  WHILE LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement
 		    |  FOREACH
 		    |  BREAK SEMICOLON
-		    |  RETURN ( expr ) SEMICOLON
+		    |  RETURN ( expr )? SEMICOLON
 		    |  READ LEFT_PARENTHESIS designator RIGHT_PARENTHESIS SEMICOLON
-		    |  WRITE LEFT_PARENTHESIS expr ( SEMICOLON NUMBER ) RIGHT_PARENTHESIS SEMICOLON
+		    |  WRITE LEFT_PARENTHESIS expr ( COMMA NUMBER )? RIGHT_PARENTHESIS SEMICOLON
 		    |  block
 		    |  SEMICOLON;
 block       : LEFT_CURLY_BRACKET ( statement )* RIGHT_CURLY_BRACKET;
@@ -28,9 +28,9 @@ actPars	    : expr ( COMMA expr )*;
 condition	: condTerm ( OR condTerm )*;
 condTerm	: condFact ( AND condFact )*;
 condFact	: expr relop expr;
-expr		: ( SUBTRACTION ) term ( addop term )*;
+expr		: ( SUBTRACTION )? term ( addop term )*;
 term		: factor ( mulop factor )*;
-factor		: designator ( LEFT_PARENTHESIS ( actPars ) RIGHT_PARENTHESIS )
+factor		: designator ( LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS )
 		    |  NUMBER
 		    |  CHAR_CONST
 		    |  (TRUE | FALSE)
