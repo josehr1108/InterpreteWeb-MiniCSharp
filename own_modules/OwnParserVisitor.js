@@ -13,8 +13,7 @@ OwnParserVisitor.prototype.constructor = OwnParserVisitor;
 
 let treeList = [];
 let cont=0;
-function getTabText(n)
-{
+function getTabText(n) {
     let text = "";
     for(let num = n; num != 0; num--)
         text += "---";
@@ -34,17 +33,16 @@ OwnParserVisitor.prototype.visitProgram = function(ctx) {
     let methods = ctx.methodDecl();
 
     if(constantes != ""){
-        console.log("Hay constantes");
         this.visit(ctx.constDecl());
     }
     if(variables != ""){
-        console.log("Hay variables");
+        this.visit(ctx.varDecl());
     }
     if(clases != ""){
-        console.log("Hay clases");
+        this.visit(ctx.classDecl());
     }
     if(methods != ""){
-        console.log("Hay methods");
+        this.visit(ctx.methodDecl());
     }
     cont--;
 };
@@ -56,15 +54,174 @@ OwnParserVisitor.prototype.visitConstDecl = function(ctx) {
 
     cont++;
     this.visit(ctx.type());
+    //------- Para imprimir el identificador --------------
+    cont++;
+    let tabText2 = getTabText(cont);
+    console.log(tabText2 + "Identificador: " + ctx.IDENT().getSymbol().text);
+    cont--;
+    // ----------------------------------------------------
     cont--;
 };
 
-OwnParserVisitor.prototype.visitType = function(ctx) {
+OwnParserVisitor.prototype.visitVarDecl = function(ctx) {
     let tabText = getTabText(cont);
     tabText += ctx.constructor.name;
     console.log(tabText);
 
-    ctx
+    cont++;
+    this.visit(ctx.type());
+    //------- Para imprimir el identificador --------------
+    cont++;
+    for (i = 0; i <= ctx.IDENT().length-1; i++)
+    {
+        let tabText = getTabText(cont);
+        console.log(tabText+ "Identificador --> " + ctx.IDENT(i).getSymbol().text);
+    }
+    cont--;
+    // ----------------------------------------------------
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitClassDecl = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    let varDecls = ctx.varDecl();
+
+    if(varDecls != ""){
+        cont++;
+        this.visit(ctx.varDecl());
+        cont--;
+    }
+};
+
+//Falta
+OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    //con el void empalida
+    let type = ctx.type();
+    if(type != ""){
+        cont++;
+        this.visit(ctx.type());
+        cont--;
+    }
+    else{
+        console.log("Tipo void");
+    }
+
+    let formPars = ctx.formPars();
+    if(formPars != ""){
+        cont++;
+        this.visit(ctx.formPars());
+        cont--;
+    }
+    else{
+        console.log("Sin params");
+    }
+
+    let varDecls = ctx.varDecl();
+    if(varDecls != ""){
+        cont++;
+        this.visit(ctx.varDecl());
+        cont--;
+    }
+    else{
+        console.log("Sin vars");
+    }
+
+    cont++;
+    this.visit(ctx.block());
+    cont--;
+};
+
+//Falta
+OwnParserVisitor.prototype.visitFormPars = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.type(0));
+    for (i=1; i <= ctx.type().length-1; i++) {
+        this.visit(ctx.type(i));
+    }
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitIdentType = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    let tabText2 = getTabText(cont);
+    tabText2 += "Tipo: " + ctx.IDENT().getSymbol().text;
+    console.log(tabText2);
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitCharType = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    let tabText2 = getTabText(cont);
+    tabText2 += "Tipo: " + ctx.CHAR().getSymbol().text;
+    console.log(tabText2);
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitIntType = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    let tabText2 = getTabText(cont);
+    tabText2 += "Tipo: " + ctx.INT().getSymbol().text;
+    console.log(tabText2);
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitFloatType = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    let tabText2 = getTabText(cont);
+    tabText2 += "Tipo: " + ctx.FLOAT().getSymbol().text;
+    console.log(tabText2);
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitBoolType = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    let tabText2 = getTabText(cont);
+    tabText2 += "Tipo: " + ctx.BOOL().getSymbol().text;
+    console.log(tabText2);
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitStringType = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    let tabText2 = getTabText(cont);
+    tabText2 += "Tipo: " + ctx.STRING().getSymbol().text;
+    console.log(tabText2);
+    cont--;
 };
 
 exports.OwnParserVisitor = OwnParserVisitor;
