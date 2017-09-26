@@ -1,4 +1,4 @@
-// Generated from C:/Users/josah/Documents/InterpreteWeb-MiniCSharp\ScannerMiniCSharp.g4 by ANTLR 4.7
+// Generated from C:/Users/Andres/Documents/Compiladores/Proyecto/InterpreteWeb-MiniCSharp\ScannerMiniCSharp.g4 by ANTLR 4.7
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -177,7 +177,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00f3\u00f4\u0007u\u0002\u0002\u00f4\u00f5\u0007g\u0002\u0002\u00f5",
     "*\u0003\u0002\u0002\u0002\u00f6\u00f7\u0007x\u0002\u0002\u00f7\u00f8",
     "\u0007q\u0002\u0002\u00f8\u00f9\u0007k\u0002\u0002\u00f9\u00fa\u0007",
-    "f\u0002\u0002\u00fa,\u0003\u0002\u0002\u0002\u00fb\u00fc\u0007*\u0002",
+    "f\u0002\u0002\u00fa,\u0003\u0002\u0002\u0002\u00fb\u00fc\u0007+\u0002",
     "\u0002\u00fc.\u0003\u0002\u0002\u0002\u00fd\u00fe\u0007*\u0002\u0002",
     "\u00fe0\u0003\u0002\u0002\u0002\u00ff\u0100\u0007_\u0002\u0002\u0100",
     "2\u0003\u0002\u0002\u0002\u0101\u0102\u0007]\u0002\u0002\u01024\u0003",
@@ -377,7 +377,7 @@ ScannerMiniCSharp.prototype.literalNames = [ null, "'class'", "'const'",
                                              "'foreach'", "'break'", "'return'", 
                                              "'read'", "'write'", "'in'", 
                                              "'new'", "'true'", "'false'", 
-                                             "'void'", null, null, "']'", 
+                                             "'void'", "')'", "'('", "']'", 
                                              "'['", "'}'", "'{'", "'\u00C2\u00A1'", 
                                              "'!'", "'\"'", "'#'", "'$'", 
                                              "'&'", "'''", "','", "'.'", 

@@ -32,7 +32,7 @@ FALSE   :   'false';
 VOID    :   'void';
 
 //Tokens de agrupamiento
-RIGHT_PARENTHESIS   :   '(';
+RIGHT_PARENTHESIS   :   ')';
 LEFT_PARENTHESIS    :   '(';
 RIGHT_SQUARE_BRACKETR :   ']';
 LEFT_SQUARE_BRACKET :   '[';

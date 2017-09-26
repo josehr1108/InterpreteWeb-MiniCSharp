@@ -4,10 +4,9 @@ options{
     tokenVocab = ScannerMiniCSharp;
 }
 
-
 program	    : CLASS IDENT ( constDecl | varDecl | classDecl )* LEFT_CURLY_BRACKET ( methodDecl )* RIGHT_CURLY_BRACKET EOF;
 constDecl   : CONST type IDENT ASIGN ( NUMBER | CHAR_CONST ) SEMICOLON;
-varDecl	    : type IDENT ( COMMA IDENT ) SEMICOLON;
+varDecl	    : type IDENT ( COMMA IDENT )* SEMICOLON;
 classDecl	: CLASS IDENT LEFT_CURLY_BRACKET ( varDecl )* RIGHT_CURLY_BRACKET;
 methodDecl	: ( type | VOID ) IDENT LEFT_PARENTHESIS  ( formPars )? RIGHT_PARENTHESIS ( varDecl )* block;
 formPars	: type IDENT ( COMMA type IDENT )*;

@@ -1,6 +1,9 @@
 /**
  * Created by josah on 23/9/2017.
- */
+ *
+ **/
+
+
 let parserVisitor = require('../generated/ParserMiniCSharpVisitor').ParserMiniCSharpVisitor;
 
 function OwnParserVisitor () {
