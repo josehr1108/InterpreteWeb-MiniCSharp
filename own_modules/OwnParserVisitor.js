@@ -96,7 +96,7 @@ OwnParserVisitor.prototype.visitClassDecl = function(ctx) {
     }
 };
 
-//Falta
+//No funca por error en analisis sintactico
 OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
     let tabText = getTabText(cont);
     tabText += ctx.constructor.name;
@@ -104,17 +104,19 @@ OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
 
     //con el void empalida
     let type = ctx.type();
-    if(type != ""){
+    let voidType = ctx.VOID();
+
+    if(voidType != null){
+        console.log("Es void");
+    }
+    else if(type != null){
         cont++;
         this.visit(ctx.type());
         cont--;
     }
-    else{
-        console.log("Tipo void");
-    }
 
     let formPars = ctx.formPars();
-    if(formPars != ""){
+    if(formPars != null){
         cont++;
         this.visit(ctx.formPars());
         cont--;
@@ -138,7 +140,7 @@ OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
     cont--;
 };
 
-//Falta
+//probar cuando se arregle methodDecl
 OwnParserVisitor.prototype.visitFormPars = function(ctx) {
     let tabText = getTabText(cont);
     tabText += ctx.constructor.name;
@@ -146,7 +148,7 @@ OwnParserVisitor.prototype.visitFormPars = function(ctx) {
 
     cont++;
     this.visit(ctx.type(0));
-    for (i=1; i <= ctx.type().length-1; i++) {
+    for (let i=1; i <= ctx.type().length-1; i++) {
         this.visit(ctx.type(i));
     }
     cont--;
