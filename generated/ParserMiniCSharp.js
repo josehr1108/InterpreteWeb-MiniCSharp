@@ -1,6 +1,7 @@
-// Generated from C:/Users/Andres/Documents/Compiladores/Proyecto/InterpreteWeb-MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
+// Generated from C:/Users/josah/Documents/InterpreteWeb-MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
+var ParserMiniCSharpListener = require('./ParserMiniCSharpListener').ParserMiniCSharpListener;
 var ParserMiniCSharpVisitor = require('./ParserMiniCSharpVisitor').ParserMiniCSharpVisitor;
 
 var grammarFileName = "ParserMiniCSharp.g4";
@@ -443,6 +444,18 @@ ProgramContext.prototype.methodDecl = function(i) {
     }
 };
 
+ProgramContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterProgram(this);
+	}
+};
+
+ProgramContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitProgram(this);
+	}
+};
+
 ProgramContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitProgram(this);
@@ -572,6 +585,18 @@ ConstDeclContext.prototype.CHAR_CONST = function() {
     return this.getToken(ParserMiniCSharp.CHAR_CONST, 0);
 };
 
+ConstDeclContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterConstDecl(this);
+	}
+};
+
+ConstDeclContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitConstDecl(this);
+	}
+};
+
 ConstDeclContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitConstDecl(this);
@@ -681,6 +706,18 @@ VarDeclContext.prototype.COMMA = function(i) {
 };
 
 
+VarDeclContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterVarDecl(this);
+	}
+};
+
+VarDeclContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitVarDecl(this);
+	}
+};
+
 VarDeclContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitVarDecl(this);
@@ -784,6 +821,18 @@ ClassDeclContext.prototype.varDecl = function(i) {
     } else {
         return this.getTypedRuleContext(VarDeclContext,i);
     }
+};
+
+ClassDeclContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterClassDecl(this);
+	}
+};
+
+ClassDeclContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitClassDecl(this);
+	}
 };
 
 ClassDeclContext.prototype.accept = function(visitor) {
@@ -891,6 +940,18 @@ MethodDeclContext.prototype.varDecl = function(i) {
     } else {
         return this.getTypedRuleContext(VarDeclContext,i);
     }
+};
+
+MethodDeclContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterMethodDecl(this);
+	}
+};
+
+MethodDeclContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitMethodDecl(this);
+	}
 };
 
 MethodDeclContext.prototype.accept = function(visitor) {
@@ -1023,6 +1084,18 @@ FormParsContext.prototype.COMMA = function(i) {
 };
 
 
+FormParsContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterFormPars(this);
+	}
+};
+
+FormParsContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitFormPars(this);
+	}
+};
+
 FormParsContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitFormPars(this);
@@ -1112,6 +1185,18 @@ ParserMiniCSharp.CharTypeContext = CharTypeContext;
 CharTypeContext.prototype.CHAR = function() {
     return this.getToken(ParserMiniCSharp.CHAR, 0);
 };
+CharTypeContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterCharType(this);
+	}
+};
+
+CharTypeContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitCharType(this);
+	}
+};
+
 CharTypeContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitCharType(this);
@@ -1135,6 +1220,18 @@ ParserMiniCSharp.FloatTypeContext = FloatTypeContext;
 FloatTypeContext.prototype.FLOAT = function() {
     return this.getToken(ParserMiniCSharp.FLOAT, 0);
 };
+FloatTypeContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterFloatType(this);
+	}
+};
+
+FloatTypeContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitFloatType(this);
+	}
+};
+
 FloatTypeContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitFloatType(this);
@@ -1158,6 +1255,18 @@ ParserMiniCSharp.IdentTypeContext = IdentTypeContext;
 IdentTypeContext.prototype.IDENT = function() {
     return this.getToken(ParserMiniCSharp.IDENT, 0);
 };
+IdentTypeContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterIdentType(this);
+	}
+};
+
+IdentTypeContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitIdentType(this);
+	}
+};
+
 IdentTypeContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitIdentType(this);
@@ -1181,6 +1290,18 @@ ParserMiniCSharp.IntTypeContext = IntTypeContext;
 IntTypeContext.prototype.INT = function() {
     return this.getToken(ParserMiniCSharp.INT, 0);
 };
+IntTypeContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterIntType(this);
+	}
+};
+
+IntTypeContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitIntType(this);
+	}
+};
+
 IntTypeContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitIntType(this);
@@ -1204,6 +1325,18 @@ ParserMiniCSharp.StringTypeContext = StringTypeContext;
 StringTypeContext.prototype.STRING = function() {
     return this.getToken(ParserMiniCSharp.STRING, 0);
 };
+StringTypeContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterStringType(this);
+	}
+};
+
+StringTypeContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitStringType(this);
+	}
+};
+
 StringTypeContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitStringType(this);
@@ -1227,6 +1360,18 @@ ParserMiniCSharp.BoolTypeContext = BoolTypeContext;
 BoolTypeContext.prototype.BOOL = function() {
     return this.getToken(ParserMiniCSharp.BOOL, 0);
 };
+BoolTypeContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterBoolType(this);
+	}
+};
+
+BoolTypeContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitBoolType(this);
+	}
+};
+
 BoolTypeContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitBoolType(this);
@@ -1353,6 +1498,18 @@ WhileStatementContext.prototype.RIGHT_PARENTHESIS = function() {
 WhileStatementContext.prototype.statement = function() {
     return this.getTypedRuleContext(StatementContext,0);
 };
+WhileStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterWhileStatement(this);
+	}
+};
+
+WhileStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitWhileStatement(this);
+	}
+};
+
 WhileStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitWhileStatement(this);
@@ -1376,6 +1533,18 @@ ParserMiniCSharp.SemicolonStatementContext = SemicolonStatementContext;
 SemicolonStatementContext.prototype.SEMICOLON = function() {
     return this.getToken(ParserMiniCSharp.SEMICOLON, 0);
 };
+SemicolonStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterSemicolonStatement(this);
+	}
+};
+
+SemicolonStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitSemicolonStatement(this);
+	}
+};
+
 SemicolonStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitSemicolonStatement(this);
@@ -1423,6 +1592,18 @@ WriteStatementContext.prototype.COMMA = function() {
 WriteStatementContext.prototype.NUMBER = function() {
     return this.getToken(ParserMiniCSharp.NUMBER, 0);
 };
+WriteStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterWriteStatement(this);
+	}
+};
+
+WriteStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitWriteStatement(this);
+	}
+};
+
 WriteStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitWriteStatement(this);
@@ -1482,6 +1663,18 @@ ForeachStatementContext.prototype.IN = function() {
 ForeachStatementContext.prototype.block = function() {
     return this.getTypedRuleContext(BlockContext,0);
 };
+ForeachStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterForeachStatement(this);
+	}
+};
+
+ForeachStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitForeachStatement(this);
+	}
+};
+
 ForeachStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitForeachStatement(this);
@@ -1505,6 +1698,18 @@ ParserMiniCSharp.BlockStatementContext = BlockStatementContext;
 BlockStatementContext.prototype.block = function() {
     return this.getTypedRuleContext(BlockContext,0);
 };
+BlockStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterBlockStatement(this);
+	}
+};
+
+BlockStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitBlockStatement(this);
+	}
+};
+
 BlockStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitBlockStatement(this);
@@ -1560,6 +1765,18 @@ FirstDesignStatementContext.prototype.MINUS_MINUS = function() {
 FirstDesignStatementContext.prototype.actPars = function() {
     return this.getTypedRuleContext(ActParsContext,0);
 };
+FirstDesignStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterFirstDesignStatement(this);
+	}
+};
+
+FirstDesignStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitFirstDesignStatement(this);
+	}
+};
+
 FirstDesignStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitFirstDesignStatement(this);
@@ -1622,6 +1839,18 @@ ForStatementContext.prototype.statement = function(i) {
 ForStatementContext.prototype.condition = function() {
     return this.getTypedRuleContext(ConditionContext,0);
 };
+ForStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterForStatement(this);
+	}
+};
+
+ForStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitForStatement(this);
+	}
+};
+
 ForStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitForStatement(this);
@@ -1649,6 +1878,18 @@ BreakStatementContext.prototype.BREAK = function() {
 BreakStatementContext.prototype.SEMICOLON = function() {
     return this.getToken(ParserMiniCSharp.SEMICOLON, 0);
 };
+BreakStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterBreakStatement(this);
+	}
+};
+
+BreakStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitBreakStatement(this);
+	}
+};
+
 BreakStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitBreakStatement(this);
@@ -1688,6 +1929,18 @@ ReadStatementContext.prototype.RIGHT_PARENTHESIS = function() {
 ReadStatementContext.prototype.SEMICOLON = function() {
     return this.getToken(ParserMiniCSharp.SEMICOLON, 0);
 };
+ReadStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterReadStatement(this);
+	}
+};
+
+ReadStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitReadStatement(this);
+	}
+};
+
 ReadStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitReadStatement(this);
@@ -1738,6 +1991,18 @@ IfStatementContext.prototype.statement = function(i) {
 IfStatementContext.prototype.ELSE = function() {
     return this.getToken(ParserMiniCSharp.ELSE, 0);
 };
+IfStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterIfStatement(this);
+	}
+};
+
+IfStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitIfStatement(this);
+	}
+};
+
 IfStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitIfStatement(this);
@@ -1769,6 +2034,18 @@ ReturnStatementContext.prototype.SEMICOLON = function() {
 ReturnStatementContext.prototype.expr = function() {
     return this.getTypedRuleContext(ExprContext,0);
 };
+ReturnStatementContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterReturnStatement(this);
+	}
+};
+
+ReturnStatementContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitReturnStatement(this);
+	}
+};
+
 ReturnStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitReturnStatement(this);
@@ -2045,6 +2322,18 @@ BlockContext.prototype.statement = function(i) {
     }
 };
 
+BlockContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterBlock(this);
+	}
+};
+
+BlockContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitBlock(this);
+	}
+};
+
 BlockContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitBlock(this);
@@ -2131,6 +2420,18 @@ ActParsContext.prototype.COMMA = function(i) {
     }
 };
 
+
+ActParsContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterActPars(this);
+	}
+};
+
+ActParsContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitActPars(this);
+	}
+};
 
 ActParsContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
@@ -2219,6 +2520,18 @@ ConditionContext.prototype.OR = function(i) {
 };
 
 
+ConditionContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterCondition(this);
+	}
+};
+
+ConditionContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitCondition(this);
+	}
+};
+
 ConditionContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitCondition(this);
@@ -2306,6 +2619,18 @@ CondTermContext.prototype.AND = function(i) {
 };
 
 
+CondTermContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterCondTerm(this);
+	}
+};
+
+CondTermContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitCondTerm(this);
+	}
+};
+
 CondTermContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitCondTerm(this);
@@ -2383,6 +2708,18 @@ CondFactContext.prototype.expr = function(i) {
 
 CondFactContext.prototype.relop = function() {
     return this.getTypedRuleContext(RelopContext,0);
+};
+
+CondFactContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterCondFact(this);
+	}
+};
+
+CondFactContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitCondFact(this);
+	}
 };
 
 CondFactContext.prototype.accept = function(visitor) {
@@ -2464,6 +2801,18 @@ ExprContext.prototype.addop = function(i) {
     } else {
         return this.getTypedRuleContext(AddopContext,i);
     }
+};
+
+ExprContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterExpr(this);
+	}
+};
+
+ExprContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitExpr(this);
+	}
 };
 
 ExprContext.prototype.accept = function(visitor) {
@@ -2560,6 +2909,18 @@ TermContext.prototype.mulop = function(i) {
     }
 };
 
+TermContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterTerm(this);
+	}
+};
+
+TermContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitTerm(this);
+	}
+};
+
 TermContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitTerm(this);
@@ -2645,6 +3006,18 @@ ParserMiniCSharp.NumberFactorContext = NumberFactorContext;
 NumberFactorContext.prototype.NUMBER = function() {
     return this.getToken(ParserMiniCSharp.NUMBER, 0);
 };
+NumberFactorContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterNumberFactor(this);
+	}
+};
+
+NumberFactorContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitNumberFactor(this);
+	}
+};
+
 NumberFactorContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitNumberFactor(this);
@@ -2680,6 +3053,18 @@ DesignatorFactorContext.prototype.RIGHT_PARENTHESIS = function() {
 DesignatorFactorContext.prototype.actPars = function() {
     return this.getTypedRuleContext(ActParsContext,0);
 };
+DesignatorFactorContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterDesignatorFactor(this);
+	}
+};
+
+DesignatorFactorContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitDesignatorFactor(this);
+	}
+};
+
 DesignatorFactorContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitDesignatorFactor(this);
@@ -2707,6 +3092,18 @@ NewFactorContext.prototype.NEW = function() {
 NewFactorContext.prototype.IDENT = function() {
     return this.getToken(ParserMiniCSharp.IDENT, 0);
 };
+NewFactorContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterNewFactor(this);
+	}
+};
+
+NewFactorContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitNewFactor(this);
+	}
+};
+
 NewFactorContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitNewFactor(this);
@@ -2730,6 +3127,18 @@ ParserMiniCSharp.CharconstFactorContext = CharconstFactorContext;
 CharconstFactorContext.prototype.CHAR_CONST = function() {
     return this.getToken(ParserMiniCSharp.CHAR_CONST, 0);
 };
+CharconstFactorContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterCharconstFactor(this);
+	}
+};
+
+CharconstFactorContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitCharconstFactor(this);
+	}
+};
+
 CharconstFactorContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitCharconstFactor(this);
@@ -2761,6 +3170,18 @@ ExpressionFactorContext.prototype.expr = function() {
 ExpressionFactorContext.prototype.RIGHT_PARENTHESIS = function() {
     return this.getToken(ParserMiniCSharp.RIGHT_PARENTHESIS, 0);
 };
+ExpressionFactorContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterExpressionFactor(this);
+	}
+};
+
+ExpressionFactorContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitExpressionFactor(this);
+	}
+};
+
 ExpressionFactorContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitExpressionFactor(this);
@@ -2788,6 +3209,18 @@ BoolFactorContext.prototype.TRUE = function() {
 BoolFactorContext.prototype.FALSE = function() {
     return this.getToken(ParserMiniCSharp.FALSE, 0);
 };
+BoolFactorContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterBoolFactor(this);
+	}
+};
+
+BoolFactorContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitBoolFactor(this);
+	}
+};
+
 BoolFactorContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitBoolFactor(this);
@@ -2964,6 +3397,18 @@ DesignatorContext.prototype.RIGHT_SQUARE_BRACKET = function(i) {
 };
 
 
+DesignatorContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterDesignator(this);
+	}
+};
+
+DesignatorContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitDesignator(this);
+	}
+};
+
 DesignatorContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitDesignator(this);
@@ -3065,6 +3510,18 @@ ParserMiniCSharp.LessOrEqualThanOpContext = LessOrEqualThanOpContext;
 LessOrEqualThanOpContext.prototype.LESS_THAN_OR_EQUAL = function() {
     return this.getToken(ParserMiniCSharp.LESS_THAN_OR_EQUAL, 0);
 };
+LessOrEqualThanOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterLessOrEqualThanOp(this);
+	}
+};
+
+LessOrEqualThanOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitLessOrEqualThanOp(this);
+	}
+};
+
 LessOrEqualThanOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitLessOrEqualThanOp(this);
@@ -3088,6 +3545,18 @@ ParserMiniCSharp.GreaterThanOpContext = GreaterThanOpContext;
 GreaterThanOpContext.prototype.GREATER_THAN = function() {
     return this.getToken(ParserMiniCSharp.GREATER_THAN, 0);
 };
+GreaterThanOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterGreaterThanOp(this);
+	}
+};
+
+GreaterThanOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitGreaterThanOp(this);
+	}
+};
+
 GreaterThanOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitGreaterThanOp(this);
@@ -3111,6 +3580,18 @@ ParserMiniCSharp.LessThanOpContext = LessThanOpContext;
 LessThanOpContext.prototype.LESS_THAN = function() {
     return this.getToken(ParserMiniCSharp.LESS_THAN, 0);
 };
+LessThanOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterLessThanOp(this);
+	}
+};
+
+LessThanOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitLessThanOp(this);
+	}
+};
+
 LessThanOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitLessThanOp(this);
@@ -3134,6 +3615,18 @@ ParserMiniCSharp.EqualEqualOpContext = EqualEqualOpContext;
 EqualEqualOpContext.prototype.EQUAL_EQUAL = function() {
     return this.getToken(ParserMiniCSharp.EQUAL_EQUAL, 0);
 };
+EqualEqualOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterEqualEqualOp(this);
+	}
+};
+
+EqualEqualOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitEqualEqualOp(this);
+	}
+};
+
 EqualEqualOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitEqualEqualOp(this);
@@ -3157,6 +3650,18 @@ ParserMiniCSharp.GreaterOrEqualThanOpContext = GreaterOrEqualThanOpContext;
 GreaterOrEqualThanOpContext.prototype.GREATER_THAN_OR_EQUAL = function() {
     return this.getToken(ParserMiniCSharp.GREATER_THAN_OR_EQUAL, 0);
 };
+GreaterOrEqualThanOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterGreaterOrEqualThanOp(this);
+	}
+};
+
+GreaterOrEqualThanOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitGreaterOrEqualThanOp(this);
+	}
+};
+
 GreaterOrEqualThanOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitGreaterOrEqualThanOp(this);
@@ -3180,6 +3685,18 @@ ParserMiniCSharp.InequalityOpContext = InequalityOpContext;
 InequalityOpContext.prototype.INEQUALITY = function() {
     return this.getToken(ParserMiniCSharp.INEQUALITY, 0);
 };
+InequalityOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterInequalityOp(this);
+	}
+};
+
+InequalityOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitInequalityOp(this);
+	}
+};
+
 InequalityOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitInequalityOp(this);
@@ -3290,6 +3807,18 @@ ParserMiniCSharp.SumOpContext = SumOpContext;
 SumOpContext.prototype.SUM = function() {
     return this.getToken(ParserMiniCSharp.SUM, 0);
 };
+SumOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterSumOp(this);
+	}
+};
+
+SumOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitSumOp(this);
+	}
+};
+
 SumOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitSumOp(this);
@@ -3313,6 +3842,18 @@ ParserMiniCSharp.SubsOpContext = SubsOpContext;
 SubsOpContext.prototype.SUBTRACTION = function() {
     return this.getToken(ParserMiniCSharp.SUBTRACTION, 0);
 };
+SubsOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterSubsOp(this);
+	}
+};
+
+SubsOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitSubsOp(this);
+	}
+};
+
 SubsOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitSubsOp(this);
@@ -3399,6 +3940,18 @@ ParserMiniCSharp.DivOpContext = DivOpContext;
 DivOpContext.prototype.DIVISION = function() {
     return this.getToken(ParserMiniCSharp.DIVISION, 0);
 };
+DivOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterDivOp(this);
+	}
+};
+
+DivOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitDivOp(this);
+	}
+};
+
 DivOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitDivOp(this);
@@ -3422,6 +3975,18 @@ ParserMiniCSharp.MultOpContext = MultOpContext;
 MultOpContext.prototype.MULTIPLICATION = function() {
     return this.getToken(ParserMiniCSharp.MULTIPLICATION, 0);
 };
+MultOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterMultOp(this);
+	}
+};
+
+MultOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitMultOp(this);
+	}
+};
+
 MultOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitMultOp(this);
@@ -3445,6 +4010,18 @@ ParserMiniCSharp.PercentOpContext = PercentOpContext;
 PercentOpContext.prototype.PERCENTAGE = function() {
     return this.getToken(ParserMiniCSharp.PERCENTAGE, 0);
 };
+PercentOpContext.prototype.enterRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.enterPercentOp(this);
+	}
+};
+
+PercentOpContext.prototype.exitRule = function(listener) {
+    if(listener instanceof ParserMiniCSharpListener ) {
+        listener.exitPercentOp(this);
+	}
+};
+
 PercentOpContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ParserMiniCSharpVisitor ) {
         return visitor.visitPercentOp(this);

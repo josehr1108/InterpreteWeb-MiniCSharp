@@ -1,10 +1,7 @@
 /**
  * Created by josah on 23/9/2017.
- *
- **/
-
-
-let parserVisitor = require('../generated/ParserMiniCSharpVisitor').ParserMiniCSharpVisitor;
+ */
+const parserVisitor = require('../generated/ParserMiniCSharpVisitor').ParserMiniCSharpVisitor;
 
 function OwnParserVisitor () {
     parserVisitor.call(this);
@@ -99,7 +96,6 @@ OwnParserVisitor.prototype.visitClassDecl = function(ctx) {
     }
 };
 
-//No funca por error en analisis sintactico
 OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
     let tabText = getTabText(cont);
     tabText += ctx.constructor.name;
@@ -143,7 +139,6 @@ OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
     cont--;
 };
 
-//probar cuando se arregle methodDecl
 OwnParserVisitor.prototype.visitFormPars = function(ctx) {
     let tabText = getTabText(cont);
     tabText += ctx.constructor.name;
@@ -157,6 +152,7 @@ OwnParserVisitor.prototype.visitFormPars = function(ctx) {
     cont--;
 };
 
+/*-------------------------------Types ---------------------------------------------------*/
 OwnParserVisitor.prototype.visitIdentType = function(ctx) {
     let tabText = getTabText(cont);
     tabText += ctx.constructor.name;
@@ -228,5 +224,171 @@ OwnParserVisitor.prototype.visitStringType = function(ctx) {
     console.log(tabText2);
     cont--;
 };
+
+
+/* ------------------------------------------- Statement ----------------------------------------------------------*/
+
+OwnParserVisitor.prototype.visitFirstDesignStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.designator());
+    cont--;
+
+    let expression = ctx.expr();
+    let actPars = ctx.actPars();
+    if(expression != null){
+        cont++;
+        //visitExpr
+        cont--;
+    }
+    else if(actPars != null){
+        cont++;
+        //visitActPars
+        cont--;
+    }
+};
+
+OwnParserVisitor.prototype.visitIfStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.condition());
+    this.visit(ctx.statement());  // probar con el else
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitForStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    let condition = ctx.condition();
+    let statement = ctx.statement();
+
+    cont++;
+    this.visit(ctx.expr());
+    if(condition != null){
+        this.visit(ctx.condition());
+    }
+    if(statement != null){
+        this.visit(ctx.statement());
+    }
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitWhileStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.condition());
+    this.visit(ctx.statement());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitForeachStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.type());
+    this.visit(ctx.block());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitBreakStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitReturnStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    let expr = ctx.expr();
+
+    if(expr != null){
+        cont++;
+        this.visit(expr);
+        cont--;
+    }
+
+
+};
+
+OwnParserVisitor.prototype.visitReadStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.designator());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitWriteStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.expr());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitBlockStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.block());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitSemicolonStatement = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+/*************************************************************************************************************/
+
+OwnParserVisitor.prototype.visitBlock = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    let statements = ctx.statement();
+    if(statements != null){
+        cont++;
+        this.visit(ctx.statement());
+        cont--;
+    }
+};
+
+OwnParserVisitor.prototype.visitActPars = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.expr(0));
+    for (let i=1; i <= ctx.expr().length-1; i++) {
+        this.visit(ctx.expr(i));
+    }
+    cont--;
+};
+
+
 
 exports.OwnParserVisitor = OwnParserVisitor;
