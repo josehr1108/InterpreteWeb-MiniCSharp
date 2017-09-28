@@ -7,6 +7,7 @@ const antlr4 = require('antlr4');
 const ParserMiniCSharp = require('./generated/ParserMiniCSharp.js');
 const ScannerMiniCSharp = require('./generated/ScannerMiniCSharp.js');
 const OwnParserVisitor = require('./own_modules/OwnParserVisitor');
+const OwnTableSymbols = require('./own_modules/OwnTableSymbols');
 
 const app = express();
 
