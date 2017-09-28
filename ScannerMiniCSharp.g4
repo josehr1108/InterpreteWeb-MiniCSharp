@@ -34,7 +34,7 @@ VOID    :   'void';
 //Tokens de agrupamiento
 RIGHT_PARENTHESIS   :   ')';
 LEFT_PARENTHESIS    :   '(';
-RIGHT_SQUARE_BRACKETR :   ']';
+RIGHT_SQUARE_BRACKET :   ']';
 LEFT_SQUARE_BRACKET :   '[';
 RIGHT_CURLY_BRACKET :   '}';
 LEFT_CURLY_BRACKET :   '{';

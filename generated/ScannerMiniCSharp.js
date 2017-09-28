@@ -322,7 +322,7 @@ ScannerMiniCSharp.FALSE = 20;
 ScannerMiniCSharp.VOID = 21;
 ScannerMiniCSharp.RIGHT_PARENTHESIS = 22;
 ScannerMiniCSharp.LEFT_PARENTHESIS = 23;
-ScannerMiniCSharp.RIGHT_SQUARE_BRACKETR = 24;
+ScannerMiniCSharp.RIGHT_SQUARE_BRACKET = 24;
 ScannerMiniCSharp.LEFT_SQUARE_BRACKET = 25;
 ScannerMiniCSharp.RIGHT_CURLY_BRACKET = 26;
 ScannerMiniCSharp.LEFT_CURLY_BRACKET = 27;
@@ -394,7 +394,7 @@ ScannerMiniCSharp.prototype.symbolicNames = [ null, "CLASS", "CONST", "CHAR",
                                               "FOREACH", "BREAK", "RETURN", 
                                               "READ", "WRITE", "IN", "NEW", 
                                               "TRUE", "FALSE", "VOID", "RIGHT_PARENTHESIS", 
-                                              "LEFT_PARENTHESIS", "RIGHT_SQUARE_BRACKETR", 
+                                              "LEFT_PARENTHESIS", "RIGHT_SQUARE_BRACKET", 
                                               "LEFT_SQUARE_BRACKET", "RIGHT_CURLY_BRACKET", 
                                               "LEFT_CURLY_BRACKET", "EXCLAMATION_UP", 
                                               "EXCLAMATION_DOWN", "DOUBLE_QUOTATION_MARKS", 
@@ -419,7 +419,7 @@ ScannerMiniCSharp.prototype.ruleNames = [ "CLASS", "CONST", "CHAR", "INT",
                                           "BREAK", "RETURN", "READ", "WRITE", 
                                           "IN", "NEW", "TRUE", "FALSE", 
                                           "VOID", "RIGHT_PARENTHESIS", "LEFT_PARENTHESIS", 
-                                          "RIGHT_SQUARE_BRACKETR", "LEFT_SQUARE_BRACKET", 
+                                          "RIGHT_SQUARE_BRACKET", "LEFT_SQUARE_BRACKET", 
                                           "RIGHT_CURLY_BRACKET", "LEFT_CURLY_BRACKET", 
                                           "EXCLAMATION_UP", "EXCLAMATION_DOWN", 
                                           "DOUBLE_QUOTATION_MARKS", "NUMBER_SIGN", 

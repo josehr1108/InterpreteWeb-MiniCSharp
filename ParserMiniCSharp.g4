@@ -6,7 +6,7 @@ options{
 
 program	    : CLASS IDENT ( constDecl | varDecl | classDecl )* LEFT_CURLY_BRACKET ( methodDecl )* RIGHT_CURLY_BRACKET EOF;
 constDecl   : CONST type IDENT ASIGN ( NUMBER | CHAR_CONST ) SEMICOLON;
-varDecl	    : type IDENT ( COMMA IDENT )* SEMICOLON;
+varDecl	    : type (LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET)? IDENT ( COMMA IDENT )* SEMICOLON;
 classDecl	: CLASS IDENT LEFT_CURLY_BRACKET ( varDecl )* RIGHT_CURLY_BRACKET;
 methodDecl	: ( type | VOID ) IDENT LEFT_PARENTHESIS  ( formPars )? RIGHT_PARENTHESIS ( varDecl )* block;
 formPars	: type IDENT ( COMMA type IDENT )*;
@@ -43,7 +43,7 @@ factor		: designator ( LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS )        
     		|  NEW IDENT                                                                                                                #newFactor
 		    |  LEFT_PARENTHESIS expr RIGHT_PARENTHESIS                                                                                  #expressionFactor
 		    ;
-designator	: IDENT ( AT IDENT | LEFT_SQUARE_BRACKET expr RIGHT_CURLY_BRACKET )*;
+designator	: IDENT ( AT IDENT | LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET )*;
 relop		: EQUAL_EQUAL                                                                                                               #equalEqualOp
             | INEQUALITY                                                                                                                #inequalityOp
             | GREATER_THAN                                                                                                              #greaterThanOp
