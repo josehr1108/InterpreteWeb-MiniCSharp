@@ -128,7 +128,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0007\r\u0002\u0002\u00a9\u00aa\u0007\u0019\u0002\u0002\u00aa\u00ab",
     "\u0005\u0016\f\u0002\u00ab\u00ac\u0007\u0018\u0002\u0002\u00ac\u00ad",
     "\u0005\u0010\t\u0002\u00ad\u00d1\u0003\u0002\u0002\u0002\u00ae\u00af",
-    "\u0007\u000e\u0002\u0002\u00af\u00b0\u0007\u0018\u0002\u0002\u00b0\u00b1",
+    "\u0007\u000e\u0002\u0002\u00af\u00b0\u0007\u0019\u0002\u0002\u00b0\u00b1",
     "\u0005\u000e\b\u0002\u00b1\u00b2\u0007<\u0002\u0002\u00b2\u00b3\u0007",
     "\u0013\u0002\u0002\u00b3\u00b4\u0007<\u0002\u0002\u00b4\u00b5\u0007",
     "\u0018\u0002\u0002\u00b5\u00b6\u0005\u0012\n\u0002\u00b6\u00d1\u0003",
@@ -1628,17 +1628,9 @@ ForeachStatementContext.prototype.FOREACH = function() {
     return this.getToken(ParserMiniCSharp.FOREACH, 0);
 };
 
-ForeachStatementContext.prototype.RIGHT_PARENTHESIS = function(i) {
-	if(i===undefined) {
-		i = null;
-	}
-    if(i===null) {
-        return this.getTokens(ParserMiniCSharp.RIGHT_PARENTHESIS);
-    } else {
-        return this.getToken(ParserMiniCSharp.RIGHT_PARENTHESIS, i);
-    }
+ForeachStatementContext.prototype.LEFT_PARENTHESIS = function() {
+    return this.getToken(ParserMiniCSharp.LEFT_PARENTHESIS, 0);
 };
-
 
 ForeachStatementContext.prototype.type = function() {
     return this.getTypedRuleContext(TypeContext,0);
@@ -1658,6 +1650,10 @@ ForeachStatementContext.prototype.IDENT = function(i) {
 
 ForeachStatementContext.prototype.IN = function() {
     return this.getToken(ParserMiniCSharp.IN, 0);
+};
+
+ForeachStatementContext.prototype.RIGHT_PARENTHESIS = function() {
+    return this.getToken(ParserMiniCSharp.RIGHT_PARENTHESIS, 0);
 };
 
 ForeachStatementContext.prototype.block = function() {
@@ -2182,7 +2178,7 @@ ParserMiniCSharp.prototype.statement = function() {
             this.state = 172;
             this.match(ParserMiniCSharp.FOREACH);
             this.state = 173;
-            this.match(ParserMiniCSharp.RIGHT_PARENTHESIS);
+            this.match(ParserMiniCSharp.LEFT_PARENTHESIS);
             this.state = 174;
             this.type();
             this.state = 175;
