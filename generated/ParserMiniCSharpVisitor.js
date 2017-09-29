@@ -143,7 +143,6 @@ ParserMiniCSharpVisitor.prototype.visitBlockStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
-
 // Visit a parse tree produced by ParserMiniCSharp#semicolonStatement.
 ParserMiniCSharpVisitor.prototype.visitSemicolonStatement = function(ctx) {
   return this.visitChildren(ctx);
@@ -172,7 +171,6 @@ ParserMiniCSharpVisitor.prototype.visitCondition = function(ctx) {
 ParserMiniCSharpVisitor.prototype.visitCondTerm = function(ctx) {
   return this.visitChildren(ctx);
 };
-
 
 // Visit a parse tree produced by ParserMiniCSharp#condFact.
 ParserMiniCSharpVisitor.prototype.visitCondFact = function(ctx) {

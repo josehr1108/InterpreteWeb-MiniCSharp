@@ -389,6 +389,206 @@ OwnParserVisitor.prototype.visitActPars = function(ctx) {
     cont--;
 };
 
+OwnParserVisitor.prototype.visitCondition = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
 
+    cont++;
+    this.visit(ctx.condTerm());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitCondTerm = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.condFact());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitCondFact = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.expr());
+    this.visit(ctx.relop());
+    this.visit(ctx.expr());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitExpr = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    let substractToken = ctx.SUBTRACTION();
+
+    cont++;
+    if(substractToken)
+        console.log(substractToken.getSymbol().text);
+    this.visit(ctx.term(0));
+    for (let i=1; i <= ctx.term().length-1; i++) {
+        this.visit(ctx.addop(i-1));
+        this.visit(ctx.term(i));
+    }
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitTerm = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.factor(0));
+    for (let i=1; i <= ctx.factor().length-1; i++) {
+        this.visit(ctx.mulop(i-1));
+        this.visit(ctx.factor(i));
+    }
+    cont--;
+};
+
+/*------------------------------------------------------------- Factors -------------------------------------------------------*/
+
+OwnParserVisitor.prototype.visitDesignatorFactor = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.designator());
+    let actPars = ctx.actPars();
+    if(actPars != null){
+        this.visit(ctx.actPars());
+    }
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitNumberFactor = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitCharconstFactor = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitBoolFactor = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitNewFactor = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitExpressionFactor = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    cont++;
+    this.visit(ctx.statement());
+    cont--;
+};
+
+OwnParserVisitor.prototype.visitDesignator = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+
+    let expression = ctx.expr();
+    cont++;
+    if(expression != null){
+        this.visit(ctx.expr());
+    }
+    else{
+        console.log(tabText+ "Identificador --> " + ctx.IDENT(0).getSymbol().text + " @ " + ctx.IDENT(1).getSymbol().text);
+    }
+    cont--;
+};
+
+/*-------------------------------------------------------------- Relop --------------------------------------------------------*/
+
+OwnParserVisitor.prototype.visitEqualEqualOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitInequalityOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitGreaterThanOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitGreaterOrEqualThanOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitLessThanOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitLessOrEqualThanOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+/*-------------------------------------------------------------- Adop --------------------------------------------------------*/
+
+OwnParserVisitor.prototype.visitSumOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitSubsOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+/*-------------------------------------------------------------- Mulop --------------------------------------------------------*/
+
+OwnParserVisitor.prototype.visitMultOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitDivOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
+
+OwnParserVisitor.prototype.visitPercentOp = function(ctx) {
+    let tabText = getTabText(cont);
+    tabText += ctx.constructor.name;
+    console.log(tabText);
+};
 
 exports.OwnParserVisitor = OwnParserVisitor;
