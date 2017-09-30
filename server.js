@@ -10,6 +10,7 @@ const OwnParserVisitor = require('./own_modules/OwnParserVisitor');
 const OwnTableSymbols = require('./own_modules/OwnTableSymbols');
 const OwnContextualAnalysis = require('./own_modules/OwnContextualAnalysis');
 let tree = null;
+
 const app = express();
 
 app.use(express.static(__dirname + "/views"));
@@ -48,7 +49,7 @@ app.post('/parse',function (req, res) {
     let lexer = new ScannerMiniCSharp.ScannerMiniCSharp(chars);
     let tokens  = new antlr4.CommonTokenStream(lexer);
     let parser = new ParserMiniCSharp.ParserMiniCSharp(tokens);
-    
+    let contextualAnalysis = new OwnContextualAnalysis.OwnContextualAnalysis();
 
 
     parser.buildParseTrees = true;
@@ -57,7 +58,7 @@ app.post('/parse',function (req, res) {
 
     
     tree = parser.program();
-    
+    contextualAnalysis.visit(tree);
 
     //if [] ==
     res.status(200).json({data: errors});

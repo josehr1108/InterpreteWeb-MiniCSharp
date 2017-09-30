@@ -47,3 +47,4 @@ $('#tree').on('click',function (e) {
  editor.on("change", function(e){
     $('#tree').addClass('disabled')
  })
+
