@@ -58,15 +58,22 @@ app.post('/parse',function (req, res) {
 
     tree = null;
     tree = parser.program();
-    contextualAnalysis.visit(tree);
+    console.log(errors + 'server')
+    if (errors.length == 0){
+        let contextualErrors = contextualAnalysis.visit(tree);
+        res.status(200).json({data: contextualErrors, typeError: 'contextualErrors'});
+    }
 
-    //if [] ==
-    res.status(200).json({data: errors});
+    else {
+        res.status(200).json({data: errors, typeError: 'syntaxError'});
+    }
+    
 });
 
 app.post('/tree',function (req, res) {
     let visitor = new OwnParserVisitor.OwnParserVisitor();
     let diagramData = visitor.visit(tree);
+    console.log(diagramData)
     res.status(200).json({data: diagramData});
 });
 

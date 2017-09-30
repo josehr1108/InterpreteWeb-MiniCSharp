@@ -15,8 +15,17 @@ $('button').on('click',function (e) {
             $('#tree').removeClass('disabled')
             let fullMsg = "";
             for(let error of res.data){
-               let errorMsg = "<span class='syntaxError'>[Syntax Error]   </span>"+error+"."+"<br>";
-               fullMsg += errorMsg;
+
+                if(res.typeError == 'syntaxError'){
+                    let errorMsg = "<span class='Errors'>[Syntax Error]   </span>"+error+"."+"<br>";
+                    fullMsg += errorMsg;
+                }
+
+                else{
+                    let errorMsg = "<span class='Errors'>[Contextual Error]   </span>"+error+"."+"<br>";
+                    fullMsg += errorMsg;
+                }
+               
             }
             $('#console').html(fullMsg);
         },

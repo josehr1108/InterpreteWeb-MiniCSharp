@@ -111,6 +111,7 @@ tableSymbols.prototype.insert = function(table,name,level,type,decl,isLista,isCo
     let token;
     if(typeStruct == null){
         token = new simpleTypes(name,level,type,decl,isLista,isConst)
+        
         table.addToken(token)
     }
 
@@ -121,14 +122,26 @@ tableSymbols.prototype.insert = function(table,name,level,type,decl,isLista,isCo
 
 }
 
-tableSymbols.prototype.buscar = function(table,name){
-    table.forEach(function(element) {
-        if(element.getName() === name){
-            return element
-        }
-    });
+tableSymbols.prototype.buscar = function(table,name,level){
+    console.log(name);
+    console.log(level);
 
-    return null;
+
+    if (table.getTableSymbols()[0].getName() == name){
+        return true;
+    }
+
+    else{
+
+        for (var i = 0; i < table.getTableSymbols().length; i++) {
+            if (table.getTableSymbols()[i].getName() === name && table.getTableSymbols()[i].getLevel() ===  level){
+                return true; 
+            }  
+        }
+    }
+    
+    return false;
+    
 }
 
 tableSymbols.prototype.print = function(table){

@@ -6,11 +6,12 @@
 
 const parserVisitor = require('../generated/ParserMiniCSharpVisitor').ParserMiniCSharpVisitor;
 const OwnTableSymbols  = require('./OwnTableSymbols');
-let tableSymbols
+let tableSymbols;
+let errors;
 function OwnContextualAnalysis (){
     parserVisitor.call(this);
     tableSymbols = new OwnTableSymbols.tableSymbols();
-    var errors = [];
+    errors = [];
     return this;
 }
 
@@ -19,20 +20,13 @@ OwnContextualAnalysis.prototype.constructor = OwnContextualAnalysis;
 
 
 OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
-    console.log('start visit program')
-    let mainClass = ctx.CLASS().getSymbol().text;
-    let Identifier = ctx.IDENT().getSymbol().text;
-    tableSymbols.insert(tableSymbols)
+    console.log('start visit program a contextual')
+
+    let identifier = ctx.IDENT().getSymbol().text;
+    tableSymbols.insert(tableSymbols,identifier,tableSymbols.getLevel()-1,0,ctx,false,false,null,null);
+    //console.log(tableSymbols.getTableSymbols());
     
-    /*
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-/*
-    let parentObject = {key: 1,text: "Program",fill: "#f68c06",stroke: "#4d90fe"};
-    treeList.push(parentObject);
-*/
-    /*
+    
     let constants = ctx.constDecl();
     let variables = ctx.varDecl();
     let classes = ctx.classDecl();
@@ -40,7 +34,7 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
 
     if(constants){
         this.visit(constants);
-    }
+    }/*
     if(variables){
         this.visit(variables);
     }
@@ -51,23 +45,32 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
         this.visit(methods);
     }
 */
+    console.log('voy a retornar')
+    return errors;
 };
 
 OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
 
-    let object = new  ArrayEntry(cont,"ConstDecl","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
 
-    cont++;
-    this.visit(ctx.type());
-    //------- Para imprimir el identificador --------------
-    let tabText2 = getTabText(cont+1);
-    console.log(tabText2 + "Identifier: " + ctx.IDENT().getSymbol().text);
-    // ----------------------------------------------------
-    cont--;
+    let identifier = ctx.IDENT().getSymbol().text;
+    var thereIdentifier = tableSymbols.buscar(tableSymbols,identifier,tableSymbols.getLevel());
+    console.log('imprimiendo tabla')
+    console.log(tableSymbols.getTableSymbols());
+    console.log(thereIdentifier)
+    if (thereIdentifier){
+        console.log('error')
+        error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
+        + ' Row: ' + ctx.IDENT().getSymbol().line 
+        + ' Column: ' + ctx.IDENT().getSymbol().column; 
+        errors.push(error);
+        console.log(errors);
+    }
+
+    else{
+        tableSymbols.insert(tableSymbols,identifier,tableSymbols.getLevel(),0,ctx,false,false,null,null);
+        //console.log(tableSymbols.getTableSymbols());
+    }
+    return
 };
 
 OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
