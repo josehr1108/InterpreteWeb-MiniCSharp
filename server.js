@@ -56,7 +56,6 @@ app.post('/parse',function (req, res) {
     parser.removeErrorListeners();
     parser.addErrorListener(listener);
 
-    tree = null;
     tree = parser.program();
     console.log(errors + 'server')
     if (errors.length == 0){
