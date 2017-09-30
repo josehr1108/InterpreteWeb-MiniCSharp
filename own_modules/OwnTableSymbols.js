@@ -1,14 +1,29 @@
 /**
- * Created by andres on 23/9/2017.
+ * 
+ * Created by andres on 27/9/2017.
  *
- */
+ **/
+
 class tableSymbols {
     constructor(){
         this.tableSymbols = []
+        this.level = 0;
     }
 
     getTableSymbols(){
         return this.tableSymbols;
+    }
+
+    getLevel(){
+        return this.level;
+    }
+
+    moveLevel(value){
+        this.level += value;
+    }
+
+    addToken(token){
+        this.tableSymbols.push(token);
     }
 }
 
@@ -44,32 +59,66 @@ class tableSymbols {
  }
 
  class simpleTypes extends symbolType{
-     constructor(name,level,type,decl){
+     constructor(name,level,type,decl,isLista,isConst){
         super(name,level,type,decl)
+        this.isLista = isLista;
+        this.isConst = isConst;
      }
 
      getClassName(){
          return simpleTypes.name;
      }
+
+    getIslista(){
+        return this.isLista;
+    }
+
+    getIsConst(){
+        return this.isConst;
+    }
  }
 
 class complexTypes extends symbolType{
-    constructor(name,level,type,decl){
+    constructor(name,level,type,decl,typeStruct,parameters){
         super(name,level,type,decl)
+        this.typeStruct =typeStruct;
+        this.parameters = parameters;
+        
+        
      }
 
-     getClassName(){
+    getClassName(){
         return complexTypes.name;
+    }
+
+    getParameters(){
+        return this.parameters;
+    }
+
+    getTypeStruct(){
+        return this.typeStruct;
     }
 }
 
-tableSymbols.prototype.insert = function(table,name,level,type,decl){
-    if (type > 0 && type < 6){
-        var token = new simpleTypes(name,level,type,decl);
-        table.push(token)
+class parameters {
+    constructor(name,type){
+        this.name = name;
+        this.type = type;
+    }
+}
+
+tableSymbols.prototype.insert = function(table,name,level,type,decl,isLista,isConst,typeStruct,parameters){
+    let token;
+    if(typeStruct == null){
+        token = new simpleTypes(name,level,type,decl,isLista,isConst)
+        table.addToken(token)
     }
 
-    //else if para tipos complejos
+    else {
+        token = new complexTypes(name,level,type,decl,typeStruct,parameters);
+        table.addToken(token);
+    }
+
 }
 
 tableSymbols.prototype.buscar = function(table,name){
@@ -84,6 +133,7 @@ tableSymbols.prototype.buscar = function(table,name){
 
 tableSymbols.prototype.print = function(table){
     table.forEach(function(element) {
+        Console.log("Class Name: " + element.getClassName())
         console.log("Name: " + element.getName())
         if (element.getType() == 0){
           console.log("\tTipo: Indefinido");  
@@ -97,16 +147,4 @@ tableSymbols.prototype.print = function(table){
     });
 }
 
-exports.tableSymbols = tableSymbols;
-
-/*
-//prueba
-var tabla = new tableSymbols()
-var objeto = new simpleTypes ('ident',0,1,'aqui');
-console.log(objeto.name)
-tabla.tableSymbols.push(objeto);
-console.log(tabla.getTableSymbols())
-console.log(objeto.getClassName());
- 
- */
- 
+exports.tableSymbols = tableSymbols

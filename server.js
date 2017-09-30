@@ -8,7 +8,8 @@ const ParserMiniCSharp = require('./generated/ParserMiniCSharp.js');
 const ScannerMiniCSharp = require('./generated/ScannerMiniCSharp.js');
 const OwnParserVisitor = require('./own_modules/OwnParserVisitor');
 const OwnTableSymbols = require('./own_modules/OwnTableSymbols');
-
+const OwnContextualAnalysis = require('./own_modules/OwnContextualAnalysis');
+let tree = null;
 const app = express();
 
 app.use(express.static(__dirname + "/views"));
@@ -47,17 +48,28 @@ app.post('/parse',function (req, res) {
     let lexer = new ScannerMiniCSharp.ScannerMiniCSharp(chars);
     let tokens  = new antlr4.CommonTokenStream(lexer);
     let parser = new ParserMiniCSharp.ParserMiniCSharp(tokens);
-    let visitor = new OwnParserVisitor.OwnParserVisitor();
+    
+
 
     parser.buildParseTrees = true;
     parser.removeErrorListeners();
     parser.addErrorListener(listener);
 
-    let tree = parser.program();
-    visitor.visit(tree);
+    
+    tree = parser.program();
+    
 
+    //if [] ==
     res.status(200).json({data: errors});
 });
+
+app.post('/tree',function (req, res) {
+    let visitor = new OwnParserVisitor.OwnParserVisitor();
+    visitor.visit(tree);
+    res.status(200).json({});
+})
+
+
 
 app.set('port', process.env.PORT || 3000);
 app.listen(process.env.PORT || 3000);
