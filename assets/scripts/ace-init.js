@@ -5,7 +5,7 @@ const editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/javascript");
 
-$('button').on('click',function (e) {
+$('#runButton').on('click',function (e) {
    let editorCode = editor.getValue();
    $.ajax({
         type: "POST",
@@ -33,17 +33,17 @@ $('button').on('click',function (e) {
     });
 });
 
-$('#tree').on('click',function (e) {
+$('#showDiagram').on("click",function (e) {
     $.ajax({
-         type: "POST",
-         url: '/tree',
-         success: function (res) {
+        type: "POST",
+        url: '/tree',
+        success: function (res) {
             let diagramData = res.data;
             showDiagram(diagramData);
-         },
-         dataType: 'json'
-     });
- });
+        },
+        dataType: 'json'
+    });
+});
  
 editor.on("change", function(e){
     $('#tree').addClass('disabled')

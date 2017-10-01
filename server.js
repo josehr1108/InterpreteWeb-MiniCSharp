@@ -72,7 +72,6 @@ app.post('/parse',function (req, res) {
 app.post('/tree',function (req, res) {
     let visitor = new OwnParserVisitor.OwnParserVisitor();
     let diagramData = visitor.visit(tree);
-    console.log(diagramData)
     res.status(200).json({data: diagramData});
 });
 
