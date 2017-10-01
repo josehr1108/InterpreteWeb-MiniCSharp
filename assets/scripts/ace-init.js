@@ -12,7 +12,7 @@ $('#runButton').on('click',function (e) {
         url: '/parse',
         data: {code: editorCode},
         success: function (res) {
-            $('#tree').removeClass('disabled')
+            $('#tree').removeClass('disabled');
             let fullMsg = "";
             for(let error of res.data){
 
@@ -27,19 +27,25 @@ $('#runButton').on('click',function (e) {
                 }
                
             }
+            if(fullMsg != ""){  // si vienen errores
+                $('#tree').addClass("disabled");
+            }
             $('#console').html(fullMsg);
         },
         dataType: 'json'
     });
 });
 
-$('#showDiagram').on("click",function (e) {
+$('#myModal').on('shown.bs.modal', function(e) {
     $.ajax({
         type: "POST",
         url: '/tree',
         success: function (res) {
             let diagramData = res.data;
-            showDiagram(diagramData);
+            let diagram = showDiagram(diagramData);
+            $('#myModal').on('hidden.bs.modal', function () {
+                diagram.div = null;
+            });
         },
         dataType: 'json'
     });

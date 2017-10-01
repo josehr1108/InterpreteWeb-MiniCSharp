@@ -45,6 +45,8 @@ function showDiagram(arrayData) {
     myDiagram.model =
         $(go.TreeModel,
             { nodeDataArray: arrayData });
+
+    return myDiagram;
 }
 
 // Customize the TreeLayout to position all of the leaf nodes at the same vertical Y position.
