@@ -20,13 +20,12 @@ OwnContextualAnalysis.prototype.constructor = OwnContextualAnalysis;
 
 
 OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
-    console.log('start visit program a contextual')
 
     let identifier = ctx.IDENT().getSymbol().text;
-    tableSymbols.insert(tableSymbols,identifier,tableSymbols.getLevel()-1,0,ctx,false,false,null,null);
-    //console.log(tableSymbols.getTableSymbols());
-    
-    
+
+    //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
+    tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel()-1,0,ctx,false,false,null,null);
+
     let constants = ctx.constDecl();
     let variables = ctx.varDecl();
     let classes = ctx.classDecl();
@@ -34,10 +33,11 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
 
     if(constants){
         this.visit(constants);
-    }/*
+    }
     if(variables){
         this.visit(variables);
     }
+    /*
     if(classes){
         this.visit(classes);
     }
@@ -45,7 +45,7 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
         this.visit(methods);
     }
 */
-    console.log('voy a retornar')
+
     return errors;
 };
 
@@ -53,28 +53,54 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
 
 
     let identifier = ctx.IDENT().getSymbol().text;
-    var thereIdentifier = tableSymbols.buscar(tableSymbols,identifier,tableSymbols.getLevel());
-    console.log('imprimiendo tabla')
-    console.log(tableSymbols.getTableSymbols());
-    console.log(thereIdentifier)
+    //busca si ya existe el identifiador en la tabla de simbolos
+    var thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
+  
     if (thereIdentifier){
-        console.log('error')
         error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
         + ' Row: ' + ctx.IDENT().getSymbol().line 
         + ' Column: ' + ctx.IDENT().getSymbol().column; 
         errors.push(error);
-        console.log(errors);
     }
 
     else{
-        tableSymbols.insert(tableSymbols,identifier,tableSymbols.getLevel(),0,ctx,false,false,null,null);
-        //console.log(tableSymbols.getTableSymbols());
+        //obtiene el tipo 
+        let typeConst = this.visit(ctx.type());
+        //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
+        tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeConst,ctx,false,true,null,null);
+
     }
     return
 };
 
 OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
-    let tabText = getTabText(cont);
+    console.log('varDCl')
+
+    for (let i = 0; i <= ctx.IDENT().length-1; i++)
+    {
+        let identifier = ctx.IDENT(i).getSymbol().text;
+        var thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
+
+        if (thereIdentifier){
+            error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
+            + ' Row: ' + ctx.IDENT(i).getSymbol().line 
+            + ' Column: ' + ctx.IDENT(i).getSymbol().column; 
+            errors.push(error);
+        }
+    
+        else{
+            //obtiene el tipo 
+            let typeVar = this.visit(ctx.type());
+            console.log(typeVar)
+            //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
+            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeVar,ctx,false,false,null,null);
+    
+        }
+    }
+
+    console.log(tableSymbols.getTableSymbols());
+
+    /*let tabText = getTabText(cont);
     tabText += ctx.constructor.name;
     console.log(tabText);
 
@@ -89,7 +115,7 @@ OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
         let tabText = getTabText(cont+1);
         console.log(tabText+ "Identifier: " + ctx.IDENT(i).getSymbol().text);
     }
-    cont--;
+    cont--;*/
 };
 
 OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {
@@ -125,6 +151,7 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
     console.log(tabText2 + "Identifier: "+ identifier);
 
     cont++;
+    
     if(type){
         this.visit(ctx.type());
     }
@@ -166,81 +193,27 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
 
 /*-------------------------------Types ---------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitIdentType = function(ctx) {
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"IdentType","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    let tabText2 = getTabText(cont+1);
-    tabText2 += "Type: " + ctx.IDENT().getSymbol().text;
-    console.log(tabText2);
+    return 1
 };
 
 OwnContextualAnalysis.prototype.visitCharType = function(ctx) {
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"CharType","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    let tabText2 = getTabText(cont+1);
-    tabText2 += "Tipo: " + ctx.CHAR().getSymbol().text;
-    console.log(tabText2);
+    return 2
 };
 
 OwnContextualAnalysis.prototype.visitIntType = function(ctx) {
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"IntType","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    let tabText2 = getTabText(cont+1);
-    tabText2 += "Tipo: " + ctx.INT().getSymbol().text;
-    console.log(tabText2);
+    return 3
 };
 
 OwnContextualAnalysis.prototype.visitFloatType = function(ctx) {
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"FloatType","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    let tabText2 = getTabText(cont+1);
-    tabText2 += "Tipo: " + ctx.FLOAT().getSymbol().text;
-    console.log(tabText2);
+    return 4
 };
 
 OwnContextualAnalysis.prototype.visitBoolType = function(ctx) {
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"BoolType","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    let tabText2 = getTabText(cont+1);
-    tabText2 += "Tipo: " + ctx.BOOL().getSymbol().text;
-    console.log(tabText2);
+    return 5
 };
 
 OwnContextualAnalysis.prototype.visitStringType = function(ctx) {
-    let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"StringType","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    let tabText2 = getTabText(cont+1);
-    tabText2 += "Tipo: " + ctx.STRING().getSymbol().text;
-    console.log(tabText2);
+    return 6
 };
 
 

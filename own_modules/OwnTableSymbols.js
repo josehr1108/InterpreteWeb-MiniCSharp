@@ -107,7 +107,51 @@ class parameters {
     }
 }
 
-tableSymbols.prototype.insert = function(table,name,level,type,decl,isLista,isConst,typeStruct,parameters){
+/*
+Parametros insertToken
+Table       = objeto de tabla simbolos
+name        = nombre del identificador
+level       =  -1: Para la clase main 
+                0: Para Variables,Metodos,Clases globales
+                1: Para parametros, variables de metodos y clases
+type        = Si elemento es simpleTypes
+               -1: Indefinido
+                0: Class main
+                1: Ident
+                2: Char
+                3: Int
+                4: Float
+                5: Bool
+                6: String (susceptible a pasar a complexTypes)
+            Si el elemento es complexTypes
+                0: Metodos
+                1: Clases
+decl        = Siempre es ctx
+isLista     = Solo se usa en simpleTypes 
+                define si una variable es lista toma valores True / False
+isConst     = Solo se usa en simpleTypes 
+                define si una variable es constante toma valores True / False
+typeStruct  = Solo se usa en complexTypes
+                0: Object (class)
+                1: Ident
+                2: Char
+                3: Int
+                4: Float
+                5: Bool
+                6: String
+                7: Void
+parameters  = Solo se usa en complexTypes
+                Es una lista con los parametros de los metodos y clases
+                Los tipos de los parametros pudem ser
+                    1: Ident
+                    2: Char
+                    3: Int
+                    4: Float
+                    5: Bool
+                    6: String
+*/ 
+
+tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista,isConst,typeStruct,parameters){
     let token;
     if(typeStruct == null){
         token = new simpleTypes(name,level,type,decl,isLista,isConst)
@@ -122,10 +166,11 @@ tableSymbols.prototype.insert = function(table,name,level,type,decl,isLista,isCo
 
 }
 
-tableSymbols.prototype.buscar = function(table,name,level){
-    console.log(name);
-    console.log(level);
+/*
 
+*/ 
+
+tableSymbols.prototype.buscarToken = function(table,name,level){
 
     if (table.getTableSymbols()[0].getName() == name){
         return true;
@@ -139,9 +184,9 @@ tableSymbols.prototype.buscar = function(table,name,level){
             }  
         }
     }
-    
+ 
     return false;
-    
+
 }
 
 tableSymbols.prototype.print = function(table){

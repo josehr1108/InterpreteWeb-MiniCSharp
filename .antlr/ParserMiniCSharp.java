@@ -732,10 +732,7 @@ public class ParserMiniCSharp extends Parser {
 	}
 	public static class ForeachStatementContext extends StatementContext {
 		public TerminalNode FOREACH() { return getToken(ParserMiniCSharp.FOREACH, 0); }
-		public List<TerminalNode> RIGHT_PARENTHESIS() { return getTokens(ParserMiniCSharp.RIGHT_PARENTHESIS); }
-		public TerminalNode RIGHT_PARENTHESIS(int i) {
-			return getToken(ParserMiniCSharp.RIGHT_PARENTHESIS, i);
-		}
+		public TerminalNode LEFT_PARENTHESIS() { return getToken(ParserMiniCSharp.LEFT_PARENTHESIS, 0); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
@@ -744,6 +741,7 @@ public class ParserMiniCSharp extends Parser {
 			return getToken(ParserMiniCSharp.IDENT, i);
 		}
 		public TerminalNode IN() { return getToken(ParserMiniCSharp.IN, 0); }
+		public TerminalNode RIGHT_PARENTHESIS() { return getToken(ParserMiniCSharp.RIGHT_PARENTHESIS, 0); }
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
@@ -982,7 +980,7 @@ public class ParserMiniCSharp extends Parser {
 				setState(172);
 				match(FOREACH);
 				setState(173);
-				match(RIGHT_PARENTHESIS);
+				match(LEFT_PARENTHESIS);
 				setState(174);
 				type();
 				setState(175);
@@ -2023,7 +2021,7 @@ public class ParserMiniCSharp extends Parser {
 		"\3\2\2\2\u00a4\u00a5\3\2\2\2\u00a5\u00a6\7\30\2\2\u00a6\u00a7\5\20\t\2"+
 		"\u00a7\u00d1\3\2\2\2\u00a8\u00a9\7\r\2\2\u00a9\u00aa\7\31\2\2\u00aa\u00ab"+
 		"\5\26\f\2\u00ab\u00ac\7\30\2\2\u00ac\u00ad\5\20\t\2\u00ad\u00d1\3\2\2"+
-		"\2\u00ae\u00af\7\16\2\2\u00af\u00b0\7\30\2\2\u00b0\u00b1\5\16\b\2\u00b1"+
+		"\2\u00ae\u00af\7\16\2\2\u00af\u00b0\7\31\2\2\u00b0\u00b1\5\16\b\2\u00b1"+
 		"\u00b2\7<\2\2\u00b2\u00b3\7\23\2\2\u00b3\u00b4\7<\2\2\u00b4\u00b5\7\30"+
 		"\2\2\u00b5\u00b6\5\22\n\2\u00b6\u00d1\3\2\2\2\u00b7\u00b8\7\17\2\2\u00b8"+
 		"\u00d1\7(\2\2\u00b9\u00bb\7\20\2\2\u00ba\u00bc\5\34\17\2\u00bb\u00ba\3"+
