@@ -46,9 +46,6 @@ $('#runButton').on('click',function (e) {
 });
 
 $('#myModal').on('shown.bs.modal', function(e) {
-    /*if($('#tree').hasClass("disabled")){
-        return;
-    }*/
     console.log("sigue");
     $.ajax({
         type: "POST",
