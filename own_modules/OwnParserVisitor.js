@@ -25,6 +25,11 @@ OwnParserVisitor.prototype.visitProgram = function(ctx) {
     let parentObject = {key: iterator,text: "Program",fill: "#f68c06",stroke: "#4d90fe"};
     treeList.push(parentObject);
 
+    let identifier = ctx.IDENT().getSymbol().text;
+    iterator++;
+    let idObject = {key: iterator,text: "Main Class: " + identifier,fill: "#85CEF6",stroke: "#4d90fe",parent: parentObject.key};
+    treeList.push(idObject);
+
     let constants = ctx.constDecl();
     let variables = ctx.varDecl();
     let classes = ctx.classDecl();

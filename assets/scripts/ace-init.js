@@ -5,6 +5,14 @@ const editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/javascript");
 
+$('#tree').on("click",function (e) {
+    if($('#tree').hasClass("disabled")){
+       return;
+    }else{
+        $("#myModal").modal();
+    }
+});
+
 $('#runButton').on('click',function (e) {
    let editorCode = editor.getValue();
    $.ajax({
@@ -37,6 +45,10 @@ $('#runButton').on('click',function (e) {
 });
 
 $('#myModal').on('shown.bs.modal', function(e) {
+    /*if($('#tree').hasClass("disabled")){
+        return;
+    }*/
+    console.log("sigue");
     $.ajax({
         type: "POST",
         url: '/tree',
@@ -55,7 +67,7 @@ editor.on("change", function(e){
     $('#tree').addClass('disabled')
  });
 
- editor.getSession().selection.on('changeCursor', function(e) {
+editor.getSession().selection.on('changeCursor', function(e) {
     let newText = 'Row: ' + (editor.selection.getCursor().row + 1) + ' Column: ' + editor.selection.getCursor().column;
     $("#position").text(newText);
 }); 
