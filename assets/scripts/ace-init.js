@@ -13,6 +13,7 @@ $('#runButton').on('click',function (e) {
         data: {code: editorCode},
         success: function (res) {
             $('#tree').removeClass('disabled');
+            
             let fullMsg = "";
             for(let error of res.data){
 

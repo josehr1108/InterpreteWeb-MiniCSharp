@@ -154,7 +154,7 @@ OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
     let idObject = {key: iterator,text: "Identifier: " + identifier,fill: "#85CEF6",stroke: "#4d90fe",parent: object.key};
     treeList.push(idObject);
 
-    /* ------------------------------ Aqui no funca  ---------------------------*/
+   
     let formPars = ctx.formPars();
     if(formPars){
         parentIterator = object.key;
@@ -674,7 +674,7 @@ OwnParserVisitor.prototype.visitDesignator = function(ctx) {
         let identLenght = ctx.IDENT().length-1;
         for(let i=1;i <= identLenght;i++){
             iterator++;
-            let tokenObject = {key: iterator,text: "@" + ctx.IDENT(i).getSymbol().text,fill: "#85CEF6",stroke: "#4d90fe",parent: object.key};
+            let tokenObject = {key: iterator,text: "." + ctx.IDENT(i).getSymbol().text,fill: "#85CEF6",stroke: "#4d90fe",parent: object.key};
             treeList.push(tokenObject);
         }
     }

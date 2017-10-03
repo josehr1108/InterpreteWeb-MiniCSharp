@@ -43,7 +43,7 @@ factor		: designator ( LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS )?       
     		|  NEW IDENT                                                                                                                #newFactor
 		    |  LEFT_PARENTHESIS expr RIGHT_PARENTHESIS                                                                                  #expressionFactor
 		    ;
-designator	: IDENT ( AT IDENT | LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET )*;
+designator	: IDENT ( DOT IDENT | LEFT_SQUARE_BRACKET expr RIGHT_SQUARE_BRACKET )*;
 relop		: EQUAL_EQUAL                                                                                                               #equalEqualOp
             | INEQUALITY                                                                                                                #inequalityOp
             | GREATER_THAN                                                                                                              #greaterThanOp

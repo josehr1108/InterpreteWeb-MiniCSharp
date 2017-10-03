@@ -196,7 +196,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003\u0002\u0002\u0002\u011c\u0114\u0003\u0002\u0002\u0002\u011c\u0115",
     "\u0003\u0002\u0002\u0002\u011c\u0116\u0003\u0002\u0002\u0002\u011c\u0118",
     "\u0003\u0002\u0002\u0002\u011d!\u0003\u0002\u0002\u0002\u011e\u0127",
-    "\u0007<\u0002\u0002\u011f\u0120\u0007*\u0002\u0002\u0120\u0126\u0007",
+    "\u0007<\u0002\u0002\u011f\u0120\u0007&\u0002\u0002\u0120\u0126\u0007",
     "<\u0002\u0002\u0121\u0122\u0007\u001b\u0002\u0002\u0122\u0123\u0005",
     "\u001c\u000f\u0002\u0123\u0124\u0007\u001a\u0002\u0002\u0124\u0126\u0003",
     "\u0002\u0002\u0002\u0125\u011f\u0003\u0002\u0002\u0002\u0125\u0121\u0003",
@@ -2914,14 +2914,14 @@ DesignatorContext.prototype.IDENT = function(i) {
 };
 
 
-DesignatorContext.prototype.AT = function(i) {
+DesignatorContext.prototype.DOT = function(i) {
 	if(i===undefined) {
 		i = null;
 	}
     if(i===null) {
-        return this.getTokens(ParserMiniCSharp.AT);
+        return this.getTokens(ParserMiniCSharp.DOT);
     } else {
-        return this.getToken(ParserMiniCSharp.AT, i);
+        return this.getToken(ParserMiniCSharp.DOT, i);
     }
 };
 
@@ -2986,13 +2986,13 @@ ParserMiniCSharp.prototype.designator = function() {
         this.state = 293;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        while(_la===ParserMiniCSharp.LEFT_SQUARE_BRACKET || _la===ParserMiniCSharp.AT) {
+        while(_la===ParserMiniCSharp.LEFT_SQUARE_BRACKET || _la===ParserMiniCSharp.DOT) {
             this.state = 291;
             this._errHandler.sync(this);
             switch(this._input.LA(1)) {
-            case ParserMiniCSharp.AT:
+            case ParserMiniCSharp.DOT:
                 this.state = 285;
-                this.match(ParserMiniCSharp.AT);
+                this.match(ParserMiniCSharp.DOT);
                 this.state = 286;
                 this.match(ParserMiniCSharp.IDENT);
                 break;

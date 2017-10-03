@@ -18,8 +18,12 @@ class tableSymbols {
         return this.level;
     }
 
-    moveLevel(value){
-        this.level += value;
+    levelUp(){
+        this.level += 1;
+    }
+
+    lowerLevel(){
+        this.level -=1
     }
 
     addToken(token){
@@ -101,10 +105,24 @@ class complexTypes extends symbolType{
 }
 
 class parameters {
-    constructor(name,type){
+    constructor(name,type,reference){
         this.name = name;
         this.type = type;
+        this.reference = reference;
     }
+
+    getName(){
+        return this.name;
+    }
+
+    getType(){
+        return this.type;
+    }
+
+    getReference(){
+        return this.reference;
+    }
+    
 }
 
 /*
@@ -124,8 +142,8 @@ type        = Si elemento es simpleTypes
                 5: Bool
                 6: String (susceptible a pasar a complexTypes)
             Si el elemento es complexTypes
-                0: Metodos
-                1: Clases
+                0: Clases
+                1: Metodos
 decl        = Siempre es ctx
 isLista     = Solo se usa en simpleTypes 
                 define si una variable es lista toma valores True / False
@@ -155,7 +173,6 @@ tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista
     let token;
     if(typeStruct == null){
         token = new simpleTypes(name,level,type,decl,isLista,isConst)
-        
         table.addToken(token)
     }
 
@@ -166,6 +183,10 @@ tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista
 
 }
 
+tableSymbols.prototype.createParameter = function(name,type,reference){
+    let parameter = new parameters(name,type,reference);
+    return parameter; 
+}
 /*
 
 */ 
@@ -173,22 +194,23 @@ tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista
 tableSymbols.prototype.buscarToken = function(table,name,level){
 
     if (table.getTableSymbols()[0].getName() == name){
-        return true;
+        return {'success': true, 'data': table.getTableSymbols()[0]};
     }
 
     else{
 
-        for (var i = 0; i < table.getTableSymbols().length; i++) {
+        for (var i = 1; i < table.getTableSymbols().length; i++) {
             if (table.getTableSymbols()[i].getName() === name && table.getTableSymbols()[i].getLevel() ===  level){
-                return true; 
+                return {'success': true, 'data': table.getTableSymbols()[i]};
             }  
         }
     }
  
-    return false;
+    return {'success': false, 'data': -1};
 
 }
 
+/*
 tableSymbols.prototype.print = function(table){
     table.forEach(function(element) {
         Console.log("Class Name: " + element.getClassName())
@@ -204,5 +226,5 @@ tableSymbols.prototype.print = function(table){
         } 
     });
 }
-
+*/
 exports.tableSymbols = tableSymbols
