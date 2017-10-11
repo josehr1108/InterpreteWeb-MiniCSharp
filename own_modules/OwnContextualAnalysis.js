@@ -45,6 +45,7 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
     }
     
     if(variables){
+        allVars = [];
         this.visit(variables);
     }
     
@@ -117,7 +118,6 @@ OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
 
     for (let i = 0; i <= ctx.IDENT().length-1; i++)
     {
-        
         let identifier = ctx.IDENT(i).getSymbol().text;
         let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
 
@@ -285,7 +285,7 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
     
         else{
             //obtiene el tipo 
-            let typePars = this.visit(ctx.type())[i];
+            let typePars = this.visit(ctx.type(i));
             //para insertar la declaracion del parametro en la lista allPars
             let newPars = {}
             newPars['var'] = identifier;
@@ -330,29 +330,11 @@ OwnContextualAnalysis.prototype.visitStringType = function(ctx) {
 /* ------------------------------------------- Statement ----------------------------------------------------------*/
 
 OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
-    console.log('visitFirstDesignStatement')
-
-    let designator = ctx.designator();
-
-    if(designator){
-        let typeIdent = this.visit(ctx.designator())
-        let asign = ctx.ASIGN();
-        console.log(typeIdent)
-        if(asign){
-            let exp
-        }
-    }
     
-    /*let tabText = getTabText(cont);
-    let tabText2 = getTabText(cont+1);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
 
-    let object = new  ArrayEntry(cont,"FirstDesignatorStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
+    
     this.visit(ctx.designator());
+   
 
     let expression = ctx.expr();
     let actPars = ctx.actPars();
@@ -361,386 +343,413 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
     let minusMinus = ctx.MINUS_MINUS();
 
     if(expression){
+        
+        
+
+        
         this.visit(expression);
+        
     }
     else if(leftPar){
-        console.log(tabText2 + "()");
+       
+       
         if(actPars){
-            this.visit(actPars);
+           
+            this.visit(ctx.actPars(0));
+            
         }
     }
     else if(plusPlus){
-        console.log(tabText2 + plusPlus.getSymbol().text);
+       
+       
     }
     else if(minusMinus){
-        console.log(tabText2 + minusMinus.getSymbol().text);
+        
     }
-    cont--;*/
-    return
 };
 
 OwnContextualAnalysis.prototype.visitIfStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+    
 
-    let object = new  ArrayEntry(cont,"IfStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
     this.visit(ctx.condition());
-    this.visit(ctx.statement());
-    cont--;*/
-    return
+    
+    this.visit(ctx.statement(0));
+    
+
+    let elseToken = ctx.ELSE();
+    if(elseToken){
+        
+
+        this.visit(ctx.statement(1));
+        
+    }
 };
 
 OwnContextualAnalysis.prototype.visitForStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"ForStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
+  
+    
+    this.visit(ctx.expr());
+   
 
     let condition = ctx.condition();
     let statement = ctx.statement();
 
-    cont++;
-    this.visit(ctx.expr());
-    if(condition != null){
-        this.visit(ctx.condition());
+    if(condition){
+        
+        this.visit(ctx.condition(0));
+  
     }
-    if(statement != null){
-        this.visit(ctx.statement());
+    if(statement){
+        
+        for (let i=0; i <= ctx.statement().length-1; i++) {
+           
+            this.visit(ctx.statement(i));
+            
+        }
     }
-    cont--;*/
-    return
-}; 
+};
 
 OwnContextualAnalysis.prototype.visitWhileStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+   
 
-    let object = new  ArrayEntry(cont,"WhileStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
     this.visit(ctx.condition());
+
     this.visit(ctx.statement());
-    cont--;*/
-    return
+
 };
 
 OwnContextualAnalysis.prototype.visitForeachStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    let tabText2 = getTabText(cont+1);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+   
 
-    let object = new  ArrayEntry(cont,"ForeachStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
+    
     this.visit(ctx.type());
-    console.log(tabText2 + ctx.IDENT(0) + " in " + ctx.IDENT(1));
+  
+
+   
+    let ident1 = ctx.IDENT(0).getSymbol().text;
+    
+
+    
+
+    
+    let ident2 = ctx.IDENT(1).getSymbol().text;
+    
+
     this.visit(ctx.block());
-    cont--;*/
-    return
+  
 };
 
 OwnContextualAnalysis.prototype.visitBreakStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"BreakStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
     return
 };
 
 OwnContextualAnalysis.prototype.visitReturnStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"ReturnStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
+    
 
     let expr = ctx.expr();
     if(expr){
-        cont++;
-        this.visit(expr);
-        cont--;
-    }*/
-    return
+       
+        this.visit(ctx.expr(0));
+   
+    }
 };
 
 OwnContextualAnalysis.prototype.visitReadStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+   
 
-    let object = new  ArrayEntry(cont,"ReadStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
+   
     this.visit(ctx.designator());
-    cont--;*/
-    return
+    
 };
 
 OwnContextualAnalysis.prototype.visitWriteStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"WriteStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
+    
     this.visit(ctx.expr());
-    cont--;*/
-    return
+   
+
+    let comma = ctx.COMMA();
+    if(comma){
+        
+        let number = ctx.NUMBER().getSymbol().text;
+       
+    }
 };
 
 OwnContextualAnalysis.prototype.visitBlockStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+    
 
-    let object = new  ArrayEntry(cont,"BlockStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
     this.visit(ctx.block());
-    cont--;*/
-    return
+   
 };
 
 OwnContextualAnalysis.prototype.visitSemicolonStatement = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"SemicolonStatement","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
     return
 };
 
 /*************************************************************************************************************/
 
 OwnContextualAnalysis.prototype.visitBlock = function(ctx) {
-    this.visit(ctx.statement());
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"Block","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
+    
 
     let statements = ctx.statement();
-    if(statements != null){
-        cont++;
-        this.visit(ctx.statement());
-        cont--;
-    }*/
-    return
+    if(statements){
+        for (let i=0; i <= statements.length-1; i++) {
+            this.visit(ctx.statement(i));
+            
+        }
+    }
 };
 
 OwnContextualAnalysis.prototype.visitActPars = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+   
+    this.visit(ctx.expr(0));
+    
 
-    let object = new  ArrayEntry(cont,"ActPars","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
-    this.visit(ctx.expr());
-    cont--;*/
-    return
+    for (let i=1; i <= ctx.expr().length - 1; i++) {
+       
+        this.visit(ctx.expr(i));
+        
+    }
 };
 
 OwnContextualAnalysis.prototype.visitCondition = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+    
 
-    let object = new  ArrayEntry(cont,"Condition","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
+    this.visit(ctx.condTerm(0));
 
-    cont++;
-    this.visit(ctx.condTerm());
-    cont--;*/
-    return
+
+    
+    for (let i=1; i <=  ctx.condTerm().length - 1; i++) {
+       
+        this.visit(ctx.condTerm(i));
+
+    }
 };
 
 OwnContextualAnalysis.prototype.visitCondTerm = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+   
 
-    let object = new  ArrayEntry(cont,"CondTerm","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
 
-    cont++;
-    this.visit(ctx.condFact());
-    cont--;*/
-    return
+    this.visit(ctx.condFact(0));
+   
+
+   
+    for (let i=1; i <= ctx.condFact().length; i++) {
+       
+
+        this.visit(ctx.condFact(i));
+
+    }
 };
 
 OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+    
 
-    let object = new  ArrayEntry(cont,"CondFact","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
 
-    cont++;
     this.visit(ctx.expr(0));
+    
     this.visit(ctx.relop());
+    
     this.visit(ctx.expr(1));
-    cont--;*/
-    return
+    
 };
 
 OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"Expr","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
+   
 
     let substractToken = ctx.SUBTRACTION();
-
-    cont++;
-    if(substractToken)
-        console.log(substractToken.getSymbol().text);
-    this.visit(ctx.term(0));
-    for (let i=1; i <= ctx.term().length-1; i++) {
-        this.visit(ctx.addop(i-1));
-        this.visit(ctx.term(i));
+    if(substractToken){
+       
     }
-    cont--;*/
-    return
+
+    
+    this.visit(ctx.term(0));
+    
+
+    
+    for (let i=1; i <= ctx.term().length - 1; i++) {
+        this.visit(ctx.addop(i-1));
+        
+        this.visit(ctx.term(i));
+        
+    }
 };
 
 OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
+    
 
-    let object = new  ArrayEntry(cont,"Term","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
     this.visit(ctx.factor(0));
-    for (let i=1; i <= ctx.factor().length-1; i++) {
+   
+
+  
+    for (let i=1; i <= ctx.factor().length - 1; i++) {
         this.visit(ctx.mulop(i-1));
+        
         this.visit(ctx.factor(i));
+        
     }
-    cont--;*/
-    return
 };
 
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
 
 OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"DesignatorFactor","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
-
-    cont++;
+    
     this.visit(ctx.designator());
-    let actPars = ctx.actPars();
-    if(actPars != null){
-        this.visit(ctx.actPars());
-    }
-    cont--;
+   
 
-    console.log(treeList);*/
-    return
+    let leftParenthesis = ctx.LEFT_PARENTHESIS();
+    if(leftParenthesis){
+        
+       
+        let actPars = ctx.actPars();
+        if(actPars){
+         
+            this.visit(ctx.actPars(0));
+            
+        }
+    }
 };
 
 OwnContextualAnalysis.prototype.visitNumberFactor = function(ctx) {
-    /*let tabText = getTabText(cont);
-    let tabText2 = getTabText(cont+1);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-    console.log(tabText2 + "Number: " + ctx.NUMBER().getSymbol().text);
+    
 
-    let object = new  ArrayEntry(cont,"NumberFactor","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
+    let number = ctx.NUMBER().getSymbol().text;
+    
 };
 
 OwnContextualAnalysis.prototype.visitCharconstFactor = function(ctx) {
-    /*let tabText = getTabText(cont);
-    let tabText2 = getTabText(cont+1);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-    console.log(tabText2 + "Const: " + ctx.CHAR_CONST().getSymbol().text);
+    
 
-    let object = new  ArrayEntry(cont,"CharConstFactor","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
+    let charConst = ctx.CHAR_CONST().getSymbol().text;
+    
 };
 
 OwnContextualAnalysis.prototype.visitBoolFactor = function(ctx) {
-    /*let tabText = getTabText(cont);
-    let tabText2 = getTabText(cont+1);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"BoolFactor","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
+    
 
     let trueFactor = ctx.TRUE();
-    if(trueFactor)
-        console.log(tabText2 + "Value: true");
-    else
-        console.log(tabText2 + "Value: false");
-*/
-    return
+    if (trueFactor) {
+       
+    }
+    else{
+        
+    }
 };
 
 OwnContextualAnalysis.prototype.visitNewFactor = function(ctx)       {
-   /* let tabText = getTabText(cont);
-    let tabText2 = getTabText(cont+1);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-    console.log(tabText2 + "new " + ctx.IDENT().getSymbol().text);
+    
 
-    let object = new  ArrayEntry(cont,"NewFactor","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
+    let identifier = ctx.IDENT().getSymbol().text;
+    
 };
 
 OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
 
-    let object = new  ArrayEntry(cont,"ExpressionFactor","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
 
-    cont++;
+   
     this.visit(ctx.expr());
-    cont--;*/
-    return
+   
 };
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
-    console.log('visitDesignator')
     
-    if(ctx.IDENT().length == 1){
+
+    let ident1 = ctx.IDENT(0).getSymbol().text;
+    
+    
+
+    let ident2 = ctx.IDENT(1);
+    let leftBracketAmount = ctx.LEFT_SQUARE_BRACKET().length;
+    if(ident2){ //hay 2 o mas identifiers, se va por el AT IDENT
+        let identLenght = ctx.IDENT().length-1;
+        for(let i=1;i <= ctx.IDENT().length-1;i++){
+            
+        }
+    }
+    else if(leftBracketAmount != 0){
+        for(let i = 0; i <= leftBracketAmount - 1; i++){
+            i
+
+            
+            this.visit(ctx.expr(i));
+        
+        }
+    }
+};
+/*----------------------------------------------- Operadores Logicos y Matematicos ---------------------------------------------*/
+
+/*
+Relop:
+    EqualEqualOp:           10
+    InequalityOp:           11
+    GreaterThanOp:          12
+    GreaterOrEqualThanOp:   13
+    LessThanOp:             14
+    LessOrEqualThanOp:      15
+Addop:
+    SumOp:                  16
+    SubsOp:                 17
+Mulop:
+    MultOp:                 18
+    DivOp:                  19
+    PercentOp:              20
+
+*/
+
+/*-------------------------------------------------------------- Relop --------------------------------------------------------*/
+
+OwnContextualAnalysis.prototype.visitEqualEqualOp = function(ctx) {
+    return 10
+};
+
+OwnContextualAnalysis.prototype.visitInequalityOp = function(ctx) {
+    return 11
+};
+
+OwnContextualAnalysis.prototype.visitGreaterThanOp = function(ctx) {
+    return 12
+};
+
+OwnContextualAnalysis.prototype.visitGreaterOrEqualThanOp = function(ctx) {
+    return 13
+};
+
+OwnContextualAnalysis.prototype.visitLessThanOp = function(ctx) {
+    return 14
+};
+
+OwnContextualAnalysis.prototype.visitLessOrEqualThanOp = function(ctx) {
+    return 15
+};
+
+/*-------------------------------------------------------------- Adop --------------------------------------------------------*/
+
+OwnContextualAnalysis.prototype.visitSumOp = function(ctx) {
+    return 16
+};
+
+OwnContextualAnalysis.prototype.visitSubsOp = function(ctx) {
+    return 17
+};
+
+/*-------------------------------------------------------------- Mulop --------------------------------------------------------*/
+
+OwnContextualAnalysis.prototype.visitMultOp = function(ctx) {
+    return 18
+};
+
+OwnContextualAnalysis.prototype.visitDivOp = function(ctx) {
+    return 19
+};
+
+OwnContextualAnalysis.prototype.visitPercentOp = function(ctx) {
+    return 20
+};
+
+/*
+visit designator
+if(ctx.IDENT().length == 1){
         //busca si ya existe el identifiador en la tabla de simbolos
         let identifier = ctx.IDENT(0).getSymbol().text;
         let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel()+1);
@@ -755,141 +764,8 @@ OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
         }
 
     }
-    
-   /* let tabText = getTabText(cont);
-    let tabText2 = getTabText(cont+1);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
 
-    let object = new  ArrayEntry(cont,"Designator","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);
 
-    console.log(tabText2 + "Identifier: " + ctx.IDENT(0).getSymbol().text);
-    if(ctx.IDENT(1) != null){ //hay 2 identifiers, se va por el DOT IDENT
-        console.log(tabText2 + "@" + ctx.IDENT(1).getSymbol().text);
-    }
-    else{
-        cont++;
-        this.visit(ctx.expr());
-        cont--;
-    }*/
-    return
-};
-
-/*-------------------------------------------------------------- Relop --------------------------------------------------------*/
-
-OwnContextualAnalysis.prototype.visitEqualEqualOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"EqualEqualOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitInequalityOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"InequalityOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitGreaterThanOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"GreaterThanOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitGreaterOrEqualThanOp = function(ctx) {
-   /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"GreaterOrEqualThanOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitLessThanOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"LessThanOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitLessOrEqualThanOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"LessOrEqualThanOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-/*-------------------------------------------------------------- Adop --------------------------------------------------------*/
-
-OwnContextualAnalysis.prototype.visitSumOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"SumOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitSubsOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"SubsOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-/*-------------------------------------------------------------- Mulop --------------------------------------------------------*/
-
-OwnContextualAnalysis.prototype.visitMultOp = function(ctx) {
-   /* let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"MultOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitDivOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"DivOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
-
-OwnContextualAnalysis.prototype.visitPercentOp = function(ctx) {
-    /*let tabText = getTabText(cont);
-    tabText += ctx.constructor.name;
-    console.log(tabText);
-
-    let object = new  ArrayEntry(cont,"PercentOp","#fd3c06","#f68c06",cont-1);
-    treeList.push(object);*/
-    return
-};
+*/
 
 exports.OwnContextualAnalysis = OwnContextualAnalysis;

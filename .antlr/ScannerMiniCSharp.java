@@ -1,4 +1,4 @@
-// Generated from c:\Users\Andres\Documents\Compiladores\Proyecto\InterpreteWeb-MiniCSharp/ScannerMiniCSharp.g4 by ANTLR 4.7
+// Generated from c:\Users\Andres\Documents\Compiladores\Proyecto Git\InterpreteWeb-MiniCSharp\ScannerMiniCSharp.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
