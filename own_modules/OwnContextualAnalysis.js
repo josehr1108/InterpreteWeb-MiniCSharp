@@ -355,9 +355,12 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
             if(!isConst){
                 let expression = this.visit(ctx.expr());
                 let IncompatibleTypes = false;
-                
+                console.log(thereIdentifier['data'].getType())
+                console.log(expression['typeExpr'])
+
                 if (thereIdentifier['data'].getType() != 2 && expression['typeExpr'] == 2){
-                    IncompatibleTypes = true
+                    IncompatibleTypes = true;
+                    console.log('gg');
                 }
 
                 else if(thereIdentifier['data'].getType() != 3 && expression['typeExpr'] == 3){
@@ -707,7 +710,8 @@ OwnContextualAnalysis.prototype.visitNewFactor = function(ctx)       {
 };
 
 OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
-    return this.visit(ctx.expr()) 
+    
+    return this.visit(ctx.expr());
 };
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
