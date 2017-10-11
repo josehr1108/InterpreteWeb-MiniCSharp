@@ -262,8 +262,9 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
         tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeMethod,ctx,false,false,typeStruct,parameters);
 
     }
-
+    tableSymbols.levelUp();
     this.visit(ctx.block());
+    tableSymbols.lowerLevel();
     return
   
 };
@@ -331,40 +332,96 @@ OwnContextualAnalysis.prototype.visitStringType = function(ctx) {
 
 OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
     
-
+    let identifier = this.visit(ctx.designator());
+    //busca variable local
+    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel())
     
-    this.visit(ctx.designator());
+    if(!thereIdentifier['success']){
+        //busca variable global
+        thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel()-1)
+    }
+    
+    if (thereIdentifier['success']){
+        
+        let asign = ctx.ASIGN();
+        let leftPar = ctx.LEFT_PARENTHESIS();
+        let plusPlus = ctx.PLUS_PLUS();
+        let minusMinus = ctx.MINUS_MINUS();
+        let isConst = thereIdentifier['data'].getIsConst();
+       
+
+        if(asign){
+
+            if(!isConst){
+                let expression = this.visit(ctx.expr());
+                let IncompatibleTypes = false;
+                
+                if (thereIdentifier['data'].getType() != 2 && expression['typeExpr'] == 2){
+                    IncompatibleTypes = true
+                }
+
+                else if(thereIdentifier['data'].getType() != 3 && expression['typeExpr'] == 3){
+                    IncompatibleTypes = true
+                }
+                
+                else if(thereIdentifier['data'].getType() != 5 && expression['typeExpr'] == 5){
+                    IncompatibleTypes = true
+                }
+
+                else if (typeof(expression['typeExpr']) == 'object'){
+                   
+                }
+
+                if(IncompatibleTypes){
+                    error = 'Contextual Error. Identifier type  it is not compatible with assignment. '
+                    + identifier.getSymbol().text + ' on' + ' Row: ' + identifier.getSymbol().line 
+                    + ' Column: ' + identifier.getSymbol().column; 
+                    errors.push(error);
+                
+                }
+
+            }
    
-
-    let expression = ctx.expr();
-    let actPars = ctx.actPars();
-    let leftPar = ctx.LEFT_PARENTHESIS();
-    let plusPlus = ctx.PLUS_PLUS();
-    let minusMinus = ctx.MINUS_MINUS();
-
-    if(expression){
-        
-        
-
-        
-        this.visit(expression);
-        
-    }
-    else if(leftPar){
-       
-       
-        if(actPars){
-           
-            this.visit(ctx.actPars(0));
-            
         }
-    }
-    else if(plusPlus){
-       
-       
-    }
-    else if(minusMinus){
+        else if(leftPar){
+            let actPars = ctx.actPars();
+           
+            if(actPars){
+               
+                this.visit(ctx.actPars(0));
+                
+            }
+        }
         
+        else if(plusPlus || minusMinus){
+            let type = thereIdentifier['data'].getType();
+            if (type != 3 && type != 4){
+                error = 'Contextual Error. you can not apply a mathematical' + 
+                ' operation to a non-numeric variable. ' 
+                + identifier.getSymbol().text + ' on' 
+                + ' Row: ' + identifier.getSymbol().line 
+                + ' Column: ' + identifier.getSymbol().column; 
+                errors.push(error);
+            }
+           
+        }
+
+        if(isConst){
+            error = 'Contextual Error. Cannot change a constant value. ' 
+            + identifier.getSymbol().text + ' on' 
+            + ' Row: ' + identifier.getSymbol().line 
+            + ' Column: ' + identifier.getSymbol().column; 
+            errors.push(error);
+        }
+
+    }
+
+    else{
+
+        error = 'Contextual Error. Identifier is not declared. ' + identifier.getSymbol().text + ' on' 
+        + ' Row: ' + identifier.getSymbol().line 
+        + ' Column: ' + identifier.getSymbol().column; 
+        errors.push(error);
     }
 };
 
@@ -459,6 +516,8 @@ OwnContextualAnalysis.prototype.visitReadStatement = function(ctx) {
 
    
     this.visit(ctx.designator());
+
+
     
 };
 
@@ -558,42 +617,62 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
    
 
     let substractToken = ctx.SUBTRACTION();
+    let expr = {'sub': false, 'typeExpr': false}
     if(substractToken){
-       
+        expr['sub'] = true;
     }
 
-    
-    this.visit(ctx.term(0));
-    
-
-    
-    for (let i=1; i <= ctx.term().length - 1; i++) {
-        this.visit(ctx.addop(i-1));
+    let typeExpr = this.visit(ctx.term(0));
+false
+    let termLength = ctx.term().length - 1;
+    for (let i=1; i <= termLength; i++) {
         
-        this.visit(ctx.term(i));
+
+        if(typeExpr == 3){
+            let newTypeExpr = this.visit(ctx.term(i));
+            
+            typeExpr = newTypeExpr;
+        }
+
+        else{
+            // retorna 21 si se trato de sumar tipos diferentes
+            expr['typeExpr'] = 21;
+
+            return expr
+        }
         
     }
+    
+    expr['typeExpr'] = typeExpr;
+    return expr;
 };
 
 OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
     
 
-    this.visit(ctx.factor(0));
+    let typeExpr =this.visit(ctx.factor(0));
    
-
-  
     for (let i=1; i <= ctx.factor().length - 1; i++) {
-        this.visit(ctx.mulop(i-1));
         
-        this.visit(ctx.factor(i));
-        
+        if(typeExpr == 3){
+            let newTypeExpr = this.visit(ctx.factor(i));
+            
+            typeExpr = newTypeExpr;
+        }
+
+        else{
+            // retorna 22 si se trato de multiplicar tipos diferentes
+            return 22
+        }  
     }
+
+    return typeExpr
 };
 
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
 
 OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
-    
+    /*
     this.visit(ctx.designator());
    
 
@@ -607,58 +686,44 @@ OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
             this.visit(ctx.actPars(0));
             
         }
-    }
+    }*/
 };
 
 OwnContextualAnalysis.prototype.visitNumberFactor = function(ctx) {
-    
-
-    let number = ctx.NUMBER().getSymbol().text;
-    
+    return 3
 };
 
 OwnContextualAnalysis.prototype.visitCharconstFactor = function(ctx) {
-    
-
-    let charConst = ctx.CHAR_CONST().getSymbol().text;
+    return 2
     
 };
 
 OwnContextualAnalysis.prototype.visitBoolFactor = function(ctx) {
-    
-
-    let trueFactor = ctx.TRUE();
-    if (trueFactor) {
-       
-    }
-    else{
-        
-    }
+    return 5
 };
 
 OwnContextualAnalysis.prototype.visitNewFactor = function(ctx)       {
-    
-
-    let identifier = ctx.IDENT().getSymbol().text;
-    
+    return {'typeExpr': 8, 'data': ctx.getSymbol().text}
 };
 
 OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
-
-
-   
-    this.visit(ctx.expr());
-   
+    return this.visit(ctx.expr()) 
 };
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
     
+    let identifier = ctx.IDENT()
 
-    let ident1 = ctx.IDENT(0).getSymbol().text;
+    if (identifier.length == 1){
+        return identifier[0]
+    }
+    
+
+
     
     
-
+/*
     let ident2 = ctx.IDENT(1);
     let leftBracketAmount = ctx.LEFT_SQUARE_BRACKET().length;
     if(ident2){ //hay 2 o mas identifiers, se va por el AT IDENT
@@ -675,7 +740,7 @@ OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
             this.visit(ctx.expr(i));
         
         }
-    }
+    }*/
 };
 /*----------------------------------------------- Operadores Logicos y Matematicos ---------------------------------------------*/
 

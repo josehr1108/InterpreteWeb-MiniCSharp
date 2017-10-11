@@ -1,4 +1,4 @@
-// Generated from c:\Users\Andres\Documents\Compiladores\Proyecto\InterpreteWeb-MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
+// Generated from c:\Users\Andres\Documents\Compiladores\Proyecto Git\InterpreteWeb-MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
