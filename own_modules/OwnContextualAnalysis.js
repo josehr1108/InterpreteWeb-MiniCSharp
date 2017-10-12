@@ -64,7 +64,7 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
     //busca si ya existe el identifiador en la tabla de simbolos
     let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
   
-    if (thereIdentifier['success']){
+    if (thereIdentifier.success){
         error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
         + ' Row: ' + ctx.IDENT().getSymbol().line 
         + ' Column: ' + ctx.IDENT().getSymbol().column; 
@@ -120,7 +120,7 @@ OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
         let identifier = ctx.IDENT(i).getSymbol().text;
         let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
 
-        if (thereIdentifier['success']){
+        if (thereIdentifier.success){
             error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
             + ' Row: ' + ctx.IDENT(i).getSymbol().line 
             + ' Column: ' + ctx.IDENT(i).getSymbol().column; 
@@ -156,7 +156,7 @@ OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {
     //busca si ya existe el identifiador en la tabla de simbolos
     let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
     
-    if (thereIdentifier['success']){
+    if (thereIdentifier.success){
         error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
         + ' Row: ' + ctx.IDENT().getSymbol().line 
         + ' Column: ' + ctx.IDENT().getSymbol().column; 
@@ -167,17 +167,17 @@ OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {
         let parameters = [];
         let variables = ctx.varDecl();
         if(variables){
-            allVars = []
+            allVars = [];
             tableSymbols.levelUp();
             this.visit(variables);
             tableSymbols.lowerLevel();
             
-            for (var i = 0; i < allVars.length; i++) {
+            for (let i = 0; i < allVars.length; i++) {
                 /*crea un parametro en este caso son los var decl de la clase
                 allVars[i][0] = es el identifier
                 allVars[i][1] = es el type
                 */
-                let parameter = tableSymbols.createParameter(allVars[i]['var'],allVars[i]['type'],'varDecl');
+                let parameter = tableSymbols.createParameter(allVars[i].var,allVars[i].type,'varDecl');
                 parameters.push(parameter);
                 
             }
@@ -200,7 +200,7 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
     //busca si ya existe el identifiador en la tabla de simbolos
     let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
   
-    if (thereIdentifier['success']){
+    if (thereIdentifier.success){
         error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
         + ' Row: ' + ctx.IDENT().getSymbol().line 
         + ' Column: ' + ctx.IDENT().getSymbol().column; 
@@ -210,7 +210,7 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
     else{
 
         let parameters = [];
-        let formPars =  ctx.formPars()
+        let formPars =  ctx.formPars();
         let variables = ctx.varDecl();
 
         if(formPars){
@@ -219,35 +219,35 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
             this.visit(formPars);
             tableSymbols.lowerLevel();
 
-            for (var i = 0; i < allPars.length; i++) {
+            for (let i = 0; i < allPars.length; i++) {
                 /*crea un parametro en este caso son los formPars del metodo
                 allPars[i]['var'] = es el identifier
                 allPars[i]['type'] = es el type
                 */
                 
-                let parameter = tableSymbols.createParameter(allPars[i]['var'],allPars[i]['type'],'formPars');
+                let parameter = tableSymbols.createParameter(allPars[i].var,allPars[i].type,'formPars');
                 parameters.push(parameter);
 
                 
             }
         }
         if(variables){
-            allVars = []
+            allVars = [];
             tableSymbols.levelUp();
             this.visit(variables);
             tableSymbols.lowerLevel();
-            for (var i = 0; i < allVars.length; i++) {
+            for (let i = 0; i < allVars.length; i++) {
                 /*crea un parametro en este caso son los var decl de la metodo
                 allVars[i]['var'] = es el identifier
                 allVars[i]['type'] = es el type
                 */
-                let parameter = tableSymbols.createParameter(allVars[i]['var'],allVars[i]['type'],'varDecl');
+                let parameter = tableSymbols.createParameter(allVars[i].var,allVars[i].type,'varDecl');
                 parameters.push(parameter); 
             }   
         }
         //obtiene el tipo
         let typeMethod = 1; 
-        let typeStruct 
+        let typeStruct;
         
         if(ctx.VOID()){
             typeStruct = 7
@@ -275,7 +275,7 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
         let identifier = ctx.IDENT(i).getSymbol().text;
         let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
         
-        if (thereIdentifier['success']){
+        if (thereIdentifier.success){
             error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
             + ' Row: ' + ctx.IDENT(i).getSymbol().line 
             + ' Column: ' + ctx.IDENT(i).getSymbol().column; 
@@ -287,9 +287,9 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
             //obtiene el tipo 
             let typePars = this.visit(ctx.type(i));
             //para insertar la declaracion del parametro en la lista allPars
-            let newPars = {}
-            newPars['var'] = identifier;
-            newPars['type'] = typePars;
+            let newPars = {};
+            newPars.var = identifier;
+            newPars.type = typePars;
             allPars.push(newPars);
             
             //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
@@ -351,25 +351,25 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
             if(!isConst){
                 let expression = this.visit(ctx.expr());
                 let IncompatibleTypes = false;                
-                let expr = expression['typeExpr']['typeExpr'];
+                let expr = expression.typeExpr.typeExpr;
                 console.log(expression);
-                if(expr == 2 || expr == 3 || expr == 5){
-                    expression = expression['typeExpr'];   
+                if(expr === 2 || expr === 3 || expr === 5){
+                    expression = expression.typeExpr;
                 }
 
-                if (thereIdentifier['data'].getType() != 2 && expression['typeExpr'] == 2){
+                if (thereIdentifier['data'].getType() !== 2 && expression['typeExpr'] === 2){
                     IncompatibleTypes = true;
                 }
-                else if(thereIdentifier['data'].getType() != 3 && expression['typeExpr'] == 3){
+                else if(thereIdentifier['data'].getType() !== 3 && expression['typeExpr'] === 3){
                     IncompatibleTypes = true
                 }
-                else if(thereIdentifier['data'].getType() != 5 && expression['typeExpr'] == 5){
+                else if(thereIdentifier['data'].getType() !== 5 && expression['typeExpr'] === 5){
                     IncompatibleTypes = true
                 }
 
-                else if (typeof(expression['typeExpr']) == 'object'){
+                else if (typeof(expression['typeExpr']) === 'object'){
                     expression = expression['typeExpr'];
-                    if(expression['typeExpr'] == 8){
+                    if(expression['typeExpr'] === 8){
                         let classIdentifier = tableSymbols.buscarToken(tableSymbols,expression['data'].getSymbol().text,tableSymbols.getLevel()-1);
                         if(classIdentifier['success']){
                             let type = thereIdentifier['data'].getType();
@@ -406,7 +406,7 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
         
         else if(plusPlus || minusMinus){
             let type = thereIdentifier['data'].getType();
-            if (type != 3 && type != 4){
+            if (type !== 3 && type !== 4){
                 error = 'Contextual Error. you can not apply a mathematical' + 
                 ' operation to a non-numeric variable. ' 
                 + identifier.getSymbol().text + ' on' 
@@ -601,10 +601,10 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
     let relOperator = this.visit(ctx.relop());
     let secondExpr = this.visit(ctx.expr(1));
 
-    if(relOperator != 10 || relOperator != 11){ //diferente de != y == (solo operador para numericos)
+    if(relOperator !== 10 || relOperator !== 11){ //diferente de != y == (solo operador para numericos)
         console.log("primer operando:"+ firstExpr.typeExpr.typeTerminal);
         console.log("segundo operando:"+ secondExpr.typeExpr.typeTerminal);
-        if(firstExpr.typeExpr.typeTerminal != secondExpr.typeExpr.typeTerminal){
+        if(firstExpr.typeExpr.typeTerminal !== secondExpr.typeExpr.typeTerminal){
             error = 'Contextual Error. Operation not allowed for target data types, on'
                 + ' Row: ' + firstExpr.typeExpr.data.getSymbol().line
                 + ' Column: ' + firstExpr.typeExpr.data.getSymbol().column;
@@ -628,18 +628,18 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
     let termLength = ctx.term().length - 1;
 
     for (let i=1; i <= termLength; i++) {
-        if(typeExpr == 3){
-            let newTypeExpr = this.visit(ctx.term(i));
-            typeExpr = newTypeExpr;
+        if(typeExpr === 3){
+            typeExpr = this.visit(ctx.term(i));
+
         }
         else{
             //retorna 21 si se trato de sumar tipos diferentes
-            expr['typeExpr'] = 21;
+            expr.typeExpr = 21;
             return expr
         }
     }
     
-    expr['typeExpr'] = typeExpr;
+    expr.typeExpr = typeExpr;
     return expr;
 };
 
@@ -647,9 +647,9 @@ OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
     let typeExpr = this.visit(ctx.factor(0));
    
     for (let i=1; i <= ctx.factor().length - 1; i++) {
-        if(typeExpr == 3){
-            let newTypeExpr = this.visit(ctx.factor(i));
-            typeExpr = newTypeExpr;
+        if(typeExpr === 3){
+            typeExpr = this.visit(ctx.factor(i));
+
         }
         else{
             // retorna 22 si se trato de multiplicar tipos diferentes
@@ -714,7 +714,7 @@ OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
     
     let identifier = ctx.IDENT();
     
-    if (identifier.length == 1){
+    if (identifier.length === 1){
         return identifier[0]
     }
     
