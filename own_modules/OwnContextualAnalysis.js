@@ -74,7 +74,7 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
         //obtiene el tipo 
         let typeConst = this.visit(ctx.type());
 
-        if (typeConst != 3 && typeConst != 2 && typeConst != 4){
+        if (typeConst != 3 && typeConst != 2 ){
             error = 'Contextual Error. Identifier type  it is not allowed. '
             + identifier + ' on' + ' Row: ' + ctx.IDENT().getSymbol().line 
             + ' Column: ' + ctx.IDENT().getSymbol().column; 
@@ -89,19 +89,10 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
             let IncompatibleTypes = false;
             if (number){
                 
-                isFloat = number.getSymbol().text.includes('.');
-                
-                if(typeConst != 3 && typeConst != 4){
+                if(typeConst != 3){
                     IncompatibleTypes = true
                 }
-            
-                else if(typeConst == 3 && isFloat){
-                    IncompatibleTypes = true
-                }
-
-                else if(typeConst == 4 && !isFloat){
-                    IncompatibleTypes = true
-                }
+               
             }
 
             if(charConst){
@@ -283,12 +274,13 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
         
         let identifier = ctx.IDENT(i).getSymbol().text;
         let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
-
+        
         if (thereIdentifier['success']){
             error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
             + ' Row: ' + ctx.IDENT(i).getSymbol().line 
             + ' Column: ' + ctx.IDENT(i).getSymbol().column; 
             errors.push(error);
+
         }
     
         else{
@@ -361,9 +353,12 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
 
             if(!isConst){
                 let expression = this.visit(ctx.expr());
-                let IncompatibleTypes = false;
-                console.log(thereIdentifier['data'].getType())
-                console.log(expression['typeExpr'])
+                let IncompatibleTypes = false;                
+                let expr = expression['typeExpr']['typeExpr'];
+                console.log(expression)
+                if(expr == 2 || expr == 3 || expr == 5){
+                    expression = expression['typeExpr'];   
+                }
 
                 if (thereIdentifier['data'].getType() != 2 && expression['typeExpr'] == 2){
                     IncompatibleTypes = true;
@@ -379,7 +374,17 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
                 }
 
                 else if (typeof(expression['typeExpr']) == 'object'){
-                    console.log(expression['typeExpr'])
+                    expression = expression['typeExpr']
+                    if(expression['typeExpr'] == 8){
+                        classIdentifier = tableSymbols.buscarToken(tableSymbols,expression['data'],tableSymbols.getLevel()-1);
+
+                        if(classIdentifier){
+                            
+                            let tipito = this.visit(thereIdentifier['data'].getDecl().type());
+                            console.log(tipito);
+                        }
+                    }
+
                 }
 
                 if(IncompatibleTypes){
@@ -633,11 +638,11 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
     }
 
     let typeExpr = this.visit(ctx.term(0));
-false
+
     let termLength = ctx.term().length - 1;
+
     for (let i=1; i <= termLength; i++) {
         
-
         if(typeExpr == 3){
             let newTypeExpr = this.visit(ctx.term(i));
             
@@ -712,8 +717,8 @@ OwnContextualAnalysis.prototype.visitBoolFactor = function(ctx) {
     return 5
 };
 
-OwnContextualAnalysis.prototype.visitNewFactor = function(ctx)       {
-    return {'typeExpr': 8, 'data': ctx.getSymbol().text}
+OwnContextualAnalysis.prototype.visitNewFactor = function(ctx){
+    return {'typeExpr': 8, 'data': ctx.IDENT().getSymbol().text}
 };
 
 OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
@@ -725,7 +730,7 @@ OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
 OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
     
     let identifier = ctx.IDENT()
-
+    
     if (identifier.length == 1){
         return identifier[0]
     }
