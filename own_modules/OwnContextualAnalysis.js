@@ -601,12 +601,13 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
     let relOperator = this.visit(ctx.relop());
     let secondExpr = this.visit(ctx.expr(1));
 
+    //console.log("FE:" + JSON.stringify(firstExpr.typeExpr));
     if(relOperator != 10 || relOperator != 11){ //diferente de != y == (solo operador para numericos)
-        console.log("primer operando:"+ firstExpr.typeExpr.typeExpr);
-        console.log("segundo operando:"+ secondExpr.typeExpr.typeExpr);
-        if(firstExpr.typeExpr.typeExpr != secondExpr.typeExpr.typeExpr){
+        console.log("primer operando:"+ firstExpr.typeExpr.typeTerminal);
+        console.log("segundo operando:"+ secondExpr.typeExpr.typeTerminal);
+        if(firstExpr.typeExpr.typeExpr != secondExpr.typeExpr.typeTerminal){
             console.log("Tipos incompatibles");
-            console.log("Objeto: "+JSON.stringify(firstExpr.data, null, 4));
+            console.log("Objeto: " + firstExpr.firstExpr.data);
             /*error = 'Contextual Error. Operation not allowed for target data types, on'
                 + ' Row: ' + firstExpr.data.getSymbol().line
                 + ' Column: ' + firstExpr.data.getSymbol().column;
@@ -616,7 +617,6 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
             console.log("== o !=");
         }
     }
-    console.log("operator : " + relOperator);
 };
 
 OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
@@ -647,18 +647,13 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
-    
-
-    let typeExpr =this.visit(ctx.factor(0));
+    let typeExpr = this.visit(ctx.factor(0));
    
     for (let i=1; i <= ctx.factor().length - 1; i++) {
-        
         if(typeExpr == 3){
             let newTypeExpr = this.visit(ctx.factor(i));
-            
             typeExpr = newTypeExpr;
         }
-
         else{
             // retorna 22 si se trato de multiplicar tipos diferentes
             return 22
@@ -689,15 +684,16 @@ OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitNumberFactor = function(ctx) {
-    return {typeExpr: 3, data: ctx.NUMBER()};
+    console.log("Number:" + ctx.NUMBER().getSymbol().line);
+    return {typeTerminal: 3, data: ctx.NUMBER()};
 };
 
 OwnContextualAnalysis.prototype.visitCharconstFactor = function(ctx) {
-    return {typeExpr: 2, data: ctx.CHAR_CONST()};
+    return {typeTerminal: 2, data: ctx.CHAR_CONST()};
 };
 
 OwnContextualAnalysis.prototype.visitBoolFactor = function(ctx) {
-    let object = {typeExpr: 5, data: null};
+    let object = {typeTerminal: 5, data: null};
 
     let falseFactor = ctx.FALSE();
     let trueFactor = ctx.TRUE();
@@ -710,7 +706,7 @@ OwnContextualAnalysis.prototype.visitBoolFactor = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitNewFactor = function(ctx){
-    return {'typeExpr': 8, 'data': ctx.IDENT()}
+    return {typeTerminal: 8, data: ctx.IDENT()}
 };
 
 OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
