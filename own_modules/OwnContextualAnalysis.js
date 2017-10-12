@@ -154,7 +154,7 @@ OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {
     
     let identifier = ctx.IDENT().getSymbol().text;
     //busca si ya existe el identifiador en la tabla de simbolos
-    var thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
+    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
     
     if (thereIdentifier['success']){
         error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
@@ -341,21 +341,17 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
     }
     
     if (thereIdentifier['success']){
-        
         let asign = ctx.ASIGN();
         let leftPar = ctx.LEFT_PARENTHESIS();
         let plusPlus = ctx.PLUS_PLUS();
         let minusMinus = ctx.MINUS_MINUS();
         let isConst = thereIdentifier['data'].getIsConst();
-       
-
         if(asign){
-
             if(!isConst){
                 let expression = this.visit(ctx.expr());
                 let IncompatibleTypes = false;                
                 let expr = expression['typeExpr']['typeExpr'];
-                console.log(expression)
+                console.log(expression);
                 if(expr == 2 || expr == 3 || expr == 5){
                     expression = expression['typeExpr'];   
                 }
@@ -374,13 +370,19 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
                 }
 
                 else if (typeof(expression['typeExpr']) == 'object'){
-                    expression = expression['typeExpr']
+                    expression = expression['typeExpr'];
                     if(expression['typeExpr'] == 8){
-                        classIdentifier = tableSymbols.buscarToken(tableSymbols,expression['data'],tableSymbols.getLevel()-1);
-
-                        if(classIdentifier){
-                            
-                            //thereIdentifier.getType()['name']
+                        let classIdentifier = tableSymbols.buscarToken(tableSymbols,expression['data'].getSymbol().text,tableSymbols.getLevel()-1);
+                        if(classIdentifier['success']){
+                            let type = thereIdentifier['data'].getType();
+                            if(type.identifier !== expression.data.getSymbol().text)
+                                IncompatibleTypes = true;
+                        }
+                        else{
+                            error = 'Contextual Error. Identifier is not declared. ' + expression.data.getSymbol().text + ' on'
+                                + ' Row: ' + expression.data.getSymbol().line
+                                + ' Column: ' + expression.data.getSymbol().column;
+                            errors.push(error);
                         }
                     }
 

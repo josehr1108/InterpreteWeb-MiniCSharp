@@ -21,7 +21,7 @@ statement	: designator ( ASIGN expr | LEFT_PARENTHESIS ( actPars )? RIGHT_PARENT
 		    |  IF LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement ( ELSE statement )                                             #ifStatement
             |  FOR LEFT_PARENTHESIS expr SEMICOLON  (condition)? SEMICOLON  (statement)? RIGHT_PARENTHESIS statement                    #forStatement
 		    |  WHILE LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement                                                             #whileStatement
-		    |  FOREACH LEFT_PARENTHESIS type IDENT IN IDENT RIGHT_PARENTHESIS block                                                    #foreachStatement
+		    |  FOREACH LEFT_PARENTHESIS type IDENT IN IDENT RIGHT_PARENTHESIS block                                                     #foreachStatement
 		    |  BREAK SEMICOLON                                                                                                          #breakStatement
 		    |  RETURN ( expr )? SEMICOLON                                                                                               #returnStatement
 		    |  READ LEFT_PARENTHESIS designator RIGHT_PARENTHESIS SEMICOLON                                                             #readStatement
