@@ -303,7 +303,7 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
 
 /*-------------------------------Types ---------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitIdentType = function(ctx) {
-    return {'type': 1, 'name':ctx.getSymbol().text}
+    return 1
 };
 
 OwnContextualAnalysis.prototype.visitCharType = function(ctx) {
