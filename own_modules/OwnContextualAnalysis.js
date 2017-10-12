@@ -596,15 +596,13 @@ OwnContextualAnalysis.prototype.visitCondTerm = function(ctx) {
     }*/
 };
 
-OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
+OwnContextualAnalysis.prototype.visitCondFact = function(ctx) { //falta para idents
     let firstExpr = this.visit(ctx.expr(0));
     let relOperator = this.visit(ctx.relop());
     let secondExpr = this.visit(ctx.expr(1));
 
     if(relOperator !== 10 || relOperator !== 11){ //diferente de != y == (solo operador para numericos)
-        console.log("primer operando:"+ firstExpr.typeExpr.typeTerminal);
-        console.log("segundo operando:"+ secondExpr.typeExpr.typeTerminal);
-        if(firstExpr.typeExpr.typeTerminal !== secondExpr.typeExpr.typeTerminal){
+        if(firstExpr.typeExpr.typeTerminal !== secondExpr.typeExpr.typeTerminal){ //si el primer tipo es diferente del segundo
             error = 'Contextual Error. Operation not allowed for target data types, on'
                 + ' Row: ' + firstExpr.typeExpr.data.getSymbol().line
                 + ' Column: ' + firstExpr.typeExpr.data.getSymbol().column;
@@ -663,13 +661,12 @@ OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
 
 OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
-    /*
+
     this.visit(ctx.designator());
    
-
+    /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
     if(leftParenthesis){
-        
        
         let actPars = ctx.actPars();
         if(actPars){
