@@ -76,7 +76,7 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
         //obtiene el tipo 
         let typeConst = this.visit(ctx.type());
 
-        if (typeConst != 3 && typeConst != 2){
+        if (typeConst != 3 && typeConst != 2 && typeConst != 4){
             error = 'Contextual Error. Identifier type  it is not allowed. '
             + identifier + ' on' + ' Row: ' + ctx.IDENT().getSymbol().line 
             + ' Column: ' + ctx.IDENT().getSymbol().column; 
@@ -90,7 +90,18 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
             let charConst = ctx.CHAR_CONST();
             let IncompatibleTypes = false;
             if (number){
-                if(typeConst != 3){
+                
+                isFloat = number.getSymbol().text.includes('.');
+                
+                if(typeConst != 3 && typeConst != 4){
+                    IncompatibleTypes = true
+                }
+            
+                else if(typeConst == 3 && isFloat){
+                    IncompatibleTypes = true
+                }
+
+                else if(typeConst == 4 && !isFloat){
                     IncompatibleTypes = true
                 }
             }
@@ -360,7 +371,7 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
 
                 if (thereIdentifier['data'].getType() != 2 && expression['typeExpr'] == 2){
                     IncompatibleTypes = true;
-                    console.log('gg');
+                    
                 }
 
                 else if(thereIdentifier['data'].getType() != 3 && expression['typeExpr'] == 3){
@@ -372,7 +383,7 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
                 }
 
                 else if (typeof(expression['typeExpr']) == 'object'){
-                   
+                    console.log(expression['typeExpr'])
                 }
 
                 if(IncompatibleTypes){
