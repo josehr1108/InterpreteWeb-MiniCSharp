@@ -303,7 +303,7 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
 
 /*-------------------------------Types ---------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitIdentType = function(ctx) {
-    return 1
+    return {type : 1, identifier : ctx.IDENT().getSymbol().text};
 };
 
 OwnContextualAnalysis.prototype.visitCharType = function(ctx) {
@@ -332,8 +332,9 @@ OwnContextualAnalysis.prototype.visitStringType = function(ctx) {
 OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
     
     let identifier = this.visit(ctx.designator());
+
     //busca variable local
-    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel())
+    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel());
     
     if(!thereIdentifier['success']){
         //busca variable global
@@ -358,13 +359,10 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
 
                 if (thereIdentifier['data'].getType() != 2 && expression['typeExpr'] == 2){
                     IncompatibleTypes = true;
-                    
                 }
-
                 else if(thereIdentifier['data'].getType() != 3 && expression['typeExpr'] == 3){
                     IncompatibleTypes = true
                 }
-                
                 else if(thereIdentifier['data'].getType() != 5 && expression['typeExpr'] == 5){
                     IncompatibleTypes = true
                 }
@@ -385,15 +383,12 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
                             errors.push(error);
                         }
                     }
-
                 }
-
                 if(IncompatibleTypes){
                     error = 'Contextual Error. Identifier type  it is not compatible with assignment. '
                     + identifier.getSymbol().text + ' on' + ' Row: ' + identifier.getSymbol().line 
                     + ' Column: ' + identifier.getSymbol().column; 
                     errors.push(error);
-                
                 }
 
             }
@@ -431,7 +426,6 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
         }
 
     }
-
     else{
 
         error = 'Contextual Error. Identifier is not declared. ' + identifier.getSymbol().text + ' on' 
@@ -442,20 +436,18 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitIfStatement = function(ctx) {
-    
+    let condition = this.visit(ctx.condition());
 
-    this.visit(ctx.condition());
-    
     this.visit(ctx.statement(0));
     
-
+    /*
     let elseToken = ctx.ELSE();
     if(elseToken){
         
 
         this.visit(ctx.statement(1));
         
-    }
+    }*/
 };
 
 OwnContextualAnalysis.prototype.visitForStatement = function(ctx) {
@@ -588,52 +580,45 @@ OwnContextualAnalysis.prototype.visitActPars = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitCondition = function(ctx) {
-    
+    let firstTerm = this.visit(ctx.condTerm(0));
 
-    this.visit(ctx.condTerm(0));
-
-
-    
+    /*bretearlo
     for (let i=1; i <=  ctx.condTerm().length - 1; i++) {
-       
         this.visit(ctx.condTerm(i));
-
-    }
+    }*/
 };
 
 OwnContextualAnalysis.prototype.visitCondTerm = function(ctx) {
-   
+    let firstFact = this.visit(ctx.condFact(0));
 
-
-    this.visit(ctx.condFact(0));
-   
-
-   
-    for (let i=1; i <= ctx.condFact().length; i++) {
-       
-
+    /*for (let i=1; i <= ctx.condFact().length; i++) {
         this.visit(ctx.condFact(i));
-
-    }
+    }*/
 };
 
 OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
-    
+    let firstExpr = this.visit(ctx.expr(0));
+    let relOperator = this.visit(ctx.relop());
+    let secondExpr = this.visit(ctx.expr(1));
 
-
-    this.visit(ctx.expr(0));
-    
-    this.visit(ctx.relop());
-    
-    this.visit(ctx.expr(1));
-    
+    if(relOperator != 10 || relOperator != 11){ //diferente de != y == (solo operador para numericos)
+        console.log("primer operando:"+ firstExpr.typeExpr.typeTerminal);
+        console.log("segundo operando:"+ secondExpr.typeExpr.typeTerminal);
+        if(firstExpr.typeExpr.typeTerminal != secondExpr.typeExpr.typeTerminal){
+            error = 'Contextual Error. Operation not allowed for target data types, on'
+                + ' Row: ' + firstExpr.typeExpr.data.getSymbol().line
+                + ' Column: ' + firstExpr.typeExpr.data.getSymbol().column;
+            errors.push(error);
+        }
+    }
+    else{
+        console.log("== o !=");
+    }
 };
 
 OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
-   
-
     let substractToken = ctx.SUBTRACTION();
-    let expr = {'sub': false, 'typeExpr': false}
+    let expr = {'sub': false, 'typeExpr': false};
     if(substractToken){
         expr['sub'] = true;
     }
@@ -643,20 +628,15 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
     let termLength = ctx.term().length - 1;
 
     for (let i=1; i <= termLength; i++) {
-        
         if(typeExpr == 3){
             let newTypeExpr = this.visit(ctx.term(i));
-            
             typeExpr = newTypeExpr;
         }
-
         else{
-            // retorna 21 si se trato de sumar tipos diferentes
+            //retorna 21 si se trato de sumar tipos diferentes
             expr['typeExpr'] = 21;
-
             return expr
         }
-        
     }
     
     expr['typeExpr'] = typeExpr;
@@ -664,18 +644,13 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
-    
-
-    let typeExpr =this.visit(ctx.factor(0));
+    let typeExpr = this.visit(ctx.factor(0));
    
     for (let i=1; i <= ctx.factor().length - 1; i++) {
-        
         if(typeExpr == 3){
             let newTypeExpr = this.visit(ctx.factor(i));
-            
             typeExpr = newTypeExpr;
         }
-
         else{
             // retorna 22 si se trato de multiplicar tipos diferentes
             return 22
@@ -706,31 +681,38 @@ OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitNumberFactor = function(ctx) {
-    return 3
+    return {typeTerminal: 3, data: ctx.NUMBER()};
 };
 
 OwnContextualAnalysis.prototype.visitCharconstFactor = function(ctx) {
-    return 2
-    
+    return {typeTerminal: 2, data: ctx.CHAR_CONST()};
 };
 
 OwnContextualAnalysis.prototype.visitBoolFactor = function(ctx) {
-    return 5
+    let object = {typeTerminal: 5, data: null};
+
+    let falseFactor = ctx.FALSE();
+    let trueFactor = ctx.TRUE();
+    if(trueFactor)
+        object.data = trueFactor;
+    else
+        object.data = falseFactor;
+
+    return object;
 };
 
 OwnContextualAnalysis.prototype.visitNewFactor = function(ctx){
-    return {'typeExpr': 8, 'data': ctx.IDENT().getSymbol().text}
+    return {typeTerminal: 8, data: ctx.IDENT()}
 };
 
 OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
-    
     return this.visit(ctx.expr());
 };
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
     
-    let identifier = ctx.IDENT()
+    let identifier = ctx.IDENT();
     
     if (identifier.length == 1){
         return identifier[0]
