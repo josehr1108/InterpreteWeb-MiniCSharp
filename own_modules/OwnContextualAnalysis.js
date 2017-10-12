@@ -601,21 +601,18 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
     let relOperator = this.visit(ctx.relop());
     let secondExpr = this.visit(ctx.expr(1));
 
-    //console.log("FE:" + JSON.stringify(firstExpr.typeExpr));
     if(relOperator != 10 || relOperator != 11){ //diferente de != y == (solo operador para numericos)
         console.log("primer operando:"+ firstExpr.typeExpr.typeTerminal);
         console.log("segundo operando:"+ secondExpr.typeExpr.typeTerminal);
-        if(firstExpr.typeExpr.typeExpr != secondExpr.typeExpr.typeTerminal){
-            console.log("Tipos incompatibles");
-            console.log("Objeto: " + firstExpr.firstExpr.data);
-            /*error = 'Contextual Error. Operation not allowed for target data types, on'
-                + ' Row: ' + firstExpr.data.getSymbol().line
-                + ' Column: ' + firstExpr.data.getSymbol().column;
-            errors.push(error);*/
+        if(firstExpr.typeExpr.typeTerminal != secondExpr.typeExpr.typeTerminal){
+            error = 'Contextual Error. Operation not allowed for target data types, on'
+                + ' Row: ' + firstExpr.typeExpr.data.getSymbol().line
+                + ' Column: ' + firstExpr.typeExpr.data.getSymbol().column;
+            errors.push(error);
         }
-        else{
-            console.log("== o !=");
-        }
+    }
+    else{
+        console.log("== o !=");
     }
 };
 
@@ -684,7 +681,6 @@ OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitNumberFactor = function(ctx) {
-    console.log("Number:" + ctx.NUMBER().getSymbol().line);
     return {typeTerminal: 3, data: ctx.NUMBER()};
 };
 
