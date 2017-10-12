@@ -33,7 +33,7 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
     let identifier = ctx.IDENT().getSymbol().text;
 
     //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
-    tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel()-1,0,ctx,false,false,null,null);
+    tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel()-1,0,ctx,false,false,null,null,false);
 
     let constants = ctx.constDecl();
     let variables = ctx.varDecl();
@@ -82,7 +82,7 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
         }
         else{
             //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
-            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeConst,ctx,false,true,null,null);
+            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeConst,ctx,false,true,null,null,false);
 
             let number = ctx.NUMBER();
             let charConst = ctx.CHAR_CONST();
@@ -143,7 +143,7 @@ OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
             }
 
             //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
-            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeVar,ctx,isList,false,null,null);
+            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeVar,ctx,isList,false,null,null,false);
     
         }
     }
@@ -187,7 +187,7 @@ OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {
         let typeClass = 0;
         let typeStruct = 0;
         //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
-        tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeClass,ctx,false,false,typeStruct,parameters);
+        tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeClass,ctx,false,false,typeStruct,parameters,false);
 
     }
 
@@ -257,7 +257,7 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
         }
         
         //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
-        tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeMethod,ctx,false,false,typeStruct,parameters);
+        tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeMethod,ctx,false,false,typeStruct,parameters,false);
 
     }
     tableSymbols.levelUp();
@@ -293,7 +293,7 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
             allPars.push(newPars);
             
             //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
-            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typePars,ctx,false,false,null,null);
+            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typePars,ctx,false,false,null,null,false);
     
         }
     }
@@ -326,71 +326,119 @@ OwnContextualAnalysis.prototype.visitStringType = function(ctx) {
     return 6
 };
 
-
 /* ------------------------------------------- Statement ----------------------------------------------------------*/
 
 OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
     
     let identifier = this.visit(ctx.designator());
-
-    //busca variable local
-    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel());
     
-    if(!thereIdentifier['success']){
+    //busca variable local
+    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier[0].getSymbol().text,tableSymbols.getLevel());
+    
+    if(!thereIdentifier.success){
         //busca variable global
-        thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel()-1)
+        thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier[0].getSymbol().text,tableSymbols.getLevel()-1)
     }
     
-    if (thereIdentifier['success']){
+    if (thereIdentifier.success){
         let asign = ctx.ASIGN();
         let leftPar = ctx.LEFT_PARENTHESIS();
         let plusPlus = ctx.PLUS_PLUS();
         let minusMinus = ctx.MINUS_MINUS();
-        let isConst = thereIdentifier['data'].getIsConst();
-        if(asign){
-            if(!isConst){
-                let expression = this.visit(ctx.expr());
-                let IncompatibleTypes = false;                
-                let expr = expression.typeExpr.typeExpr;
-                console.log(expression);
-                if(expr === 2 || expr === 3 || expr === 5){
-                    expression = expression.typeExpr;
-                }
+        let isConst = thereIdentifier.data.getIsConst();
+        let isList = thereIdentifier.data.getIslista();
 
-                if (thereIdentifier['data'].getType() !== 2 && expression['typeExpr'] === 2){
-                    IncompatibleTypes = true;
-                }
-                else if(thereIdentifier['data'].getType() !== 3 && expression['typeExpr'] === 3){
-                    IncompatibleTypes = true
-                }
-                else if(thereIdentifier['data'].getType() !== 5 && expression['typeExpr'] === 5){
-                    IncompatibleTypes = true
-                }
-
-                else if (typeof(expression['typeExpr']) === 'object'){
-                    expression = expression['typeExpr'];
-                    if(expression['typeExpr'] === 8){
-                        let classIdentifier = tableSymbols.buscarToken(tableSymbols,expression['data'].getSymbol().text,tableSymbols.getLevel()-1);
-                        if(classIdentifier['success']){
-                            let type = thereIdentifier['data'].getType();
-                            if(type.identifier !== expression.data.getSymbol().text)
-                                IncompatibleTypes = true;
-                        }
-                        else{
-                            error = 'Contextual Error. Identifier is not declared. ' + expression.data.getSymbol().text + ' on'
-                                + ' Row: ' + expression.data.getSymbol().line
-                                + ' Column: ' + expression.data.getSymbol().column;
-                            errors.push(error);
-                        }
+        if (identifier.length>1){
+            if(thereIdentifier.data.getValue()){
+                let classIdentifier = tableSymbols.buscarToken(tableSymbols,thereIdentifier.data.getValue(),tableSymbols.getLevel()-1);
+                let change = false
+                for(element of classIdentifier.data.parameters){
+                    if(element.getName() === identifier[1].getSymbol().text){
+                        thereIdentifier.data = element;
+                        change = true;
+                        break;
                     }
                 }
-                if(IncompatibleTypes){
-                    error = 'Contextual Error. Identifier type  it is not compatible with assignment. '
-                    + identifier.getSymbol().text + ' on' + ' Row: ' + identifier.getSymbol().line 
-                    + ' Column: ' + identifier.getSymbol().column; 
-                    errors.push(error);
-                }
 
+                if(!change){
+                    error = 'Contextual Error. Identifier is not declared. '
+                    + identifier[1].getSymbol().text + ' on' + ' Row: ' + identifier[1].getSymbol().line 
+                    + ' Column: ' + identifier[1].getSymbol().column; 
+                    errors.push(error);
+
+                }
+            }
+            else{
+                error = 'Contextual Error. Identifier has not been instantiated. '
+                + identifier[0].getSymbol().text + ' on' + ' Row: ' + identifier[0].getSymbol().line 
+                + ' Column: ' + identifier[0].getSymbol().column; 
+                errors.push(error);
+                
+            }
+        }
+
+        if(asign){
+            if(!isConst){
+                if(!isList){
+                    let expression = this.visit(ctx.expr());
+                    let IncompatibleTypes = false;      
+
+                    if(expression.typeExpr.typeExpr){
+                        let expr = expression.typeExpr.typeExpr;
+                        
+                        if(expr.typeTerminal === 2 || expr.typeTerminal === 3 || expr.typeTerminal === 5){
+                            expression = expression.typeExpr;
+                            
+                        }
+                    }     
+                    
+                    if (thereIdentifier.data.getType() !== 2 && expression.typeExpr.typeTerminal === 2){
+                        IncompatibleTypes = true;
+                    }
+                    else if(thereIdentifier.data.getType() !== 3 && expression.typeExpr.typeTerminal === 3){
+                        IncompatibleTypes = true
+                    }
+                    else if(thereIdentifier.data.getType() !== 5 && expression.typeExpr.typeTerminal === 5){
+                        IncompatibleTypes = true
+                    }
+    
+                    else if (expression.typeExpr.typeTerminal === 8){
+                        
+                        let classIdentifier = tableSymbols.buscarToken(tableSymbols,expression.typeExpr.data.getSymbol().text,tableSymbols.getLevel()-1);
+                        
+                        if(classIdentifier.success){
+    
+                            let type = thereIdentifier.data.getType();
+                            
+                            if(type.identifier !== expression.typeExpr.data.getSymbol().text){
+                                IncompatibleTypes = true;
+                            }
+                                
+                            else{
+                                thereIdentifier.data.value = type.identifier;
+                            }
+    
+                        }
+                        else{
+                            error = 'Contextual Error. Identifier is not declared. ' + expression.typeExpr.data.getSymbol().text + ' on'
+                                + ' Row: ' + expression.typeExpr.data.getSymbol().line
+                                + ' Column: ' + expression.typeExpr.data.getSymbol().column;
+                            errors.push(error);
+                        }
+                
+                    }
+                    if(IncompatibleTypes){
+                        error = 'Contextual Error. Identifier type  it is not compatible with assignment. '
+                        + identifier[0].getSymbol().text + ' on' + ' Row: ' + identifier[0].getSymbol().line 
+                        + ' Column: ' + identifier[0].getSymbol().column; 
+                        errors.push(error);
+                    }
+    
+                }
+                
+                else{
+                    console.log('true')
+                }
             }
    
         }
@@ -405,13 +453,13 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
         }
         
         else if(plusPlus || minusMinus){
-            let type = thereIdentifier['data'].getType();
+            let type = thereIdentifier.data.getType();
             if (type !== 3 && type !== 4){
                 error = 'Contextual Error. you can not apply a mathematical' + 
                 ' operation to a non-numeric variable. ' 
-                + identifier.getSymbol().text + ' on' 
-                + ' Row: ' + identifier.getSymbol().line 
-                + ' Column: ' + identifier.getSymbol().column; 
+                + identifier[0].getSymbol().text + ' on' 
+                + ' Row: ' + identifier[0].getSymbol().line 
+                + ' Column: ' + identifier[0].getSymbol().column; 
                 errors.push(error);
             }
            
@@ -419,18 +467,18 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
 
         if(isConst){
             error = 'Contextual Error. Cannot change a constant value. ' 
-            + identifier.getSymbol().text + ' on' 
-            + ' Row: ' + identifier.getSymbol().line 
-            + ' Column: ' + identifier.getSymbol().column; 
+            + identifier[0].getSymbol().text + ' on' 
+            + ' Row: ' + identifier[0].getSymbol().line 
+            + ' Column: ' + identifier[0].getSymbol().column; 
             errors.push(error);
         }
 
     }
     else{
 
-        error = 'Contextual Error. Identifier is not declared. ' + identifier.getSymbol().text + ' on' 
-        + ' Row: ' + identifier.getSymbol().line 
-        + ' Column: ' + identifier.getSymbol().column; 
+        error = 'Contextual Error. Identifier is not declared. ' + identifier[0].getSymbol().text + ' on' 
+        + ' Row: ' + identifier[0].getSymbol().line 
+        + ' Column: ' + identifier[0].getSymbol().column; 
         errors.push(error);
     }
 };
@@ -569,14 +617,21 @@ OwnContextualAnalysis.prototype.visitBlock = function(ctx) {
 
 OwnContextualAnalysis.prototype.visitActPars = function(ctx) {
    
-    this.visit(ctx.expr(0));
+    let typeActPars = this.visit(ctx.expr(0));
     
-
-    for (let i=1; i <= ctx.expr().length - 1; i++) {
-       
-        this.visit(ctx.expr(i));
-        
-    }
+     for (let i=1; i <= ctx.expr().length - 1; i++) {
+         if(typeActPars.typeTerminal === 3 || typeActPars.typeTerminal === 4){
+            typeActPars = this.visit(ctx.factor(i));
+ 
+         }
+         else{
+             // retorna 22 si se trato de multiplicar tipos diferentes
+             return 23
+         }  
+     }
+ 
+     return typeActPars
+   
 };
 
 OwnContextualAnalysis.prototype.visitCondition = function(ctx) {
@@ -626,7 +681,7 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
     let termLength = ctx.term().length - 1;
 
     for (let i=1; i <= termLength; i++) {
-        if(typeExpr === 3){
+        if(typeExpr.typeTerminal === 3 || typeExpr.typeTerminal === 4){
             typeExpr = this.visit(ctx.term(i));
 
         }
@@ -642,11 +697,11 @@ OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
-    let typeExpr = this.visit(ctx.factor(0));
+    let typeTerm = this.visit(ctx.factor(0));
    
     for (let i=1; i <= ctx.factor().length - 1; i++) {
-        if(typeExpr === 3){
-            typeExpr = this.visit(ctx.factor(i));
+        if(typeTerm.typeTerminal === 3 || typeTerm.typeTerminal === 4){
+            typeTerm = this.visit(ctx.factor(i));
 
         }
         else{
@@ -655,7 +710,7 @@ OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
         }  
     }
 
-    return typeExpr
+    return typeTerm
 };
 
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
@@ -678,7 +733,14 @@ OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitNumberFactor = function(ctx) {
-    return {typeTerminal: 3, data: ctx.NUMBER()};
+    let object = {typeTerminal: 3, data: ctx.NUMBER()};
+
+    if (ctx.NUMBER().getSymbol().text.includes('.')){
+        object.typeTerminal = 4;
+    }
+
+    return object;
+
 };
 
 OwnContextualAnalysis.prototype.visitCharconstFactor = function(ctx) {
@@ -708,14 +770,8 @@ OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
-    
-    let identifier = ctx.IDENT();
-    
-    if (identifier.length === 1){
-        return identifier[0]
-    }
-    
 
+    return ctx.IDENT();
 
     
     

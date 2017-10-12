@@ -62,23 +62,27 @@ class tableSymbols {
  }
 
  class simpleTypes extends symbolType{
-     constructor(name,level,type,decl,isLista,isConst){
-        super(name,level,type,decl);
-        this.isLista = isLista;
-        this.isConst = isConst;
-     }
+    constructor(name,level,type,decl,isLista,isConst,value){
+    super(name,level,type,decl);
+    this.isLista = isLista;
+    this.isConst = isConst;
+    this.value = value;
+    }
 
-     getClassName(){
-         return simpleTypes.name;
-     }
+    getClassName(){
+        return simpleTypes.name;
+    }
 
-     getIslista(){
+    getIslista(){
         return this.isLista;
-     }
+    }
 
-     getIsConst(){
+    getIsConst(){
         return this.isConst;
-     }
+    }
+    getValue(){
+        return this.value;
+    }
  }
 
 class complexTypes extends symbolType{
@@ -86,6 +90,7 @@ class complexTypes extends symbolType{
         super(name,level,type,decl)
         this.typeStruct =typeStruct;
         this.parameters = parameters;
+       
      }
 
     getClassName(){
@@ -99,6 +104,7 @@ class complexTypes extends symbolType{
     getTypeStruct(){
         return this.typeStruct;
     }
+
 }
 
 class parameters {
@@ -166,10 +172,10 @@ parameters  = Solo se usa en complexTypes
                     6: String
 */ 
 
-tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista,isConst,typeStruct,parameters){
+tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista,isConst,typeStruct,parameters,value){
     let token;
     if(typeStruct == null){
-        token = new simpleTypes(name,level,type,decl,isLista,isConst)
+        token = new simpleTypes(name,level,type,decl,isLista,isConst,value)
         table.addToken(token)
     }
 
