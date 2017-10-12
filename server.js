@@ -58,7 +58,7 @@ app.post('/parse',function (req, res) {
 
     tree = parser.program();
 
-    if (errors.length == 0){
+    if (errors.length === 0){
         let contextualErrors = contextualAnalysis.visit(tree);
         //let contextualErrors = []
         res.status(200).json({data: contextualErrors, typeError: 'contextualErrors'});
