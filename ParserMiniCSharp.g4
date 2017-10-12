@@ -36,7 +36,7 @@ condTerm	: condFact ( AND condFact )*;
 condFact	: expr relop expr;
 expr		: ( SUBTRACTION )? term ( addop term )*;
 term		: factor ( mulop factor )*;
-factor		: designator ( LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS )?                                                            #designatorFactor
+factor		: designator ( LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS )?                                                           #designatorFactor
 		    |  NUMBER                                                                                                                   #numberFactor
 		    |  CHAR_CONST                                                                                                               #charconstFactor
 		    |  (TRUE | FALSE)                                                                                                           #boolFactor
@@ -48,7 +48,7 @@ relop		: EQUAL_EQUAL                                                            
             | INEQUALITY                                                                                                                #inequalityOp
             | GREATER_THAN                                                                                                              #greaterThanOp
             | GREATER_THAN_OR_EQUAL                                                                                                     #greaterOrEqualThanOp
-            | LESS_THAN                                                                                                                   #lessThanOp
+            | LESS_THAN                                                                                                                 #lessThanOp
             | LESS_THAN_OR_EQUAL                                                                                                        #lessOrEqualThanOp
             ;
 addop		: SUM                                                                                                                       #sumOp
@@ -58,4 +58,3 @@ mulop		: MULTIPLICATION                                                         
             | DIVISION                                                                                                                  #divOp
             | PERCENTAGE                                                                                                                #percentOp
             ;
-

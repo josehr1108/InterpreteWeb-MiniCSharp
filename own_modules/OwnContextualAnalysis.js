@@ -70,9 +70,7 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
         + ' Column: ' + ctx.IDENT().getSymbol().column; 
         errors.push(error);
     }
-
     else{
-        
         //obtiene el tipo 
         let typeConst = this.visit(ctx.type());
 
@@ -126,7 +124,6 @@ OwnContextualAnalysis.prototype.visitConstDecl = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
-
     for (let i = 0; i <= ctx.IDENT().length-1; i++)
     {
         let identifier = ctx.IDENT(i).getSymbol().text;
@@ -159,8 +156,7 @@ OwnContextualAnalysis.prototype.visitVarDecl = function(ctx) {
     
         }
     }
-    
-    return 
+    return
 };
 
 OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {

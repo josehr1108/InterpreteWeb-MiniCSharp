@@ -6,7 +6,7 @@
 
 class tableSymbols {
     constructor(){
-        this.tableSymbols = []
+        this.tableSymbols = [];
         this.level = 0;
     }
 
@@ -52,19 +52,18 @@ class tableSymbols {
 
  class symbolType extends tokenSymbol{
     constructor(name,level,type,decl){
-        super(name,level,decl)
+        super(name,level,decl);
         this.type  = type;
     }
 
     getType(){
         return this.type;
     }
-
  }
 
  class simpleTypes extends symbolType{
      constructor(name,level,type,decl,isLista,isConst){
-        super(name,level,type,decl)
+        super(name,level,type,decl);
         this.isLista = isLista;
         this.isConst = isConst;
      }
@@ -73,13 +72,13 @@ class tableSymbols {
          return simpleTypes.name;
      }
 
-    getIslista(){
+     getIslista(){
         return this.isLista;
-    }
+     }
 
-    getIsConst(){
+     getIsConst(){
         return this.isConst;
-    }
+     }
  }
 
 class complexTypes extends symbolType{
@@ -87,8 +86,6 @@ class complexTypes extends symbolType{
         super(name,level,type,decl)
         this.typeStruct =typeStruct;
         this.parameters = parameters;
-        
-        
      }
 
     getClassName(){

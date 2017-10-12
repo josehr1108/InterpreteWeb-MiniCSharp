@@ -3,7 +3,7 @@
  */
 const parserVisitor = require('../generated/ParserMiniCSharpVisitor').ParserMiniCSharpVisitor;
 
-function OwnParserVisitor () {
+function OwnParserVisitor (){
     parserVisitor.call(this);
     return this;
 }
@@ -159,7 +159,7 @@ OwnParserVisitor.prototype.visitMethodDecl = function(ctx) {
     let idObject = {key: iterator,text: "Identifier: " + identifier,fill: "#85CEF6",stroke: "#4d90fe",parent: object.key};
     treeList.push(idObject);
 
-   
+
     let formPars = ctx.formPars();
     if(formPars){
         parentIterator = object.key;
