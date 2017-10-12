@@ -334,7 +334,7 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
     let identifier = this.visit(ctx.designator());
 
     //busca variable local
-    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel())
+    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier.getSymbol().text,tableSymbols.getLevel());
     
     if(!thereIdentifier['success']){
         //busca variable global
@@ -438,9 +438,9 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
 OwnContextualAnalysis.prototype.visitIfStatement = function(ctx) {
     let condition = this.visit(ctx.condition());
 
-    /*this.visit(ctx.statement(0));
+    this.visit(ctx.statement(0));
     
-
+    /*
     let elseToken = ctx.ELSE();
     if(elseToken){
         
@@ -580,45 +580,43 @@ OwnContextualAnalysis.prototype.visitActPars = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitCondition = function(ctx) {
-    
+    let firstTerm = this.visit(ctx.condTerm(0));
 
-    this.visit(ctx.condTerm(0));
-
-
-    
+    /*bretearlo
     for (let i=1; i <=  ctx.condTerm().length - 1; i++) {
-       
         this.visit(ctx.condTerm(i));
-
-    }
+    }*/
 };
 
 OwnContextualAnalysis.prototype.visitCondTerm = function(ctx) {
-   
+    let firstFact = this.visit(ctx.condFact(0));
 
-
-    this.visit(ctx.condFact(0));
-   
-
-   
-    for (let i=1; i <= ctx.condFact().length; i++) {
-       
-
+    /*for (let i=1; i <= ctx.condFact().length; i++) {
         this.visit(ctx.condFact(i));
-
-    }
+    }*/
 };
 
 OwnContextualAnalysis.prototype.visitCondFact = function(ctx) {
-    
+    let firstExpr = this.visit(ctx.expr(0));
+    let relOperator = this.visit(ctx.relop());
+    let secondExpr = this.visit(ctx.expr(1));
 
-
-    this.visit(ctx.expr(0));
-    
-    this.visit(ctx.relop());
-    
-    this.visit(ctx.expr(1));
-    
+    if(relOperator != 10 || relOperator != 11){ //diferente de != y == (solo operador para numericos)
+        console.log("primer operando:"+ firstExpr.typeExpr.typeExpr);
+        console.log("segundo operando:"+ secondExpr.typeExpr.typeExpr);
+        if(firstExpr.typeExpr.typeExpr != secondExpr.typeExpr.typeExpr){
+            console.log("Tipos incompatibles");
+            console.log("Objeto: "+JSON.stringify(firstExpr.data, null, 4));
+            /*error = 'Contextual Error. Operation not allowed for target data types, on'
+                + ' Row: ' + firstExpr.data.getSymbol().line
+                + ' Column: ' + firstExpr.data.getSymbol().column;
+            errors.push(error);*/
+        }
+        else{
+            console.log("== o !=");
+        }
+    }
+    console.log("operator : " + relOperator);
 };
 
 OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
@@ -691,16 +689,24 @@ OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitNumberFactor = function(ctx) {
-    return 3
+    return {typeExpr: 3, data: ctx.NUMBER()};
 };
 
 OwnContextualAnalysis.prototype.visitCharconstFactor = function(ctx) {
-    return 2
-    
+    return {typeExpr: 2, data: ctx.CHAR_CONST()};
 };
 
 OwnContextualAnalysis.prototype.visitBoolFactor = function(ctx) {
-    return 5
+    let object = {typeExpr: 5, data: null};
+
+    let falseFactor = ctx.FALSE();
+    let trueFactor = ctx.TRUE();
+    if(trueFactor)
+        object.data = trueFactor;
+    else
+        object.data = falseFactor;
+
+    return object;
 };
 
 OwnContextualAnalysis.prototype.visitNewFactor = function(ctx){
@@ -708,7 +714,6 @@ OwnContextualAnalysis.prototype.visitNewFactor = function(ctx){
 };
 
 OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
-    
     return this.visit(ctx.expr());
 };
 
