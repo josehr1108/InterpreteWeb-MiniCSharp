@@ -303,7 +303,7 @@ OwnContextualAnalysis.prototype.visitFormPars = function(ctx) {
 
 /*-------------------------------Types ---------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitIdentType = function(ctx) {
-    return 1
+    return {'type': 1, 'name':ctx.getSymbol().text}
 };
 
 OwnContextualAnalysis.prototype.visitCharType = function(ctx) {
@@ -380,8 +380,7 @@ OwnContextualAnalysis.prototype.visitFirstDesignStatement = function(ctx) {
 
                         if(classIdentifier){
                             
-                            let tipito = this.visit(thereIdentifier['data'].getDecl().type());
-                            console.log(tipito);
+                            //thereIdentifier.getType()['name']
                         }
                     }
 
