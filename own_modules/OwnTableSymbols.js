@@ -87,7 +87,7 @@ class tableSymbols {
 
 class complexTypes extends symbolType{
     constructor(name,level,type,decl,typeStruct,parameters){
-        super(name,level,type,decl)
+        super(name,level,type,decl);
         this.typeStruct =typeStruct;
         this.parameters = parameters;
        
@@ -190,9 +190,6 @@ tableSymbols.prototype.createParameter = function(name,type,reference){
     let parameter = new parameters(name,type,reference);
     return parameter; 
 }
-/*
-
-*/ 
 
 tableSymbols.prototype.buscarToken = function(table,name,level){
 
@@ -230,4 +227,4 @@ tableSymbols.prototype.print = function(table){
     });
 }
 */
-exports.tableSymbols = tableSymbols
+exports.tableSymbols = tableSymbols;
