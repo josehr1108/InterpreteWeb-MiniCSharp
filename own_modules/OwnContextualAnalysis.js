@@ -190,7 +190,7 @@ OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {
         tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeClass,ctx,false,false,typeStruct,parameters,false);
 
     }
-
+    tableSymbols.deleteTokens();
     return
 };
 
@@ -263,6 +263,7 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
     tableSymbols.levelUp();
     this.visit(ctx.block());
     tableSymbols.lowerLevel();
+    tableSymbols.deleteTokens();
     return
   
 };
