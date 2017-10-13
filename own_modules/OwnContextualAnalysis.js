@@ -34,6 +34,13 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
 
     //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
     tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel()-1,0,ctx,false,false,null,null,false);
+    //METODOS POR DEFECTO
+    tableSymbols.insertToken(tableSymbols,'null',0,null,null,null,null,null,null,false);
+    tableSymbols.insertToken(tableSymbols,'chr',0,null,null,null,null,null,[{'name':'i'}],false);
+    tableSymbols.insertToken(tableSymbols,'ord',0,null,null,null,null,null,[{'name':'ch'}],false);
+    tableSymbols.insertToken(tableSymbols,'len',0,null,null,null,null,null,[{'name':'ch'}],false);
+
+
 
     let constants = ctx.constDecl();
     let variables = ctx.varDecl();
@@ -190,7 +197,7 @@ OwnContextualAnalysis.prototype.visitClassDecl = function(ctx) {
         tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typeClass,ctx,false,false,typeStruct,parameters,false);
 
     }
-    tableSymbols.deleteTokens();
+    //tableSymbols.deleteTokens(tableSymbols);
     return
 };
 
@@ -263,7 +270,7 @@ OwnContextualAnalysis.prototype.visitMethodDecl = function(ctx) {
     tableSymbols.levelUp();
     this.visit(ctx.block());
     tableSymbols.lowerLevel();
-    tableSymbols.deleteTokens();
+    //tableSymbols.deleteTokens(tableSymbols);
     return
   
 };
@@ -530,23 +537,35 @@ OwnContextualAnalysis.prototype.visitWhileStatement = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitForeachStatement = function(ctx) {
-   
 
-    
-    this.visit(ctx.type());
-  
-
-   
     let ident1 = ctx.IDENT(0).getSymbol().text;
     
+    let thereIdentifier = tableSymbols.buscarToken(ident1,tableSymbols.getLevel());
 
+    if(thereIdentifier.success){
+        error = 'Contextual Error. Identifier is already declared. ' + ctx.IDENT(0).getSymbol().text + ' on' 
+        + ' Row: ' + ctx.IDENT(0).getSymbol().line 
+        + ' Column: ' + ctx.IDENT(0).getSymbol().column; 
+        errors.push(error);
+
+    }
+
+    else{
+        let ident2 = ctx.IDENT(1).getSymbol().text;
+        thereIdentifier = tableSymbols.buscarToken(ident2,tableSymbols.getLevel());
+        
+        if(!thereIdentifier.data.getIslista()){
+            error = 'Contextual Error. Identifier is already declared. ' + ctx.IDENT(1).getSymbol().text + ' on' 
+            + ' Row: ' + ctx.IDENT(1).getSymbol().line 
+            + ' Column: ' + ctx.IDENT(1).getSymbol().column; 
+            errors.push(error);
+        }
+        this.visit(ctx.block());
+    }
     
 
     
-    let ident2 = ctx.IDENT(1).getSymbol().text;
     
-
-    this.visit(ctx.block());
   
 };
 
@@ -555,14 +574,14 @@ OwnContextualAnalysis.prototype.visitBreakStatement = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitReturnStatement = function(ctx) {
-    
-
+    console.log(tableSymbols.getTableSymbols());
+    /*
     let expr = ctx.expr();
     if(expr){
        
         this.visit(ctx.expr(0));
    
-    }
+    }*/
 };
 
 OwnContextualAnalysis.prototype.visitReadStatement = function(ctx) {
