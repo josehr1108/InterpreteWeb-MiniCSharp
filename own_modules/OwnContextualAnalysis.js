@@ -663,15 +663,21 @@ OwnContextualAnalysis.prototype.visitCondition = function(ctx) {
 OwnContextualAnalysis.prototype.visitCondTerm = function(ctx) {
     let firstFact = this.visit(ctx.condFact(0));
 
-    /*for (let i=1; i <= ctx.condFact().length; i++) {
-        this.visit(ctx.condFact(i));
-    }*/
+    let returnValue = true;
+
+    let condFactLength = ctx.condFact().length;
+    for (let i=1; i <= condFactLength; i++) {
+        let secondFact = this.visit(ctx.condFact(i));
+        console.log("PrimerFact: "+ firstFact + ", secondFact: "+ secondFact);
+    }
 };
 
 OwnContextualAnalysis.prototype.visitCondFact = function(ctx) { //falta para idents
     let firstExpr = this.visit(ctx.expr(0));
     let relOperator = this.visit(ctx.relop());
     let secondExpr = this.visit(ctx.expr(1));
+
+    let returnValue = true;
 
     let type1;
     let type2;
@@ -692,6 +698,7 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) { //falta para ide
                 + firstExprSymbol.text + ' on' + ' Row: ' + firstExprSymbol.line
                 + ' Column: ' + firstExprSymbol.column;
             errors.push(error);
+            returnValue = false;
         }
     }
     else{
@@ -713,6 +720,7 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) { //falta para ide
             let error = 'Contextual Error. Identifier'+ secondExprSymbol.text + 'is not declared. On Row: ' + secondExprSymbol.line
                 + ' Column: ' + secondExprSymbol.column;
             errors.push(error);
+            returnValue = false;
         }
     }
     else{
@@ -726,6 +734,7 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) { //falta para ide
                 + ' Row: ' + firstExpr.typeExpr.data[0].getSymbol().line
                 + ' Column: ' + firstExpr.typeExpr.data[0].getSymbol().column;
             errors.push(error);
+            returnValue = false;
         }
     }
     else{
@@ -734,8 +743,11 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) { //falta para ide
                 + ' Row: ' + firstExpr.typeExpr.data[0].getSymbol().line
                 + ' Column: ' + firstExpr.typeExpr.data[0].getSymbol().column;
             errors.push(error);
+            returnValue = false;
         }
     }
+
+    return returnValue;
 };
 
 OwnContextualAnalysis.prototype.visitExpr = function(ctx) {
