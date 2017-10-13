@@ -186,6 +186,14 @@ tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista
 
 }
 
+tableSymbols.prototype.deleteTokens = function(table){
+    for (var i = 1; i < table.getTableSymbols().length; i++) {
+        if (table.getTableSymbols()[i].getLevel() ===  1){
+           delete(tableSymbols.getTableSymbols()[i])
+        }  
+    }
+}
+
 tableSymbols.prototype.createParameter = function(name,type,reference){
     let parameter = new parameters(name,type,reference);
     return parameter; 
