@@ -499,10 +499,7 @@ OwnContextualAnalysis.prototype.visitIfStatement = function(ctx) {
 };
 
 OwnContextualAnalysis.prototype.visitForStatement = function(ctx) {
-  
-    
     this.visit(ctx.expr());
-   
 
     let condition = ctx.condition();
     let statement = ctx.statement();
@@ -656,16 +653,68 @@ OwnContextualAnalysis.prototype.visitCondFact = function(ctx) { //falta para ide
     let relOperator = this.visit(ctx.relop());
     let secondExpr = this.visit(ctx.expr(1));
 
-    if(relOperator !== 10 || relOperator !== 11){ //diferente de != y == (solo operador para numericos)
-        if(firstExpr.typeExpr.typeTerminal !== secondExpr.typeExpr.typeTerminal){ //si el primer tipo es diferente del segundo
-            error = 'Contextual Error. Operation not allowed for target data types, on'
-                + ' Row: ' + firstExpr.typeExpr.data.getSymbol().line
-                + ' Column: ' + firstExpr.typeExpr.data.getSymbol().column;
+    let type1;
+    let type2;
+    //busca variable local
+    if(firstExpr.typeExpr.typeTerminal === 1){ // si el operando 1 es variable se obtiene el tipo de la variable
+        let firstExprSymbol = firstExpr.typeExpr.data[0].getSymbol();
+        let thereIdentifier = tableSymbols.buscarToken(tableSymbols,firstExprSymbol.text,tableSymbols.getLevel());
+
+        if(!thereIdentifier.success){
+            //busca variable global
+            thereIdentifier = tableSymbols.buscarToken(tableSymbols,firstExprSymbol.text,tableSymbols.getLevel()-1)
+        }
+        if(thereIdentifier.success){
+            type1 = thereIdentifier.data.getType();
+        }
+        else{
+            let error = 'Contextual Error. Identifier is not declared. '
+                + firstExprSymbol.text + ' on' + ' Row: ' + firstExprSymbol.line
+                + ' Column: ' + firstExprSymbol.column;
             errors.push(error);
         }
     }
     else{
-        console.log("== o !=");
+        type1 = firstExpr.typeExpr.typeTerminal;
+    }
+
+    if(secondExpr.typeExpr.typeTerminal === 1){ // si el operando 2 es variable se obtiene el tipo de la variable
+        let secondExprSymbol = secondExpr.typeExpr.data[0].getSymbol();
+        let thereIdentifier = tableSymbols.buscarToken(tableSymbols,secondExprSymbol.text,tableSymbols.getLevel());
+
+        if(!thereIdentifier.success){
+            //busca variable global
+            thereIdentifier = tableSymbols.buscarToken(tableSymbols,secondExprSymbol.text,tableSymbols.getLevel()-1)
+        }
+        if(thereIdentifier.success){
+            type2 = thereIdentifier.data.getType();
+        }
+        else{
+            let error = 'Contextual Error. Identifier'+ secondExprSymbol.text + 'is not declared. On Row: ' + secondExprSymbol.line
+                + ' Column: ' + secondExprSymbol.column;
+            errors.push(error);
+        }
+    }
+    else{
+        type2 = secondExpr.typeExpr.typeTerminal;
+    }
+
+
+    if(relOperator !== 10 || relOperator !== 11){ //diferente de != y == (solo operador para numericos)
+        if((type1 !== type2) || (type1 !== 3 || type2 !== 3)){ //si el primer tipo es diferente del segundo
+            let error = 'Contextual Error. Operation not allowed for target data types, use only numeric data types, condition on'
+                + ' Row: ' + firstExpr.typeExpr.data[0].getSymbol().line
+                + ' Column: ' + firstExpr.typeExpr.data[0].getSymbol().column;
+            errors.push(error);
+        }
+    }
+    else{
+        if(type1 !== type2){ //si el primer tipo es diferente del segundo
+            let error = 'Contextual Error. Operation not allowed for target data types, use the same data type on the operands, condition on'
+                + ' Row: ' + firstExpr.typeExpr.data[0].getSymbol().line
+                + ' Column: ' + firstExpr.typeExpr.data[0].getSymbol().column;
+            errors.push(error);
+        }
     }
 };
 
@@ -702,14 +751,12 @@ OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
     for (let i=1; i <= ctx.factor().length - 1; i++) {
         if(typeTerm.typeTerminal === 3 || typeTerm.typeTerminal === 4){
             typeTerm = this.visit(ctx.factor(i));
-
         }
         else{
             // retorna 22 si se trato de multiplicar tipos diferentes
             return 22
         }  
     }
-
     return typeTerm
 };
 
@@ -717,7 +764,8 @@ OwnContextualAnalysis.prototype.visitTerm = function(ctx) {
 
 OwnContextualAnalysis.prototype.visitDesignatorFactor = function(ctx) {
 
-    this.visit(ctx.designator());
+    let designator = this.visit(ctx.designator());
+    return {typeTerminal: 1, data: designator};
    
     /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
@@ -770,11 +818,7 @@ OwnContextualAnalysis.prototype.visitExpressionFactor = function(ctx) {
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 OwnContextualAnalysis.prototype.visitDesignator = function(ctx) {
-
     return ctx.IDENT();
-
-    
-    
 /*
     let ident2 = ctx.IDENT(1);
     let leftBracketAmount = ctx.LEFT_SQUARE_BRACKET().length;
