@@ -87,10 +87,10 @@ app.post('/parse',function (req, res) {
         res.status(200).json({data: errors, typeError: 'syntaxError'});
     }
     
-})
+});
 
 app.post('/runMethod',function (req, res) {
-    
+
     let interpreter = new OwnInterpreter.OwnInterpreter(req.body,InterpreterTree);
     interpreter.visit(tree);
     res.status(200).json({});
@@ -101,6 +101,7 @@ app.post('/tree',function (req, res) {
     let diagramData = visitor.visit(tree);
     res.status(200).json({data: diagramData});
 });
+
 
 app.set('port', process.env.PORT || 3000);
 app.listen(process.env.PORT || 3000);
