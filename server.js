@@ -61,12 +61,26 @@ app.post('/parse',function (req, res) {
     tree = parser.program();
     
     if (errors.length === 0){
-        //let contextualErrors = contextualAnalysis.visit(tree);
-        InterpreterTree = loadData.visit(tree);
-       
-        
-        let contextualErrors = []
-        res.status(200).json({data: contextualErrors , typeError: 'contextualErrors'});
+        /*let contextualErrors = contextualAnalysis.visit(tree);
+        if (contextualErrors !== [])
+        {
+             //let contextualErrors = []
+            res.status(200).json({data: contextualErrors , typeError: 'contextualErrors'});
+        }*/
+        //else{
+            InterpreterTree = loadData.visit(tree);
+            let listMethods = [];
+            for(let element of InterpreterTree.warehouse){
+                if(element.getClassName() === "complexElement" && element.getType() === 1){
+                    let data = {};
+                    data.name = element.name;
+                    data.parameters = element.parameters;
+                    listMethods.push(data)
+                }
+            }
+            console.log(listMethods);
+            res.status(200).json({data: listMethods , typeError: 'methods'});
+        //}
     }
 
     else {
@@ -74,6 +88,10 @@ app.post('/parse',function (req, res) {
     }
     
 });
+
+
+
+
 
 app.post('/tree',function (req, res) {
     let visitor = new OwnParserVisitor.OwnParserVisitor();

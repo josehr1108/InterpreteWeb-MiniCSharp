@@ -84,11 +84,11 @@ OwnLoadData.prototype.visitConstDecl = function(ctx) {
 
 OwnLoadData.prototype.visitVarDecl = function(ctx) {
     
-    for(let element of ctx.IDENT()){
+    for(let i = 0; i < ctx.IDENT().length;i++){
         //nombre de la variable
-        let identifier = element.getSymbol().text;
+        let identifier = ctx.IDENT(i).getSymbol(i).text;
          //obtiene el tipo 
-         let typeVar = this.visit(ctx.type());
+         let typeVar = this.visit(ctx.type(i));
          //para preguntar si es lista
          let isList = false;
          //para insertar la declaracion de la variable en la lista allVars
@@ -192,12 +192,12 @@ OwnLoadData.prototype.visitMethodDecl = function(ctx) {
 
 OwnLoadData.prototype.visitFormPars = function(ctx) {
  
-    for (let element of ctx.IDENT())
+    for (let i = 0; i < ctx.IDENT().length; i++)
     {
         
-        let identifier = element.getSymbol().text;
+        let identifier = ctx.IDENT(i).getSymbol().text;
         //obtiene el tipo 
-        let typePars = this.visit(ctx.type());
+        let typePars = this.visit(ctx.type(i));
         //para insertar la declaracion del parametro en la lista allPars
         let newPars = {};
         newPars.var = identifier;

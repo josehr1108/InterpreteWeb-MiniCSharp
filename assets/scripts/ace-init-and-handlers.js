@@ -6,6 +6,7 @@ editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/javascript");
 
 $(function () {  //document ready
+    let methods = null;
     $('#tree').on("click",function (e) {
         if($('#tree').hasClass("disabled")){
             return;
@@ -26,15 +27,19 @@ $(function () {  //document ready
 
                 let fullMsg = "";
                 for(let error of res.data){
-
-                    if(res.typeError == 'syntaxError'){
+                    if(res.typeError === 'syntaxError'){
                         let errorMsg = "<span class='Errors'>[Syntax Error]   </span>"+error+"."+"<br>";
                         fullMsg += errorMsg;
                     }
-
-                    else{
+                    
+                    else if (res.typeError === "contextualErrors"){
                         let errorMsg = "<span class='Errors'>[Contextual Error]   </span>"+error+"."+"<br>";
                         fullMsg += errorMsg;
+                    }
+                    
+                    else if(res.typeError === "methods"){
+                        methods = res.data;
+                        break;
                     }
 
                 }
@@ -77,6 +82,8 @@ $(function () {  //document ready
 
     $('#consoleInput').on('keyup', function(e) {
         if (e.keyCode === 13) {  //falta validar nombres y demas para que no se caiga
+            console.log(methods)
+            
             let inputValue =  $('#consoleInput').val();
             let keywords = inputValue.split("(");
             let functionName = keywords[0];
@@ -84,6 +91,7 @@ $(function () {  //document ready
             console.log({name: functionName, parameters: parameters});
             methodLogger.removeClass('hidden');
             divIsHidden = false;
+            
         }
         else if(!divIsHidden){
             methodLogger.addClass('hidden');

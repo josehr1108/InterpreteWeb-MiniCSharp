@@ -24,6 +24,17 @@ class element{
         this.type = type;
         this.decl = decl;
     }
+
+    getName(){
+        return this.name;
+    }
+    getType(){
+        return this.type;
+    }
+
+    getDecl(){
+        return this.decl;
+    }
 }
 
 class simpleElement extends element{
