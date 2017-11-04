@@ -20,6 +20,7 @@ $('#runButton').on('click',function (e) {
         url: '/parse',
         data: {code: editorCode},
         success: function (res) {
+            console.log(JSON.parse(res))
             $('#tree').removeClass('disabled');
             
             let fullMsg = "";
@@ -38,8 +39,9 @@ $('#runButton').on('click',function (e) {
             }
             if(fullMsg != ""){  // si vienen errores
                 $('#tree').addClass("disabled");
+                $('#console').html(fullMsg);
             }
-            $('#console').html(fullMsg);
+            
         },
         dataType: 'json'
     });
@@ -62,10 +64,12 @@ $('#myModal').on('shown.bs.modal', function(e) {
 });
  
 editor.on("change", function(e){
-    $('#tree').addClass('disabled')
+    $('#tree').addClass('disabled');
  });
 
 editor.getSession().selection.on('changeCursor', function(e) {
     let newText = 'Row: ' + (editor.selection.getCursor().row + 1) + ' Column: ' + editor.selection.getCursor().column;
     $("#position").text(newText);
 }); 
+
+

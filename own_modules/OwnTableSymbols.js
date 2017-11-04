@@ -184,10 +184,9 @@ tableSymbols.prototype.insertToken = function(table,name,level,type,decl,isLista
         token = new complexTypes(name,level,type,decl,typeStruct,parameters);
         table.addToken(token);
     }
-
 }
 
-/*
+
 tableSymbols.prototype.deleteTokens = function(table){
     for (var i = 1; i < table.getTableSymbols().length; i++) {
         if (table.getTableSymbols()[i].getLevel() ===  1){
@@ -198,7 +197,6 @@ tableSymbols.prototype.deleteTokens = function(table){
 }
 
 
-*/
 
 tableSymbols.prototype.createParameter = function(name,type,reference){
     let parameter = new parameters(name,type,reference);
@@ -212,7 +210,7 @@ tableSymbols.prototype.buscarToken = function(table,name,level){
     }
 
     else{
-
+        console.log(table.getTableSymbols())
         for (var i = 1; i < table.getTableSymbols().length; i++) {
             if (table.getTableSymbols()[i].getName() === name && table.getTableSymbols()[i].getLevel() ===  level){
                 return {'success': true, 'data': table.getTableSymbols()[i]};

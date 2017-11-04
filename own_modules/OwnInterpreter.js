@@ -29,11 +29,7 @@ OwnContextualAnalysis.prototype.constructor = OwnContextualAnalysis;
 
 
 OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
-    console.log(ctx)
-    ctx['misDatos'] = [];
-    ctx.misDatos.push()
-    console.log(ctx)
-    /*
+    
     let identifier = ctx.IDENT().getSymbol().text;
 
     //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
@@ -65,7 +61,7 @@ OwnContextualAnalysis.prototype.visitProgram = function(ctx) {
     }
     if(methods){
         this.visit(methods);
-    }*/
+    }
     return errors;
 };
 

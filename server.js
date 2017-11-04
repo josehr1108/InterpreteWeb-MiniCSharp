@@ -9,8 +9,10 @@ const ScannerMiniCSharp = require('./generated/ScannerMiniCSharp.js');
 const OwnParserVisitor = require('./own_modules/OwnParserVisitor');
 const OwnTableSymbols = require('./own_modules/OwnTableSymbols');
 const OwnContextualAnalysis = require('./own_modules/OwnContextualAnalysis');
+const OwnLoadData = require('./own_modules/OwnLoadData');
 
 let tree = null;
+let InterpreterTree = null;
 
 const app = express();
 
@@ -50,18 +52,21 @@ app.post('/parse',function (req, res) {
     let tokens  = new antlr4.CommonTokenStream(lexer);
     let parser = new ParserMiniCSharp.ParserMiniCSharp(tokens);
     let contextualAnalysis = new OwnContextualAnalysis.OwnContextualAnalysis();
-
+    let loadData = new OwnLoadData.OwnLoadData();
 
     parser.buildParseTrees = true;
     parser.removeErrorListeners();
     parser.addErrorListener(listener);
 
     tree = parser.program();
-
+    
     if (errors.length === 0){
-        let contextualErrors = contextualAnalysis.visit(tree);
-        //let contextualErrors = []
-        res.status(200).json({data: contextualErrors, typeError: 'contextualErrors'});
+        //let contextualErrors = contextualAnalysis.visit(tree);
+        InterpreterTree = loadData.visit(tree);
+       
+        
+        let contextualErrors = []
+        res.status(200).json({data: contextualErrors , typeError: 'contextualErrors'});
     }
 
     else {
