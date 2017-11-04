@@ -16,6 +16,8 @@ class warehouse{
     addElement(element){
         this.warehouse.push(element);
     }
+
+    
 }
 
 class element{
