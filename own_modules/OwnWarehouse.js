@@ -161,8 +161,7 @@ warehouse.prototype.createParameter = function(name,type,reference){
 }
 
 warehouse.prototype.searchElement = function(warehouse,name){
-
-    for(let element of warehouse.getWarehouse()){
+    for(let element of warehouse.warehouse){
         if(element.getName() === name){
             return {'success': true, 'data': element};
         }

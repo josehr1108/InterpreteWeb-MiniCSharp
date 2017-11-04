@@ -10,6 +10,7 @@ const OwnParserVisitor = require('./own_modules/OwnParserVisitor');
 const OwnTableSymbols = require('./own_modules/OwnTableSymbols');
 const OwnContextualAnalysis = require('./own_modules/OwnContextualAnalysis');
 const OwnLoadData = require('./own_modules/OwnLoadData');
+const OwnInterpreter = require('./own_modules/OwnInterpreter');
 
 let tree = null;
 let InterpreterTree = null;
@@ -78,7 +79,6 @@ app.post('/parse',function (req, res) {
                     listMethods.push(data)
                 }
             }
-            console.log(listMethods);
             res.status(200).json({data: listMethods , typeError: 'methods'});
         //}
     }
@@ -87,11 +87,14 @@ app.post('/parse',function (req, res) {
         res.status(200).json({data: errors, typeError: 'syntaxError'});
     }
     
+})
+
+app.post('/runMethod',function (req, res) {
+    
+    let interpreter = new OwnInterpreter.OwnInterpreter(req.body,InterpreterTree);
+    interpreter.visit(tree);
+    res.status(200).json({});
 });
-
-
-
-
 
 app.post('/tree',function (req, res) {
     let visitor = new OwnParserVisitor.OwnParserVisitor();
