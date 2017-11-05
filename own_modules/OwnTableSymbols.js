@@ -8,7 +8,6 @@ class tableSymbols {
     constructor(){
         this.tableSymbols = [];
         this.level = 0;
-        
     }
 
     getTableSymbols(){
