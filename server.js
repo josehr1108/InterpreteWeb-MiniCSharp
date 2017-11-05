@@ -72,11 +72,16 @@ app.post('/parse',function (req, res) {
             InterpreterTree = loadData.visit(tree);
             let listMethods = [];
             for(let element of InterpreterTree.warehouse){
-                if(element.getClassName() === "complexElement" && element.getType() === 1){
+                if(element.getClassName() === "complexElement" && element.getType()){
                     let data = {};
                     data.name = element.name;
-                    data.parameters = element.parameters;
-                    listMethods.push(data)
+                    data.parameters = [];
+                    for(let parameter of element.parameters){
+                        if(parameter.reference === "formPars"){
+                            data.parameters.push(parameter);
+                        }
+                    }
+                    listMethods.push(data);
                 }
             }
             res.status(200).json({data: listMethods , typeError: 'methods'});
