@@ -30,8 +30,8 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
     let newCtx = warehouseMethod.data.decl;
     newCtx.methodToExecute = warehouseMethod.data;
-    
-  
+
+
     this.visit(newCtx);
 };
 
@@ -41,20 +41,20 @@ OwnInterpreter.prototype.visitConstDecl = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitVarDecl = function(ctx) {
-    
+
     return
 };
 
 OwnInterpreter.prototype.visitClassDecl = function(ctx) {
-    
-    
+
+
     return
 };
 
 OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
 
     let pilaExpr = [];
-    let parameters = ctx.methodToExecute.parameters
+    let parameters = warehouseMethod.data.parameters;
    
     for (let i = 0; i < parameters.length; i++){
         if(parameters[i].reference == "formPars"){
@@ -65,7 +65,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
             localParameter.reference = parameters[i].reference;
             pilaExpr.unshift(localParameter);
         }
-        
+
         if(parameters[i].reference == "varDecl"){
             localVar = {}
             localVar.name = parameters[i].name;
@@ -83,7 +83,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitFormPars = function(ctx) {
- 
+
     
     return 
 };
@@ -116,9 +116,18 @@ OwnInterpreter.prototype.visitStringType = function(ctx) {
 /* ------------------------------------------- Statement ----------------------------------------------------------*/
 
 OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
-    
-   
-    
+    let identifier = this.visit(ctx.designator());
+    //ctx.pilaExpr
+
+    let expression = ctx.expr();
+    let actPars = ctx.actPars();
+    let leftPar = ctx.LEFT_PARENTHESIS();
+    let plusPlus = ctx.PLUS_PLUS();
+    let minusMinus = ctx.MINUS_MINUS();
+
+    if(expression){
+        let asignExpression = this.visit(expression);
+    }
 };
 
 OwnInterpreter.prototype.visitIfStatement = function(ctx) {
@@ -143,7 +152,7 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitForStatement = function(ctx) {
-  
+
     return
 };
 
@@ -159,8 +168,8 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
 
 OwnInterpreter.prototype.visitForeachStatement = function(ctx) {
 
-   
-    
+
+
   return
 };
 
@@ -169,7 +178,7 @@ OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
-    
+
     return
 };
 
@@ -184,7 +193,7 @@ OwnInterpreter.prototype.visitReadStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
-   
+
     return
 };
 
@@ -410,6 +419,10 @@ OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
 
 OwnInterpreter.prototype.visitCharconstFactor = function(ctx) {
     return {typeTerminal: 2, data: ctx.CHAR_CONST()};
+};
+
+OwnInterpreter.prototype.visitStringConstFactor = function(ctx) {
+    return this.visitChildren(ctx);
 };
 
 OwnInterpreter.prototype.visitBoolFactor = function(ctx) {

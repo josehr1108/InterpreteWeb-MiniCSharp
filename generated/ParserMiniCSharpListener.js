@@ -308,6 +308,15 @@ ParserMiniCSharpListener.prototype.exitCharconstFactor = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParserMiniCSharp#stringConstFactor.
+ParserMiniCSharpListener.prototype.enterStringConstFactor = function(ctx) {
+};
+
+// Exit a parse tree produced by ParserMiniCSharp#stringConstFactor.
+ParserMiniCSharpListener.prototype.exitStringConstFactor = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParserMiniCSharp#boolFactor.
 ParserMiniCSharpListener.prototype.enterBoolFactor = function(ctx) {
 };
