@@ -38,8 +38,8 @@ expr		: ( SUBTRACTION )? term ( addop term )*;
 term		: factor ( mulop factor )*;
 factor		: designator ( LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS )?                                                           #designatorFactor
 		    |  NUMBER                                                                                                                   #numberFactor
-		    |  CHAR_CONST
-            |  STRING_CONST                                                                                                               #charconstFactor
+		    |  CHAR_CONST                                                                                                               #charconstFactor
+            |  STRING_CONST                                                                                                             #stringConstFactor
 		    |  (TRUE | FALSE)                                                                                                           #boolFactor
     		|  NEW IDENT                                                                                                                #newFactor
 		    |  LEFT_PARENTHESIS expr RIGHT_PARENTHESIS                                                                                  #expressionFactor

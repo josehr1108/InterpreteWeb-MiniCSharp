@@ -1,4 +1,4 @@
-// Generated from C:/Users/Andres/Documents/Compiladores/InterpreteWeb-MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
+// Generated from C:/Users/josah/Documents/InterpreteWeb-MiniCSharp\ParserMiniCSharp.g4 by ANTLR 4.7
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -206,6 +206,12 @@ ParserMiniCSharpVisitor.prototype.visitNumberFactor = function(ctx) {
 
 // Visit a parse tree produced by ParserMiniCSharp#charconstFactor.
 ParserMiniCSharpVisitor.prototype.visitCharconstFactor = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ParserMiniCSharp#stringConstFactor.
+ParserMiniCSharpVisitor.prototype.visitStringConstFactor = function(ctx) {
   return this.visitChildren(ctx);
 };
 
