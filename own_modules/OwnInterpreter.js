@@ -28,26 +28,11 @@ OwnInterpreter.prototype.constructor = OwnInterpreter;
 OwnInterpreter.prototype.visitProgram = function(ctx) {
 
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
-
-    let pilaExpr = [];
-    let parameters = warehouseMethod.data.parameters
-   
-    for (let i = 0; i < parameters.length; i++){
-        if(parameters[i].reference == "formPars"){
-            localParameter = {};
-            localParameter.name = parameters[i].name;
-            localParameter.value = method.parameters[i];
-            localParameter.type = parameters[i].type;
-            localParameter.reference = parameters[i].reference;
-            pilaExpr.unshift(localParameter);
-        } 
-    }
-    console.log(pilaExpr)
     let newCtx = warehouseMethod.data.decl;
     newCtx.methodToExecute = warehouseMethod.data;
-    newCtx.pilaExpr = pilaExpr;
+    
   
-    //this.visit(newCtx);
+    this.visit(newCtx);
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
@@ -68,41 +53,37 @@ OwnInterpreter.prototype.visitClassDecl = function(ctx) {
 
 OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
 
-    console.log(ctx);
+    let pilaExpr = [];
+    let parameters = ctx.methodToExecute.parameters
+   
+    for (let i = 0; i < parameters.length; i++){
+        if(parameters[i].reference == "formPars"){
+            localParameter = {};
+            localParameter.name = parameters[i].name;
+            localParameter.value = method.parameters[i];
+            localParameter.type = parameters[i].type;
+            localParameter.reference = parameters[i].reference;
+            pilaExpr.unshift(localParameter);
+        }
+        
+        if(parameters[i].reference == "varDecl"){
+            localVar = {}
+            localVar.name = parameters[i].name;
+            localParameter.value = undefined;
+            localParameter.type = parameters[i].type;
+            localParameter.reference = parameters[i].reference;
+            pilaExpr.unshift(localVar);
+        }
+    }
+    let newCtx = ctx.block();
+    newCtx.pilaExpr = pilaExpr;
+    this.visit(newCtx);
     return
   
 };
 
 OwnInterpreter.prototype.visitFormPars = function(ctx) {
  
-    for (let i = 0; i <= ctx.IDENT().length-1; i++)
-    {
-        
-        let identifier = ctx.IDENT(i).getSymbol().text;
-        let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
-        
-        if (thereIdentifier.success){
-            error = 'Contextual Error. Identifier is already declared. ' + identifier + ' on' 
-            + ' Row: ' + ctx.IDENT(i).getSymbol().line 
-            + ' Column: ' + ctx.IDENT(i).getSymbol().column; 
-            errors.push(error);
-
-        }
-    
-        else{
-            //obtiene el tipo 
-            let typePars = this.visit(ctx.type(i));
-            //para insertar la declaracion del parametro en la lista allPars
-            let newPars = {};
-            newPars.var = identifier;
-            newPars.type = typePars;
-            allPars.push(newPars);
-            
-            //verificar contexto de los parametros en OwnTableSymbols arriba del tableSymbols.insertToken
-            tableSymbols.insertToken(tableSymbols,identifier,tableSymbols.getLevel(),typePars,ctx,false,false,null,null,false);
-    
-        }
-    }
     
     return 
 };
@@ -136,173 +117,14 @@ OwnInterpreter.prototype.visitStringType = function(ctx) {
 
 OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     
-    let identifier = this.visit(ctx.designator());
-    
-    //busca variable local
-    let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier[0].getSymbol().text,tableSymbols.getLevel());
-    
-    if(!thereIdentifier.success){
-        //busca variable global
-        thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier[0].getSymbol().text,tableSymbols.getLevel()-1)
-    }
-    
-    if (thereIdentifier.success){
-        let asign = ctx.ASIGN();
-        let leftPar = ctx.LEFT_PARENTHESIS();
-        let plusPlus = ctx.PLUS_PLUS();
-        let minusMinus = ctx.MINUS_MINUS();
-        let isConst;
-        let isList;
-        try{
-            isConst = thereIdentifier.data.getIsConst(); 
-            isList =  thereIdentifier.data.getIslista();
-        }
-        catch(e){
-            isConst = false; 
-            isList =  false;
-        }
-        
-        if (identifier.length>1){
-            if(thereIdentifier.data.getValue()){
-                let classIdentifier = tableSymbols.buscarToken(tableSymbols,thereIdentifier.data.getValue(),tableSymbols.getLevel()-1);
-                let change = false
-                for(element of classIdentifier.data.parameters){
-                    if(element.getName() === identifier[1].getSymbol().text){
-                        thereIdentifier.data = element;
-                        change = true;
-                        break;
-                    }
-                }
-
-                if(!change){
-                    error = 'Contextual Error. Identifier is not declared. '
-                    + identifier[1].getSymbol().text + ' on' + ' Row: ' + identifier[1].getSymbol().line 
-                    + ' Column: ' + identifier[1].getSymbol().column; 
-                    errors.push(error);
-
-                }
-            }
-            else{
-                error = 'Contextual Error. Identifier has not been instantiated. '
-                + identifier[0].getSymbol().text + ' on' + ' Row: ' + identifier[0].getSymbol().line 
-                + ' Column: ' + identifier[0].getSymbol().column; 
-                errors.push(error);
-                
-            }
-        }
-
-        if(asign){
-            if(!isConst){
-                if(!isList){
-                    let expression = this.visit(ctx.expr());
-                    let IncompatibleTypes = false;      
-
-                    if(expression.typeExpr.typeExpr){
-                        let expr = expression.typeExpr.typeExpr;
-                        
-                        if(expr.typeTerminal === 2 || expr.typeTerminal === 3 || expr.typeTerminal === 5){
-                            expression = expression.typeExpr;
-                            
-                        }
-                    }     
-                    
-                    if (thereIdentifier.data.getType() !== 2 && expression.typeExpr.typeTerminal === 2){
-                        IncompatibleTypes = true;
-                    }
-                    else if(thereIdentifier.data.getType() !== 3 && expression.typeExpr.typeTerminal === 3){
-                        IncompatibleTypes = true
-                    }
-                    else if(thereIdentifier.data.getType() !== 5 && expression.typeExpr.typeTerminal === 5){
-                        IncompatibleTypes = true
-                    }
-    
-                    else if (expression.typeExpr.typeTerminal === 8){
-                        
-                        let classIdentifier = tableSymbols.buscarToken(tableSymbols,expression.typeExpr.data.getSymbol().text,tableSymbols.getLevel()-1);
-                        
-                        if(classIdentifier.success){
-    
-                            let type = thereIdentifier.data.getType();
-                            
-                            if(type.identifier !== expression.typeExpr.data.getSymbol().text){
-                                IncompatibleTypes = true;
-                            }
-                                
-                            else{
-                                thereIdentifier.data.value = type.identifier;
-                            }
-    
-                        }
-                        else{
-                            error = 'Contextual Error. Identifier is not declared. ' + expression.typeExpr.data.getSymbol().text + ' on'
-                                + ' Row: ' + expression.typeExpr.data.getSymbol().line
-                                + ' Column: ' + expression.typeExpr.data.getSymbol().column;
-                            errors.push(error);
-                        }
-                
-                    }
-                    if(IncompatibleTypes){
-                        error = 'Contextual Error. Identifier type  it is not compatible with assignment. '
-                        + identifier[0].getSymbol().text + ' on' + ' Row: ' + identifier[0].getSymbol().line 
-                        + ' Column: ' + identifier[0].getSymbol().column; 
-                        errors.push(error);
-                    }
-    
-                }
-                
-                else{
-                    console.log('true')
-                    //validar is list
-                }
-            }
    
-        }
-        else if(leftPar){
-            let actPars = ctx.actPars();
-           
-            if(actPars){
-               
-                this.visit(ctx.actPars(0));
-                
-            }
-        }
-        
-        else if(plusPlus || minusMinus){
-            let type = thereIdentifier.data.getType();
-            if (type !== 3 && type !== 4){
-                error = 'Contextual Error. you can not apply a mathematical' + 
-                ' operation to a non-numeric variable. ' 
-                + identifier[0].getSymbol().text + ' on' 
-                + ' Row: ' + identifier[0].getSymbol().line 
-                + ' Column: ' + identifier[0].getSymbol().column; 
-                errors.push(error);
-            }
-           
-        }
-
-        if(isConst){
-            error = 'Contextual Error. Cannot change a constant value. ' 
-            + identifier[0].getSymbol().text + ' on' 
-            + ' Row: ' + identifier[0].getSymbol().line 
-            + ' Column: ' + identifier[0].getSymbol().column; 
-            errors.push(error);
-        }
-
-    }
-    else{
-
-        error = 'Contextual Error. Identifier is not declared. ' + identifier[0].getSymbol().text + ' on' 
-        + ' Row: ' + identifier[0].getSymbol().line 
-        + ' Column: ' + identifier[0].getSymbol().column; 
-        errors.push(error);
-    }
     
 };
 
 OwnInterpreter.prototype.visitIfStatement = function(ctx) {
 
     console.log("if")
-    console.log(ctx.misDatos);
+    console.log(ctx.pilaExpr);
     /*
 
     let condition = this.visit(ctx.condition());
@@ -321,24 +143,7 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitForStatement = function(ctx) {
-    /*this.visit(ctx.expr());
-
-    let condition = ctx.condition();
-    let statement = ctx.statement();
-
-    if(condition){
-        
-        this.visit(ctx.condition(0));
   
-    }
-    if(statement){
-        
-        for (let i=0; i <= ctx.statement().length-1; i++) {
-           
-            this.visit(ctx.statement(i));
-            
-        }
-    }*/
     return
 };
 
@@ -354,33 +159,7 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
 
 OwnInterpreter.prototype.visitForeachStatement = function(ctx) {
 
-    /*let ident1 = ctx.IDENT(0).getSymbol().text;
-    
-    let thereIdentifier = tableSymbols.buscarToken(ident1,tableSymbols.getLevel());
-
-    if(thereIdentifier.success){
-        error = 'Contextual Error. Identifier is already declared. ' + ctx.IDENT(0).getSymbol().text + ' on' 
-        + ' Row: ' + ctx.IDENT(0).getSymbol().line 
-        + ' Column: ' + ctx.IDENT(0).getSymbol().column; 
-        errors.push(error);
-
-    }
-
-    else{
-        let ident2 = ctx.IDENT(1).getSymbol().text;
-        thereIdentifier = tableSymbols.buscarToken(ident2,tableSymbols.getLevel());
-        
-        if(!thereIdentifier.data.getIslista()){
-            error = 'Contextual Error. Identifier is already declared. ' + ctx.IDENT(1).getSymbol().text + ' on' 
-            + ' Row: ' + ctx.IDENT(1).getSymbol().line 
-            + ' Column: ' + ctx.IDENT(1).getSymbol().column; 
-            errors.push(error);
-        }
-        this.visit(ctx.block());
-    }
-    
-
-    */
+   
     
   return
 };
@@ -390,14 +169,7 @@ OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
-    //console.log(tableSymbols.getTableSymbols());
-    /*
-    let expr = ctx.expr();
-    if(expr){
-       
-        this.visit(ctx.expr(0));
-   
-    }*/
+    
     return
 };
 
@@ -412,16 +184,7 @@ OwnInterpreter.prototype.visitReadStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
-    /*
-    this.visit(ctx.expr());
    
-
-    let comma = ctx.COMMA();
-    if(comma){
-        
-        let number = ctx.NUMBER().getSymbol().text;
-       
-    }*/
     return
 };
 
@@ -439,13 +202,12 @@ OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
 /*************************************************************************************************************/
 
 OwnInterpreter.prototype.visitBlock = function(ctx) {
-    
 
     let statements = ctx.statement();
     if(statements){
         for (let i=0; i <= statements.length-1; i++) {
             let statement = ctx.statement(i);
-            statement.misDatos = ctx.misDatos;
+            statement.pilaExpr = ctx.pilaExpr;
             this.visit(statement);
             
         }
