@@ -18,7 +18,7 @@ type		: IDENT                                                                   
             | STRING                                                                                                                    #stringType
             ;
 statement	: designator ( ASIGN expr | LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS  | PLUS_PLUS | MINUS_MINUS ) SEMICOLON          #firstDesignStatement
-		    |  IF LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement ( ELSE statement )                                             #ifStatement
+		    |  IF LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement ( ELSE statement )?                                            #ifStatement
             |  FOR LEFT_PARENTHESIS expr SEMICOLON  (condition)? SEMICOLON  (statement)? RIGHT_PARENTHESIS statement                    #forStatement
 		    |  WHILE LEFT_PARENTHESIS condition RIGHT_PARENTHESIS statement                                                             #whileStatement
 		    |  FOREACH LEFT_PARENTHESIS type IDENT IN IDENT RIGHT_PARENTHESIS block                                                     #foreachStatement
@@ -38,7 +38,8 @@ expr		: ( SUBTRACTION )? term ( addop term )*;
 term		: factor ( mulop factor )*;
 factor		: designator ( LEFT_PARENTHESIS ( actPars )? RIGHT_PARENTHESIS )?                                                           #designatorFactor
 		    |  NUMBER                                                                                                                   #numberFactor
-		    |  CHAR_CONST                                                                                                               #charconstFactor
+		    |  CHAR_CONST
+            |  STRING_CONST                                                                                                               #charconstFactor
 		    |  (TRUE | FALSE)                                                                                                           #boolFactor
     		|  NEW IDENT                                                                                                                #newFactor
 		    |  LEFT_PARENTHESIS expr RIGHT_PARENTHESIS                                                                                  #expressionFactor

@@ -125,20 +125,20 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
 
     console.log("if")
     console.log(ctx.pilaExpr);
-    /*
+    
 
     let condition = this.visit(ctx.condition());
 
     this.visit(ctx.statement(0));
     
-    /*
+    
     let elseToken = ctx.ELSE();
     if(elseToken){
         
 
         this.visit(ctx.statement(1));
         
-    }*/
+    }
     return
 };
 
@@ -209,7 +209,6 @@ OwnInterpreter.prototype.visitBlock = function(ctx) {
             let statement = ctx.statement(i);
             statement.pilaExpr = ctx.pilaExpr;
             this.visit(statement);
-            
         }
     }
     return
@@ -527,27 +526,6 @@ OwnInterpreter.prototype.visitDivOp = function(ctx) {
 OwnInterpreter.prototype.visitPercentOp = function(ctx) {
     return 20
 };
-
-/*
-visit designator
-if(ctx.IDENT().length == 1){
-        //busca si ya existe el identifiador en la tabla de simbolos
-        let identifier = ctx.IDENT(0).getSymbol().text;
-        let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel()+1);
-    
-        if (thereIdentifier['success']){
-            return thereIdentifier['data'];
-        }
-
-        else{
-            let thereIdentifier = tableSymbols.buscarToken(tableSymbols,identifier,tableSymbols.getLevel());
-            return thereIdentifier['data']
-        }
-
-    }
-
-
-*/
 
 function parseArray(array) {
     for (let iterator in array) {
