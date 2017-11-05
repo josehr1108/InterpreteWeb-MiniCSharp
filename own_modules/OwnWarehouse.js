@@ -17,7 +17,7 @@ class warehouse{
         this.warehouse.push(element);
     }
 
-    
+
 }
 
 class element{
@@ -168,7 +168,7 @@ warehouse.prototype.searchElement = function(warehouse,name){
             return {'success': true, 'data': element};
         }
     }
-
+    
     return {'success': false, 'data': -1};    
 }
 

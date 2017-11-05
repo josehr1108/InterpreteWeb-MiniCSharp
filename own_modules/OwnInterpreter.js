@@ -127,8 +127,10 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
     console.log(ctx.pilaExpr);
     
 
-    let condition = this.visit(ctx.condition());
-
+    let condition = ctx.condition();
+    condition.pilaExpr = ctx.pilaExpr;
+    let conditionResponse = this.visit(condition);
+    /*
     this.visit(ctx.statement(0));
     
     
@@ -138,7 +140,7 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
 
         this.visit(ctx.statement(1));
         
-    }
+    }*/
     return
 };
 
@@ -178,7 +180,7 @@ OwnInterpreter.prototype.visitReadStatement = function(ctx) {
 
    
     this.visit(ctx.designator());
-    return
+    return 
 
     
 };
@@ -234,146 +236,73 @@ OwnInterpreter.prototype.visitActPars = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitCondition = function(ctx) {
-    let firstTerm = this.visit(ctx.condTerm(0));
-
-    /*bretearlo
-    for (let i=1; i <=  ctx.condTerm().length - 1; i++) {
-        this.visit(ctx.condTerm(i));
-    }*/
+    
+    for (let i=0; i <=  ctx.condTerm().length - 1; i++) {
+        let condTerm = ctx.condTerm(i);
+        condTerm.pilaExpr = ctx.pilaExpr;
+        let response = this.visit(condTerm);
+    }
     return
 };
 
 OwnInterpreter.prototype.visitCondTerm = function(ctx) {
-    /*let firstFact = this.visit(ctx.condFact(0));
 
-    let returnValue = true;
-
-    let condFactLength = ctx.condFact().length;
-    for (let i=1; i <= condFactLength; i++) {
-        let secondFact = this.visit(ctx.condFact(i));
-        console.log("PrimerFact: "+ firstFact + ", secondFact: "+ secondFact);
-    }*/
-    return
+    let condFactLength = ctx.condFact().length -1;
+    for (let i=0; i <= condFactLength; i++) {
+        let condFact = ctx.condFact(i);
+        condFact.pilaExpr = ctx.pilaExpr;
+        let response = this.visit(condFact);
+    }
+    return 
 };
 
-OwnInterpreter.prototype.visitCondFact = function(ctx) { //falta para idents
-    /*let firstExpr = this.visit(ctx.expr(0));
+OwnInterpreter.prototype.visitCondFact = function(ctx) {
+    let expr = ctx.expr();
+    expr.pilaExpr = ctx.pilaExpr;
+    let firstExpr = this.visit(expr[0]);
     let relOperator = this.visit(ctx.relop());
-    let secondExpr = this.visit(ctx.expr(1));
+    let secondExpr = this.visit(expr[1]);
 
-    let returnValue = true;
-
-    let type1;
-    let type2;
-    //busca variable local
-    if(firstExpr.typeExpr.typeTerminal === 1){ // si el operando 1 es variable se obtiene el tipo de la variable
-        let firstExprSymbol = firstExpr.typeExpr.data[0].getSymbol();
-        let thereIdentifier = tableSymbols.buscarToken(tableSymbols,firstExprSymbol.text,tableSymbols.getLevel());
-
-        if(!thereIdentifier.success){
-            //busca variable global
-            thereIdentifier = tableSymbols.buscarToken(tableSymbols,firstExprSymbol.text,tableSymbols.getLevel()-1)
-        }
-        if(thereIdentifier.success){
-            type1 = thereIdentifier.data.getType();
-        }
-        else{
-            let error = 'Contextual Error. Identifier is not declared. '
-                + firstExprSymbol.text + ' on' + ' Row: ' + firstExprSymbol.line
-                + ' Column: ' + firstExprSymbol.column;
-            errors.push(error);
-            returnValue = false;
-        }
-    }
-    else{
-        type1 = firstExpr.typeExpr.typeTerminal;
-    }
-
-    if(secondExpr.typeExpr.typeTerminal === 1){ // si el operando 2 es variable se obtiene el tipo de la variable
-        let secondExprSymbol = secondExpr.typeExpr.data[0].getSymbol();
-        let thereIdentifier = tableSymbols.buscarToken(tableSymbols,secondExprSymbol.text,tableSymbols.getLevel());
-
-        if(!thereIdentifier.success){
-            //busca variable global
-            thereIdentifier = tableSymbols.buscarToken(tableSymbols,secondExprSymbol.text,tableSymbols.getLevel()-1)
-        }
-        if(thereIdentifier.success){
-            type2 = thereIdentifier.data.getType();
-        }
-        else{
-            let error = 'Contextual Error. Identifier'+ secondExprSymbol.text + 'is not declared. On Row: ' + secondExprSymbol.line
-                + ' Column: ' + secondExprSymbol.column;
-            errors.push(error);
-            returnValue = false;
-        }
-    }
-    else{
-        type2 = secondExpr.typeExpr.typeTerminal;
-    }
-
-
-    if(relOperator !== 10 || relOperator !== 11){ //diferente de != y == (solo operador para numericos)
-        if((type1 !== type2) || (type1 !== 3 || type2 !== 3)){ //si el primer tipo es diferente del segundo
-            let error = 'Contextual Error. Operation not allowed for target data types, use only numeric data types, condition on'
-                + ' Row: ' + firstExpr.typeExpr.data[0].getSymbol().line
-                + ' Column: ' + firstExpr.typeExpr.data[0].getSymbol().column;
-            errors.push(error);
-            returnValue = false;
-        }
-    }
-    else{
-        if(type1 !== type2){ //si el primer tipo es diferente del segundo
-            let error = 'Contextual Error. Operation not allowed for target data types, use the same data type on the operands, condition on'
-                + ' Row: ' + firstExpr.typeExpr.data[0].getSymbol().line
-                + ' Column: ' + firstExpr.typeExpr.data[0].getSymbol().column;
-            errors.push(error);
-            returnValue = false;
-        }
-    }
-*/
-    return //returnValue;
+    return 
 };
 
 OwnInterpreter.prototype.visitExpr = function(ctx) {
+
     let substractToken = ctx.SUBTRACTION();
-    let expr = {'sub': false, 'typeExpr': false};
-    if(substractToken){
-        expr['sub'] = true;
-    }
-
-    let typeExpr = this.visit(ctx.term(0));
-
+    let term = ctx.term();
+    term.pilaExpr = ctx.pilaExpr;
+    termResponse = this.visit(term[0])
+    ctx.pilaExpr.unshift(termResponse);
     let termLength = ctx.term().length - 1;
-
+    //solo entra si viene suma
     for (let i=1; i <= termLength; i++) {
-        if(typeExpr.typeTerminal === 3 || typeExpr.typeTerminal === 4){
-            typeExpr = this.visit(ctx.term(i));
-
+        let add = ctx.pilaExpr.shift().value + this.visit(term[i]);
+        let result = {};
+        if (substractToken){
+           add = add * -1;
+           substractToken = false;
         }
-        else{
-            //retorna 21 si se trato de sumar tipos diferentes
-            expr.typeExpr = 21;
-            return expr
-        }
+        result.typeTerminal = 3;
+        result.value = add;
+        ctx.pilaExpr.unshift(result);   
     }
-    
-    expr.typeExpr = typeExpr;
-    return expr;
+    return ctx.pilaExpr.unshift();
 };
 
 OwnInterpreter.prototype.visitTerm = function(ctx) {
-    let typeTerm = this.visit(ctx.factor(0));
-   
+    let factor = ctx.factor();
+    factor.pilaExpr = ctx.pilaExpr;
+    factorResponse = factor[0];
+    ctx.pilaExpr.unshift(factorResponse)
+    // viene una multiplicacion;
     for (let i=1; i <= ctx.factor().length - 1; i++) {
-        if(typeTerm.typeTerminal === 3 || typeTerm.typeTerminal === 4){
-            typeTerm = this.visit(ctx.factor(i));
-        }
-        else{
-            // retorna 22 si se trato de multiplicar tipos diferentes
-            return 22
-        }  
+        let mul = ctx.pilaExpr.unshift().value * this.visit(factor[i]);
+        let result = {};
+        result.typeTerminal = 3;
+        result.value = mul;
+        ctx.pilaExpr.unshift(result);
     }
-    return typeTerm
+    return ctx.pilaExpr.unshift();
 };
 
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
@@ -381,7 +310,7 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
 OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
 
     let designator = this.visit(ctx.designator());
-    return {typeTerminal: 1, data: designator};
+    return {typeTerminal: 1, value: designator};
    
     /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
@@ -398,7 +327,7 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
-    let object = {typeTerminal: 3, data: ctx.NUMBER()};
+    let object = {typeTerminal: 3, value: ctx.NUMBER()};
 
     if (ctx.NUMBER().getSymbol().text.includes('.')){
         object.typeTerminal = 4;
@@ -409,24 +338,24 @@ OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitCharconstFactor = function(ctx) {
-    return {typeTerminal: 2, data: ctx.CHAR_CONST()};
+    return {typeTerminal: 2, value: ctx.CHAR_CONST()};
 };
 
 OwnInterpreter.prototype.visitBoolFactor = function(ctx) {
-    let object = {typeTerminal: 5, data: null};
+    let object = {typeTerminal: 5, value: null};
 
     let falseFactor = ctx.FALSE();
     let trueFactor = ctx.TRUE();
     if(trueFactor)
-        object.data = trueFactor;
+        object.value = trueFactor;
     else
-        object.data = falseFactor;
+        object.value = falseFactor;
 
     return object;
 };
 
 OwnInterpreter.prototype.visitNewFactor = function(ctx){
-    return {typeTerminal: 8, data: ctx.IDENT()}
+    return {typeTerminal: 8, value: ctx.IDENT()}
 };
 
 OwnInterpreter.prototype.visitExpressionFactor = function(ctx) {
@@ -526,7 +455,7 @@ OwnInterpreter.prototype.visitDivOp = function(ctx) {
 OwnInterpreter.prototype.visitPercentOp = function(ctx) {
     return 20
 };
-
+ 
 function parseArray(array) {
     for (let iterator in array) {
         let finalParam = array[iterator];
