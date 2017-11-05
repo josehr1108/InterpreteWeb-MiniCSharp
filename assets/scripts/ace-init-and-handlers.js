@@ -90,7 +90,7 @@ $(function () {  //document ready
                 let functionName = keywords[0];
                 let parameters = keywords[1].slice(0, -1).split(",");
                 let finalParameters = []; //lista final ya convertida
-                console.log({name: functionName, parameters: parameters});
+                //console.log({name: functionName, parameters: parameters});
                 for(element of methods){
                     if(element.name === functionName){
                         let params = element.parameters;
@@ -156,6 +156,8 @@ $(function () {  //document ready
                                     }
                                 }
                             }
+                            console.log("Parametros:");
+                            console.log(finalParameters);
                             $.ajax({
                                 type: "POST",
                                 url: '/runMethod',

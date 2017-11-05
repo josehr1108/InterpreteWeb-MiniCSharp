@@ -90,7 +90,6 @@ app.post('/parse',function (req, res) {
 });
 
 app.post('/runMethod',function (req, res) {
-
     let interpreter = new OwnInterpreter.OwnInterpreter(req.body,InterpreterTree);
     interpreter.visit(tree);
     res.status(200).json({});

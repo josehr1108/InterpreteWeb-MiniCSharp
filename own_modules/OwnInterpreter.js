@@ -9,11 +9,15 @@ const OwnTableSymbols  = require('./OwnWarehouse');
 //variable para el almacen global
 let warehouse;
 let method;
+
 //Costructor del analisis contextual
 function OwnInterpreter (methodToExecute,loadDataWarehouse){
     parserVisitor.call(this);
     warehouse = loadDataWarehouse;
     method = methodToExecute;
+    parseArray(method.parameters);
+    console.log("Array parseado");
+    console.log(method.parameters);
     return this;
 }
 
@@ -22,11 +26,9 @@ OwnInterpreter.prototype.constructor = OwnInterpreter;
 
 
 OwnInterpreter.prototype.visitProgram = function(ctx) {
-    
-    console.log(method);
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
-    console.log("soy metodo");
-    console.log(warehouseMethod);
+    //console.log("soy metodo");
+    //console.log(warehouseMethod);
     this.visit(warehouseMethod.data.decl)
 };
 
@@ -760,5 +762,35 @@ if(ctx.IDENT().length == 1){
 
 
 */
+
+function parseArray(array) {
+    for (let iterator in array) {
+        let finalParam = array[iterator];
+        let firstCharCode = finalParam.charCodeAt(0);
+        let lastCharCode = finalParam.charCodeAt(finalParam.length - 1);
+        if ((firstCharCode > 47 && firstCharCode < 58) && finalParam.includes(".")) { //si el parametro necesario es float
+            array[iterator] = parseFloat(finalParam);
+        }
+        else if (firstCharCode > 47 && firstCharCode < 58) { //si el parametro necesario es entero
+            let num = parseInt(finalParam);
+            array[iterator] = num;
+        }
+        else if (firstCharCode === 39 && lastCharCode === 39) { //si el parametro necesario es char
+            let obtainedChar = finalParam.slice(1, -1);
+            array[iterator] = obtainedChar;
+        }
+        else if (finalParam === "true") { //si el parametro necesario es bool
+            array[iterator] = true;
+        }
+        else if (finalParam === "false") {
+            array[iterator] = false;
+        }
+        else if (firstCharCode === 34 && lastCharCode === 34) { //si el parametro necesario es string
+            let obtainedString = finalParam.slice(1, -1);
+            array[iterator] = obtainedString;
+        }
+    }
+}
+
 
 exports.OwnInterpreter = OwnInterpreter;
