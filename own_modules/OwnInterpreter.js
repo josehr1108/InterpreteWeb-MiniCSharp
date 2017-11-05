@@ -26,10 +26,29 @@ OwnInterpreter.prototype.constructor = OwnInterpreter;
 
 
 OwnInterpreter.prototype.visitProgram = function(ctx) {
+
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
-    //console.log("soy metodo");
-    //console.log(warehouseMethod);
-    this.visit(warehouseMethod.data.decl)
+
+    let pilaExpr = [];
+    for (let element of warehouseMethod.data.parameters){
+        if(element.reference == "formPars"){
+            for (let parameter of method.parameters){
+                localParameter = {};
+                localParameter.name = element.name;
+                localParameter.value = parameter;
+                localParameter.type = element.type;
+                localParameter.reference = element.reference;
+                pilaExpr.unshift(localParameter);
+
+            }
+        }
+    }
+    console.log(method.parameters)
+    let newCtx = warehouseMethod.data.decl;
+    newCtx.methodToExecute = warehouseMethod.data;
+    newCtx.pilaExpr = pilaExpr;
+    console.log(newCtx)
+    this.visit(newCtx);
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
@@ -49,9 +68,8 @@ OwnInterpreter.prototype.visitClassDecl = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
-    
-    console.log('si funciono')
-    
+
+    console.log(ctx);
     return
   
 };
@@ -283,6 +301,11 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitIfStatement = function(ctx) {
+
+    console.log("if")
+    console.log(ctx.misDatos);
+    /*
+
     let condition = this.visit(ctx.condition());
 
     this.visit(ctx.statement(0));
@@ -422,7 +445,9 @@ OwnInterpreter.prototype.visitBlock = function(ctx) {
     let statements = ctx.statement();
     if(statements){
         for (let i=0; i <= statements.length-1; i++) {
-            this.visit(ctx.statement(i));
+            let statement = ctx.statement(i);
+            statement.misDatos = ctx.misDatos;
+            this.visit(statement);
             
         }
     }
