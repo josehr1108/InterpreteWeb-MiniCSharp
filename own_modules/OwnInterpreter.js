@@ -26,25 +26,24 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
 
     let pilaExpr = [];
-    for (let element of warehouseMethod.data.parameters){
-        if(element.reference == "formPars"){
-            for (let parameter of method.parameters){
-                localParameter = {};
-                localParameter.name = element.name;
-                localParameter.value = parameter;
-                localParameter.type = element.type;
-                localParameter.reference = element.reference;
-                pilaExpr.unshift(localParameter);
-
-            }
+    let parameters = warehouseMethod.data.parameters
+   
+    for (let i = 0; i < parameters.length; i++){
+        if(parameters[i].reference == "formPars"){
+            localParameter = {};
+            localParameter.name = parameters[i].name;
+            localParameter.value = method.parameters[i];
+            localParameter.type = parameters[i].type;
+            localParameter.reference = parameters[i].reference;
+            pilaExpr.unshift(localParameter);
         } 
     }
-    console.log(method.parameters)
+    console.log(pilaExpr)
     let newCtx = warehouseMethod.data.decl;
     newCtx.methodToExecute = warehouseMethod.data;
     newCtx.pilaExpr = pilaExpr;
-    console.log(newCtx)
-    this.visit(newCtx);
+  
+    //this.visit(newCtx);
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
