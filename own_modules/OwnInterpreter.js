@@ -10,12 +10,13 @@ const OwnTableSymbols  = require('./OwnWarehouse');
 //variable para el almacen global
 let warehouse;
 let method;
-
+let results;
 //Costructor del analisis contextual
 function OwnInterpreter (methodToExecute,loadDataWarehouse){
     parserVisitor.call(this);
     warehouse = loadDataWarehouse;
     method = methodToExecute;
+    results = [];
     parseArray(method.parameters);
     return this;
 }
@@ -26,20 +27,16 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
     let newCtx = warehouseMethod.data.decl;
     newCtx.methodToExecute = warehouseMethod.data;
-
     this.visit(newCtx);
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
-    return
 };
 
 OwnInterpreter.prototype.visitVarDecl = function(ctx) {
-    return
 };
 
 OwnInterpreter.prototype.visitClassDecl = function(ctx) {
-    return
 };
 
 OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
@@ -68,15 +65,17 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
     }
     let newCtx = ctx.block();
     newCtx.localStore = localStore;
-    this.visit(newCtx);
-    return;
-  
+    //this.visit(newCtx);
+    if(ctx.methodToExecute.typeStruct != 7){
+        ctx.localStore[0] === "return" ? ctx.localStore.shift() : false;
+        let methodResponse = ctx.localStore.shift();
+        if (methodResponse.typeTerminal === 100){
+            return methodResponse;
+        }
+    }
 };
 
 OwnInterpreter.prototype.visitFormPars = function(ctx) {
-
-    
-    return 
 };
 /*-------------------------------       Types      ---------------------------------------------------*/
 OwnInterpreter.prototype.visitIdentType = function(ctx) {
@@ -126,57 +125,93 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitIfStatement = function(ctx) {
-
-    console.log("if")
     console.log(ctx.localStore);
-    
-
     let condition = ctx.condition();
     condition.localStore = ctx.localStore;
-    let conditionResponse = this.visit(condition);
-    console.log("respuesta booleana")
-    console.log(ctx.localStore.shift());
-
-    /*
-    this.visit(ctx.statement(0));
+    this.visit(condition);
+    let conditionResponse = ctx.localStore.shift();
     
-    
-    let elseToken = ctx.ELSE();
-    if(elseToken){
-        
-
-        this.visit(ctx.statement(1));
-        
-    }*/
-    return
+    //conditionResponse ? console.log(true) : console.log(false);
+    if(conditionResponse){
+        let firstStatement = ctx.statement(0);
+        firstStatement.map(function(element){
+            return element.localStore = ctx.localStore;
+        });
+        this.visit(firstStatement);
+    }
+    else{
+        let elseToken = ctx.ELSE();
+        if(elseToken){
+            let secondStatement = ctx.statement(1);
+            secondStatement.map(function(element){
+                return element.localStore = ctx.localStore;
+            });
+            this.visit(secondStatement);
+            
+        }
+    }
 };
 
 OwnInterpreter.prototype.visitForStatement = function(ctx) {
-
-    return
+    let condition = ctx.condition();
+    condition.localStore = ctx.localStore;
+    this.visit(condition);
+    let conditionResponse = ctx.localStore.shift();
+  
+    if(conditionResponse){
+          let statement = ctx.statement();
+          statement.map(function(element){
+              return element.localStore = ctx.localStore;
+          });
+          this.visit(statement);
+          let statementResponse = ctx.localStore.shift();
+          if(statementResponse !== "break"){
+              ctx.localStore.unshift(statementResponse);
+              this.visit(ctx);
+          }
+    }
 };
 
 OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
-   
-
-    this.visit(ctx.condition());
-
-    this.visit(ctx.statement());
-    return
-
+    let condition = ctx.condition();
+    condition.localStore = ctx.localStore;
+    this.visit(condition);
+    let conditionResponse = ctx.localStore.shift();
+    if(conditionResponse){
+        let statement = ctx.statement();
+        statement.map(function(element){
+            return element.localStore = ctx.localStore;
+        });
+        this.visit(statement);
+        let statementResponse = ctx.localStore.shift();
+        if(statementResponse !== "break"){
+            ctx.localStore.unshift(statementResponse);
+            this.visit(ctx);
+        }
+    }
 };
 
 OwnInterpreter.prototype.visitForeachStatement = function(ctx) {
-  return
 };
 
 OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
-    return
+    ctx.localStore.unshift("breake");
 };
 
 OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
-
-    return
+    let expr = ctx.expr();
+    if(expr){
+        expr.localStore = ctx.localStore;
+        this.visit(expr);
+        let exprReturn = ctx.localStore.shift();
+        exprReturn.typeTerminal = 100;
+        ctx.localStore.unshift(exprReturn);
+    }
+    else{
+        let exprReturn = {typeTerminal : -100, value: undefined}
+        ctx.localStore.unshift(exprReturn);
+    }
+    ctx.localStore.unshift("return")
 };
 
 OwnInterpreter.prototype.visitReadStatement = function(ctx) {
@@ -185,29 +220,27 @@ OwnInterpreter.prototype.visitReadStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
-    return
+    
 };
 
 OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
-    return this.visit(ctx.block());
+    let block = ctx.block();
+    block.localStore = ctx.localStore;
+    this.visit(block);
+    
 };
 
 OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
-    return
 };
 
 /*************************************************************************************************************/
 
 OwnInterpreter.prototype.visitBlock = function(ctx) {
-    let statements = ctx.statement();
-    if(statements){
-        for (let i=0; i <= statements.length-1; i++) {
-            let statement = ctx.statement(i);
-            statement.localStore = ctx.localStore;
-            this.visit(statement);
-        }
-    }
-    return;
+    let statement = ctx.statement();
+    statement.map(function(element){
+        return element.localStore = ctx.localStore;
+    });
+    this.visit(statement);
 };
 
 OwnInterpreter.prototype.visitActPars = function(ctx) {
@@ -234,42 +267,37 @@ OwnInterpreter.prototype.visitCondition = function(ctx) {
     for (let i=1; i <=  ctx.condTerm().length - 1; i++) {
         let firstCondTermResponse = ctx.localStore.shift();
         if (firstCondTermResponse === false){
-            let secoundCondTerm = ctx.condTerm(i);
-            secoundCondTerm.localStore = ctx.localStore;
-            this.visit(secoundCondTerm);
-            let secoundCondTermResponse = ctx.localStore.shift();
-            firstCondTermResponse === false && secoundCondTermResponse === true ? ctx.localStore.unshift(true) : ctx.localStore.unshift(false);
+            let secondCondTerm = ctx.condTerm(i);
+            secondCondTerm.localStore = ctx.localStore;
+            this.visit(secondCondTerm);
+            let secondCondTermResponse = ctx.localStore.shift();
+            firstCondTermResponse === false && secondCondTermResponse === true ? ctx.localStore.unshift(true) : ctx.localStore.unshift(false);
         }
         else{
             ctx.localStore.unshift(true);
             break;
         }
     }
-    return
 };
 
 OwnInterpreter.prototype.visitCondTerm = function(ctx) {
     let firstCondFact = ctx.condFact(0);
     firstCondFact.localStore = ctx.localStore;
     this.visit(firstCondFact);
-    
-
     let condFactLength = ctx.condFact().length -1;
     for (let i=1; i <= condFactLength; i++) {
         let firstCondFactResponse = ctx.localStore.shift();
         if(firstCondFactResponse === true){
-            let secoundCondFact = ctx.condFact(i);
-            secoundCondFact.localStore = ctx.localStore;
-            this.visit(secoundCondFact);
-            let secoundCondFactResponse = ctx.localStore.shift();
-            secoundCondFactResponse === true ? ctx.localStore.unshift(true) : ctx.localStore.unshift(false);
+            let secondCondFact = ctx.condFact(i);
+            secondCondFact.localStore = ctx.localStore;
+            this.visit(secondCondFact);
+            let secondCondFactResponse = ctx.localStore.shift();
+            secondCondFactResponse === true ? ctx.localStore.unshift(true) : ctx.localStore.unshift(false);
         }
-        
         else {
             ctx.localStore.unshift(false);
         }
     }
-    return 
 };
 
 OwnInterpreter.prototype.visitCondFact = function(ctx) {
@@ -282,46 +310,36 @@ OwnInterpreter.prototype.visitCondFact = function(ctx) {
     let relOperator = this.visit(ctx.relop());
     this.visit(secondExpr);
     let secondExprResponse = ctx.localStore.shift();
-    console.log("response")
-    console.log(firstExprResponse)
-    
     if(relOperator == 10){
         (firstExprResponse.type == 3 || firstExprResponse.type == 4) || (firstExprResponse.typeTerminal == 3 || firstExprResponse.typeTerminal == 4) ? firstExprResponse.value = parseFloat(firstExprResponse.value) : false;
         (secondExprResponse.type == 3 || secondExprResponse.type == 4) || (secondExprResponse.typeTerminal == 3 || secondExprResponse.typeTerminal == 4) ? secondExprResponse.value = parseFloat(secondExprResponse.value) : false;
         ctx.localStore.unshift(firstExprResponse.value == secondExprResponse.value ? true : false);
     }
-
     else if(relOperator == 11){
         (firstExprResponse.type == 3 || firstExprResponse.type == 4) || (firstExprResponse.typeTerminal == 3 || firstExprResponse.typeTerminal == 4) ? firstExprResponse.value = parseFloat(firstExprResponse.value) : false;
         (secondExprResponse.type == 3 || secondExprResponse.type == 4) || (secondExprResponse.typeTerminal == 3 || secondExprResponse.typeTerminal == 4) ? secondExprResponse.value = parseFloat(secondExprResponse.value) : false;
         ctx.localStore.unshift(firstExprResponse.value != secondExprResponse.value ? true : false);
     }
-
     else if(relOperator == 12){
         (firstExprResponse.type == 3 || firstExprResponse.type == 4) || (firstExprResponse.typeTerminal == 3 || firstExprResponse.typeTerminal == 4) ? firstExprResponse.value = parseFloat(firstExprResponse.value) : false;
         (secondExprResponse.type == 3 || secondExprResponse.type == 4) || (secondExprResponse.typeTerminal == 3 || secondExprResponse.typeTerminal == 4) ? secondExprResponse.value = parseFloat(secondExprResponse.value) : false;
         ctx.localStore.unshift(firstExprResponse.value > secondExprResponse.value ? true : false);
     }
-
     else if(relOperator == 13){
         (firstExprResponse.type == 3 || firstExprResponse.type == 4) || (firstExprResponse.typeTerminal == 3 || firstExprResponse.typeTerminal == 4) ? firstExprResponse.value = parseFloat(firstExprResponse.value) : false;
         (secondExprResponse.type == 3 || secondExprResponse.type == 4) || (secondExprResponse.typeTerminal == 3 || secondExprResponse.typeTerminal == 4) ? secondExprResponse.value = parseFloat(secondExprResponse.value) : false;
         ctx.localStore.unshift(firstExprResponse.value >= secondExprResponse.value ? true : false);
     }
-
     else if(relOperator == 14){
         (firstExprResponse.type == 3 || firstExprResponse.type == 4) || (firstExprResponse.typeTerminal == 3 || firstExprResponse.typeTerminal == 4) ? firstExprResponse.value = parseFloat(firstExprResponse.value) : false;
         (secondExprResponse.type == 3 || secondExprResponse.type == 4) || (secondExprResponse.typeTerminal == 3 || secondExprResponse.typeTerminal == 4) ? secondExprResponse.value = parseFloat(secondExprResponse.value) : false;
         ctx.localStore.unshift(firstExprResponse.value < secondExprResponse.value ? true : false);
     }
-
     else if(relOperator == 15){
         (firstExprResponse.type == 3 || firstExprResponse.type == 4) || (firstExprResponse.typeTerminal == 3 || firstExprResponse.typeTerminal == 4) ? firstExprResponse.value = parseFloat(firstExprResponse.value) : false;
         (secondExprResponse.type == 3 || secondExprResponse.type == 4) || (secondExprResponse.typeTerminal == 3 || secondExprResponse.typeTerminal == 4) ? secondExprResponse.value = parseFloat(secondExprResponse.value) : false;
         ctx.localStore.unshift(firstExprResponse.value <= secondExprResponse.value ? true : false);
     }
-    return 
-    
 };
 
 OwnInterpreter.prototype.visitExpr = function(ctx) {
@@ -336,7 +354,6 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
         secondTerm.localStore = ctx.localStore;
         this.visit(secondTerm);
         termResponse = ctx.localStore.shift();
-        
         let firstOperator = ctx.localStore.shift();
         if (substractToken){
             firstOperator.value *= -1;
@@ -344,27 +361,22 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
         }
         let addOperator = this.visit(ctx.addop(i-1));
         let addOpreration;
-        
         if (addOperator == 16){
             addOpreration = firstOperator.type === 6 || termResponse.typeTerminal === 6 ? firstOperator.value + termResponse.value
             : parseFloat(firstOperator.value) + parseFloat(termResponse.value);
     
         }
-
         else if (addOperator == 17){
             addOpreration = parseFloat(firstOperator.value) - parseFloat(termResponse.value);
         }
-
         let result = {};
         result.typeTerminal = 3;
-        
         if (firstOperator.typeTerminal === 4 || termResponse.typeTerminal === 4){
             result.typeTerminal = 4;
         }
         result.value = addOpreration;
         ctx.localStore.unshift(result);   
     }
-    return 
 };
 
 OwnInterpreter.prototype.visitTerm = function(ctx) {
@@ -378,9 +390,9 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
     ctx.localStore.unshift(factorResponse)
     // viene una multiplicacion;
     for (let i=1; i <= ctx.factor().length - 1; i++) {
-        let secoundFactor = ctx.factor(i);
-        secoundFactor.localStore = ctx.localStore;
-        this.visit(secoundFactor);
+        let secondFactor = ctx.factor(i);
+        secondFactor.localStore = ctx.localStore;
+        this.visit(secondFactor);
         factorResponse = ctx.localStore.shift();
         if(factorResponse.typeTerminal === 1){
             factorResponse = searchInArrays(ctx.localStore,factorResponse);
@@ -388,19 +400,15 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
         let firstOperator = ctx.localStore.shift();
         let mathOperator = this.visit(ctx.mulop(i-1));
         let mulOpreration;
-
         if (mathOperator == 18){
             mulOpreration = parseFloat(firstOperator.value) * parseFloat(factorResponse.value);
         }
-
         else if (mathOperator == 19){
             mulOpreration = parseFloat(firstOperator.value) / parseFloat(factorResponse.value);
         }
-
         else if (mathOperator == 20){
             mulOpreration = parseFloat(firstOperator.value) % parseFloat(factorResponse.value);
         }
-        
         let result = {};
         result.typeTerminal = 3;
         if (firstOperator.typeTerminal === 4 || factorResponse.typeTerminal === 4){
@@ -408,8 +416,7 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
         }
         result.value = mulOpreration;
         ctx.localStore.unshift(result);
-    }
-    return 
+    } 
 };
 
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
@@ -417,7 +424,13 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
 OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
 
     let designator = this.visit(ctx.designator());
-    ctx.localStore.unshift({typeTerminal: 1, value: designator.variableName}); 
+    if(!designator.propertyName){
+        ctx.localStore.unshift({typeTerminal: 1, value: designator.variableName}); 
+    }
+    else{
+        let variableName = designator.variableName + "." + designator.propertyName;
+        ctx.localStore.unshift({typeTerminal: 1, value: variableName}); 
+    }
    
     /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
@@ -442,20 +455,16 @@ OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
     }
 
     ctx.localStore.unshift(object);
-    return
-
 };
 
 OwnInterpreter.prototype.visitCharconstFactor = function(ctx) {
     let char = ctx.CHAR_CONST().getSymbol().text;
-    ctx.localStore.unshift({typeTerminal: 2, value: char})
-    return 
+    ctx.localStore.unshift({typeTerminal: 2, value: char}) 
 };
 
 OwnInterpreter.prototype.visitStringConstFactor = function(ctx) {
     let string = ctx.STRING_CONST().getSymbol().text;
     ctx.localStore.unshift({typeTerminal: 6, value: string});
-    return 
 };
 
 OwnInterpreter.prototype.visitBoolFactor = function(ctx) {
@@ -468,20 +477,17 @@ OwnInterpreter.prototype.visitBoolFactor = function(ctx) {
     else
         object.value = false;
 
-    ctx.localStore.unshift(object)
-    return 
+    ctx.localStore.unshift(object);
 };
 
 OwnInterpreter.prototype.visitNewFactor = function(ctx){
     let newIdent = ctx.IDENT();
-    ctx.localStore.unshift({typeTerminal: 8, value: newIdent})
-    return 
+    ctx.localStore.unshift({typeTerminal: 8, value: newIdent});
 };
 
 OwnInterpreter.prototype.visitExpressionFactor = function(ctx) {
     let object = this.visit(ctx.expr());
     ctx.localStore.unshift(object);
-    return 
 };
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
@@ -611,10 +617,6 @@ function searchInArrays(array,elementSearch){
             return element.name === elementSearch.value;
         });
     }
-    console.log("buscando")
-    console.log(elementSearch)
-    console.log(warehouse.warehouse)
-    console.log(response[0])
     return response[0];
 }
 
