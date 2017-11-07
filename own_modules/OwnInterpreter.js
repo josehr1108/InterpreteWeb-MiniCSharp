@@ -1,4 +1,3 @@
-
 /**
  * 
  * Created by andres on 29/9/2017.
@@ -27,23 +26,27 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
     let newCtx = warehouseMethod.data.decl;
     newCtx.methodToExecute = warehouseMethod.data;
+
     this.visit(newCtx);
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
+    return
 };
 
 OwnInterpreter.prototype.visitVarDecl = function(ctx) {
+    return
 };
 
 OwnInterpreter.prototype.visitClassDecl = function(ctx) {
+    return
 };
 
 OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
 
     let localStore = [];
     let parameters = ctx.methodToExecute.parameters;
-    
+
     for (let i = 0; i < parameters.length; i++){
         if(parameters[i].reference == "formPars"){
             localParameter = {};
@@ -76,6 +79,9 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitFormPars = function(ctx) {
+
+    
+    return 
 };
 /*-------------------------------       Types      ---------------------------------------------------*/
 OwnInterpreter.prototype.visitIdentType = function(ctx) {
@@ -147,7 +153,7 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
                 return element.localStore = ctx.localStore;
             });
             this.visit(secondStatement);
-            
+
         }
     }
 };
@@ -157,7 +163,7 @@ OwnInterpreter.prototype.visitForStatement = function(ctx) {
     condition.localStore = ctx.localStore;
     this.visit(condition);
     let conditionResponse = ctx.localStore.shift();
-  
+
     if(conditionResponse){
           let statement = ctx.statement();
           statement.map(function(element){
@@ -195,7 +201,7 @@ OwnInterpreter.prototype.visitForeachStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
-    ctx.localStore.unshift("breake");
+    ctx.localStore.unshift("break");
 };
 
 OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
@@ -220,14 +226,14 @@ OwnInterpreter.prototype.visitReadStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
-    
+    return
 };
 
 OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
     let block = ctx.block();
     block.localStore = ctx.localStore;
     this.visit(block);
-    
+
 };
 
 OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
@@ -364,7 +370,7 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
         if (addOperator == 16){
             addOpreration = firstOperator.type === 6 || termResponse.typeTerminal === 6 ? firstOperator.value + termResponse.value
             : parseFloat(firstOperator.value) + parseFloat(termResponse.value);
-    
+
         }
         else if (addOperator == 17){
             addOpreration = parseFloat(firstOperator.value) - parseFloat(termResponse.value);
@@ -375,7 +381,7 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
             result.typeTerminal = 4;
         }
         result.value = addOpreration;
-        ctx.localStore.unshift(result);   
+        ctx.localStore.unshift(result);
     }
 };
 
@@ -416,7 +422,7 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
         }
         result.value = mulOpreration;
         ctx.localStore.unshift(result);
-    } 
+    }
 };
 
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
@@ -425,11 +431,11 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
 
     let designator = this.visit(ctx.designator());
     if(!designator.propertyName){
-        ctx.localStore.unshift({typeTerminal: 1, value: designator.variableName}); 
+        ctx.localStore.unshift({typeTerminal: 1, value: designator.variableName});
     }
     else{
         let variableName = designator.variableName + "." + designator.propertyName;
-        ctx.localStore.unshift({typeTerminal: 1, value: variableName}); 
+        ctx.localStore.unshift({typeTerminal: 1, value: variableName});
     }
    
     /*
@@ -459,7 +465,7 @@ OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
 
 OwnInterpreter.prototype.visitCharconstFactor = function(ctx) {
     let char = ctx.CHAR_CONST().getSymbol().text;
-    ctx.localStore.unshift({typeTerminal: 2, value: char}) 
+    ctx.localStore.unshift({typeTerminal: 2, value: char})
 };
 
 OwnInterpreter.prototype.visitStringConstFactor = function(ctx) {
@@ -579,7 +585,6 @@ OwnInterpreter.prototype.visitPercentOp = function(ctx) {
     return 20
 };
  
-/*--------------------------------------------------------------Funciones Extras --------------------------------------------------------*/
 function parseArray(array) {
     for (let iterator in array) {
         let finalParam = array[iterator];
