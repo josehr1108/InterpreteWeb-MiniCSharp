@@ -108,7 +108,7 @@ OwnInterpreter.prototype.visitStringType = function(ctx) {
 OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
 
     let identifier = ctx.designator();
-    identifier.pilaExpr = ctx.pilaExpr;
+    identifier.localStore = ctx.localStore;
     let response = this.visit(identifier);
 
     let expression = ctx.expr();
@@ -501,7 +501,7 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
         returnData.propertyName = ident2.getSymbol().text;
     }
     else if(expr.length){
-        expr.pilaExpr = ctx.pilaExpr;
+        expr.localStore = ctx.localStore;
         let response = this.visit(expr);
         returnData.arrayPosition = response; ///suponiendo response es tipo entero
     }
