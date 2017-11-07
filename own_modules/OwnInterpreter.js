@@ -17,38 +17,28 @@ function OwnInterpreter (methodToExecute,loadDataWarehouse){
     warehouse = loadDataWarehouse;
     method = methodToExecute;
     parseArray(method.parameters);
-    console.log("Array parseado");
-    console.log(method.parameters);
     return this;
 }
-
 OwnInterpreter.prototype = Object.create(parserVisitor.prototype);
 OwnInterpreter.prototype.constructor = OwnInterpreter;
 
-
 OwnInterpreter.prototype.visitProgram = function(ctx) {
-
     let warehouseMethod = warehouse.searchElement(warehouse, method.name);
     let newCtx = warehouseMethod.data.decl;
     newCtx.methodToExecute = warehouseMethod.data;
 
-    
     this.visit(newCtx);
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
-
     return
 };
 
 OwnInterpreter.prototype.visitVarDecl = function(ctx) {
-
     return
 };
 
 OwnInterpreter.prototype.visitClassDecl = function(ctx) {
-
-
     return
 };
 
@@ -68,7 +58,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
         }
 
         if(parameters[i].reference == "varDecl"){
-            localVar = {}
+            localVar = {};
             localVar.name = parameters[i].name;
             localParameter.value = undefined;
             localParameter.type = parameters[i].type;
@@ -79,7 +69,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
     let newCtx = ctx.block();
     newCtx.localStore = localStore;
     this.visit(newCtx);
-    return
+    return;
   
 };
 
@@ -88,8 +78,7 @@ OwnInterpreter.prototype.visitFormPars = function(ctx) {
     
     return 
 };
-
-/*-------------------------------Types ---------------------------------------------------*/
+/*-------------------------------       Types      ---------------------------------------------------*/
 OwnInterpreter.prototype.visitIdentType = function(ctx) {
     return {type : 1, identifier : ctx.IDENT().getSymbol().text};
 };
@@ -117,8 +106,10 @@ OwnInterpreter.prototype.visitStringType = function(ctx) {
 /* ------------------------------------------- Statement ----------------------------------------------------------*/
 
 OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
-    let identifier = this.visit(ctx.designator());
-    //ctx.localStore
+
+    let identifier = ctx.designator();
+    identifier.pilaExpr = ctx.pilaExpr;
+    let response = this.visit(identifier);
 
     let expression = ctx.expr();
     let actPars = ctx.actPars();
@@ -128,6 +119,9 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
 
     if(expression){
         let asignExpression = this.visit(expression);
+    }
+    else if(leftPar.length){//llamada a metodo
+
     }
 };
 
@@ -186,25 +180,16 @@ OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitReadStatement = function(ctx) {
-   
-
-   
     this.visit(ctx.designator());
-    return 
-
-    
+    return
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
-
     return
 };
 
 OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
-    
-
     return this.visit(ctx.block());
-   
 };
 
 OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
@@ -214,7 +199,6 @@ OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
 /*************************************************************************************************************/
 
 OwnInterpreter.prototype.visitBlock = function(ctx) {
-
     let statements = ctx.statement();
     if(statements){
         for (let i=0; i <= statements.length-1; i++) {
@@ -223,17 +207,15 @@ OwnInterpreter.prototype.visitBlock = function(ctx) {
             this.visit(statement);
         }
     }
-    return
+    return;
 };
 
 OwnInterpreter.prototype.visitActPars = function(ctx) {
-   
     let typeActPars = this.visit(ctx.expr(0));
     
      for (let i=1; i <= ctx.expr().length - 1; i++) {
          if(typeActPars.typeTerminal === 3 || typeActPars.typeTerminal === 4){
             typeActPars = this.visit(ctx.factor(i));
- 
          }
          else{
              // retorna 22 si se trato de multiplicar tipos diferentes
@@ -509,28 +491,21 @@ OwnInterpreter.prototype.visitExpressionFactor = function(ctx) {
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 OwnInterpreter.prototype.visitDesignator = function(ctx) {
-    let ident = ctx.IDENT(0).getSymbol().text;
-    return ident
-/*
+    let ident1 = ctx.IDENT(0).getSymbol().text;
+    let returnData = {variableName: ident1};
+
     let ident2 = ctx.IDENT(1);
-    let leftBracketAmount = ctx.LEFT_SQUARE_BRACKET().length;
-    if(ident2){ //hay 2 o mas identifiers, se va por el AT IDENT
-        let identLenght = ctx.IDENT().length-1;
-        for(let i=1;i <= ctx.IDENT().length-1;i++){
-            
-        }
+    let expr = ctx.expr();
+
+    if(ident2){
+        returnData.propertyName = ident2.getSymbol().text;
     }
-    else if(leftBracketAmount != 0){
-        for(let i = 0; i <= leftBracketAmount - 1; i++){
-            i
-
-            
-            this.visit(ctx.expr(i));
-        
-        }
-    }*/
-
-
+    else if(expr.length){
+        expr.pilaExpr = ctx.pilaExpr;
+        let response = this.visit(expr);
+        returnData.arrayPosition = response; ///suponiendo response es tipo entero
+    }
+    return returnData
 };
 /*----------------------------------------------- Operadores Logicos y Matematicos ---------------------------------------------*/
 
