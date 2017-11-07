@@ -282,6 +282,8 @@ OwnInterpreter.prototype.visitCondFact = function(ctx) {
     let relOperator = this.visit(ctx.relop());
     this.visit(secondExpr);
     let secondExprResponse = ctx.localStore.shift();
+    console.log("response")
+    console.log(firstExprResponse)
     
     if(relOperator == 10){
         (firstExprResponse.type == 3 || firstExprResponse.type == 4) || (firstExprResponse.typeTerminal == 3 || firstExprResponse.typeTerminal == 4) ? firstExprResponse.value = parseFloat(firstExprResponse.value) : false;
@@ -327,11 +329,6 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
     let firstTerm = ctx.term(0);
     firstTerm.localStore = ctx.localStore;
     this.visit(firstTerm);
-    termResponse = ctx.localStore.shift();
-    if(termResponse.typeTerminal === 1){
-        termResponse = searchInArrays(ctx.localStore,termResponse);
-    }
-    ctx.localStore.unshift(termResponse);
     let termLength = ctx.term().length - 1;
     //solo entra si viene suma
     for (let i=1; i <= termLength; i++) {
@@ -339,9 +336,7 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
         secondTerm.localStore = ctx.localStore;
         this.visit(secondTerm);
         termResponse = ctx.localStore.shift();
-        if(termResponse.typeTerminal === 1){
-            termResponse = searchInArrays(ctx.localStore,termResponse);
-        }
+        
         let firstOperator = ctx.localStore.shift();
         if (substractToken){
             firstOperator.value *= -1;
@@ -422,7 +417,7 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
 OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
 
     let designator = this.visit(ctx.designator());
-    ctx.localStore.unshift({typeTerminal: 1, value: designator}); 
+    ctx.localStore.unshift({typeTerminal: 1, value: designator.variableName}); 
    
     /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
@@ -616,6 +611,10 @@ function searchInArrays(array,elementSearch){
             return element.name === elementSearch.value;
         });
     }
+    console.log("buscando")
+    console.log(elementSearch)
+    console.log(warehouse.warehouse)
+    console.log(response[0])
     return response[0];
 }
 
