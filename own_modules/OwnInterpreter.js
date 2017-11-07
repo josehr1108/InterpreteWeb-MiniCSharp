@@ -503,7 +503,8 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
     }
     else if(expr.length){
         expr.localStore = ctx.localStore;
-        let response = this.visit(expr);
+        this.visit(expr);
+        let response = ctx.localStore.shift();
         returnData.arrayPosition = response; ///suponiendo response es tipo entero
     }
     return returnData
