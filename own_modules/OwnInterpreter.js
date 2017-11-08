@@ -28,26 +28,25 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     let newCtx = warehouseMethod.data.decl;
     newCtx.methodToExecute = warehouseMethod.data;
 
-    this.visit(newCtx);
+    let methodResponse = this.visit(newCtx);
+    console.log("finalPrograma")
+    console.log(methodResponse)
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
-    return
 };
 
 OwnInterpreter.prototype.visitVarDecl = function(ctx) {
-    return
 };
 
 OwnInterpreter.prototype.visitClassDecl = function(ctx) {
-    return
 };
 
 OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
 
     let localStore = [];
     let parameters = ctx.methodToExecute.parameters;
-
+    console.log("realizando recorido")
     for (let i = 0; i < parameters.length; i++){
         if(parameters[i].reference == "formPars"){
             localParameter = {};
@@ -112,135 +111,145 @@ OwnInterpreter.prototype.visitStringType = function(ctx) {
 /* ------------------------------------------- Statement ----------------------------------------------------------*/
 
 OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
-    let identifier = ctx.designator();
-    identifier.localStore = ctx.localStore;
-    this.visit(identifier);
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
+        let identifier = ctx.designator();
+        identifier.localStore = ctx.localStore;
+        this.visit(identifier);
 
-    let designatorResult = ctx.localStore.shift();
+        let designatorResult = ctx.localStore.shift();
 
-    let varName;    //nombre que trae el designator
-    let variable;   //referencia a la variable
+        let varName;    //nombre que trae el designator
+        let variable;   //referencia a la variable
 
-    if(designatorResult.propertyName)
-        varName = designatorResult.variableName + "." + designatorResult.propertyName;
-    else
-        varName = designatorResult.variableName;
+        if(designatorResult.propertyName)
+            varName = designatorResult.variableName + "." + designatorResult.propertyName;
+        else
+            varName = designatorResult.variableName;
 
-    variable = searchInArrays(ctx.localStore,{value: varName});
+        variable = searchInArrays(ctx.localStore,{value: varName});
 
-    let expression = ctx.expr();
-    let actPars = ctx.actPars();
-    let rightPar = ctx.RIGHT_PARENTHESIS();
-    let plusPlus = ctx.PLUS_PLUS();
-    let minusMinus = ctx.MINUS_MINUS();
+        let expression = ctx.expr();
+        let actPars = ctx.actPars();
+        let rightPar = ctx.RIGHT_PARENTHESIS();
+        let plusPlus = ctx.PLUS_PLUS();
+        let minusMinus = ctx.MINUS_MINUS();
 
-    if(expression){
-        expression.localStore = ctx.localStore;
-        this.visit(expression);
-        let exprResult = ctx.localStore.shift();
-        if(variable){
-            if(designatorResult.arrayPosition){
-                variable[designatorResult.arrayPosition] = exprResult;
+        if(expression){
+            expression.localStore = ctx.localStore;
+            this.visit(expression);
+            let exprResult = ctx.localStore.shift();
+            if(variable){
+                if(designatorResult.arrayPosition){
+                    variable[designatorResult.arrayPosition] = exprResult;
+                }
+                else{
+                    variable.value = exprResult.value;
+                }
             }
             else{
-                variable.value = exprResult.value;
+                ctx.localStore.push({name: varName ,value: exprResult.value ,type: exprResult.typeTerminal, reference: "varDecl"});
             }
+            console.log(ctx.localStore)
         }
-        else{
-            ctx.localStore.push({name: varName ,value: exprResult.value ,type: exprResult.typeTerminal, reference: "varDecl"});
+        else if(plusPlus){
+            variable.value++;
         }
-    }
-    else if(plusPlus){
-        variable.value++;
-    }
-    else if(minusMinus){
-        variable.value--;
-    }
-    else if(rightPar){    //llamada a metodo
-        if(actPars){
-            actPars.localStore = ctx.localStore;
-            this.visit(actPars);
-            let paramList = [];
-            let paramsAmount = variable.parameters.length;
-            for(let i = 0; i < paramsAmount;i++){
-                let actualParam = ctx.localStore.shift();
-                paramList.unshift(actualParam.value);
+        else if(minusMinus){
+            variable.value--;
+        }
+        else if(rightPar){    //llamada a metodo
+            if(actPars){
+                actPars.localStore = ctx.localStore;
+                this.visit(actPars);
+                let paramList = [];
+                let paramsAmount = variable.parameters.length;
+                for(let i = 0; i < paramsAmount;i++){
+                    let actualParam = ctx.localStore.shift();
+                    paramList.unshift(actualParam.value);
+                }
+                let lastMethod = method;
+                let actualMethod = {name: variable.name, parameters: paramList};
+                method = actualMethod;
+                let newMethod = variable.decl;
+                newMethod.methodToExecute = variable;
+                this.visit(newMethod);
+                method = lastMethod;
             }
-            let lastMethod = method;
-            let actualMethod = {name: variable.name, parameters: paramList};
-            method = actualMethod;
-            let newMethod = variable.decl;
-            newMethod.methodToExecute = variable;
-            this.visit(newMethod);
-            method = lastMethod;
-            console.log(warehouse.warehouse);
         }
     }
 };
 
 OwnInterpreter.prototype.visitIfStatement = function(ctx) {
-    console.log(ctx.localStore);
-    let condition = ctx.condition();
-    condition.localStore = ctx.localStore;
-    this.visit(condition);
-    let conditionResponse = ctx.localStore.shift();
-    
-    conditionResponse ? console.log(true) : console.log(false);
-    if(conditionResponse){
-        let firstStatement = ctx.statement(0);
-        firstStatement.localStore = ctx.localStore;
-        this.visit(firstStatement);
-    }
-    else{
-        let elseToken = ctx.ELSE();
-        if(elseToken){
-            let secondStatement = ctx.statement(1);
-            secondStatement.localStore = ctx.localStore;
-            this.visit(secondStatement);
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
+        let condition = ctx.condition();
+        condition.localStore = ctx.localStore;
+        this.visit(condition);
+        let conditionResponse = ctx.localStore.shift();
+        
+        conditionResponse ? console.log(true) : console.log(false);
+        if(conditionResponse){
+            let firstStatement = ctx.statement(0);
+            firstStatement.localStore = ctx.localStore;
+            this.visit(firstStatement);
+        }
+        else{
+            let elseToken = ctx.ELSE();
+            if(elseToken){
+                let secondStatement = ctx.statement(1);
+                secondStatement.localStore = ctx.localStore;
+                this.visit(secondStatement);
+            }
         }
     }
 };
 
 OwnInterpreter.prototype.visitForStatement = function(ctx) {
-    let condition = ctx.condition();
-    condition.localStore = ctx.localStore;
-    this.visit(condition);
-    let conditionResponse = ctx.localStore.shift();
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
+        let condition = ctx.condition();
+        condition.localStore = ctx.localStore;
+        this.visit(condition);
+        let conditionResponse = ctx.localStore.shift();
 
-    if(conditionResponse){
-          let statement = ctx.statement();
-          statement.map(function(element){
-              return element.localStore = ctx.localStore;
-          });
-          this.visit(statement);
-          let statementResponse = ctx.localStore.shift();
-          if(statementResponse !== "break"){
-              ctx.localStore.unshift(statementResponse);
-              this.visit(ctx);
-          }
-    }
-};
-
-OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
-    let condition = ctx.condition();
-    condition.localStore = ctx.localStore;
-    this.visit(condition);
-    let conditionResponse = ctx.localStore.shift();
-    if(conditionResponse){
-        let statement = ctx.statement();
-        statement.map(function(element){
-            return element.localStore = ctx.localStore;
-        });
-        this.visit(statement);
-        let statementResponse = ctx.localStore.shift();
-        if(statementResponse !== "break"){
-            ctx.localStore.unshift(statementResponse);
-            this.visit(ctx);
+        if(conditionResponse){
+            let statement = ctx.statement();
+            statement.map(function(element){
+                return element.localStore = ctx.localStore;
+            });
+            this.visit(statement);
+            let statementResponse = ctx.localStore.shift();
+            if(statementResponse !== "break"){
+                ctx.localStore.unshift(statementResponse);
+                this.visit(ctx);
+            }
         }
     }
 };
 
-OwnInterpreter.prototype.visitForeachStatement = function(ctx) {   
+OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
+        let condition = ctx.condition();
+        condition.localStore = ctx.localStore;
+        this.visit(condition);
+        let conditionResponse = ctx.localStore.shift();
+        if(conditionResponse){
+            let statement = ctx.statement();
+            statement.map(function(element){
+                return element.localStore = ctx.localStore;
+            });
+            this.visit(statement);
+            let statementResponse = ctx.localStore.shift();
+            if(statementResponse !== "break"){
+                ctx.localStore.unshift(statementResponse);
+                this.visit(ctx);
+            }
+        }
+    }
+};
+
+OwnInterpreter.prototype.visitForeachStatement = function(ctx) {
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
+
+    }   
 };
 
 OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
@@ -255,30 +264,36 @@ OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
         let exprReturn = ctx.localStore.shift();
         exprReturn.typeTerminal = 100;
         ctx.localStore.unshift(exprReturn);
+        console.log("expresion return")
+        console.log(exprReturn)
     }
     else{
         let exprReturn = {typeTerminal : -100, value: undefined}
         ctx.localStore.unshift(exprReturn);
     }
     ctx.localStore.unshift("return");
+    console.log(ctx.localStore);
 };
 
 OwnInterpreter.prototype.visitReadStatement = function(ctx) {
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){}
     this.visit(ctx.designator());
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){}
     return
 };
 
 OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
-    let block = ctx.block();
-    block.localStore = ctx.localStore;
-    this.visit(block);
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
+        let block = ctx.block();
+        block.localStore = ctx.localStore;
+        this.visit(block);
+    }
 };
 
 OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
-
 };
 
 /*************************************************************************************************************/
@@ -297,7 +312,6 @@ OwnInterpreter.prototype.visitActPars = function(ctx) {
         currentExpr.localStore = ctx.localStore;
         this.visit(currentExpr);
     }
-   
 };
 
 OwnInterpreter.prototype.visitCondition = function(ctx) {
@@ -402,7 +416,7 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
         let addOperator = this.visit(ctx.addop(i-1));
         let addOpreration;
         if (addOperator == 16){
-            addOpreration = firstOperator.type === 6 || termResponse.typeTerminal === 6 ? firstOperator.value + termResponse.value
+            addOpreration = firstOperator.type === 6 || termResponse.typeTerminal === 6 ? firstOperator.value.substr(1,firstOperator.value.length-2) + termResponse.value.substr(1,termResponse.value.length-2)
             : parseFloat(firstOperator.value) + parseFloat(termResponse.value);
 
         }
@@ -477,11 +491,36 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
         varName = designatorResult.variableName;
 
     variable = searchInArrays(ctx.localStore,{value: varName});
-    console.log("designatorFactor");
-    console.log(variable);
+    if(variable.typeStruct){
+        let actPars = ctx.actPars();
+        let paramList = [];
+        if(actPars){
+            actPars.localStore = ctx.localStore;
+            this.visit(actPars);
+            let paramsAmount = variable.parameters.length;
+            for(let i = 0; i < paramsAmount;i++){
+                let actualParam = ctx.localStore.shift();
+                console.log("parametrito")
+                console.log(actualParam)
+                paramList.unshift(actualParam.value);
+            }
+        }
+        let lastMethod = method;
+        let actualMethod = {name: variable.name, parameters: paramList};
+        method = actualMethod;
+        let newMethod = variable.decl;
+        newMethod.methodToExecute = variable;
+        let methodResponse = this.visit(newMethod);
+        method = lastMethod;
+        console.log("Respuesta del metodo")
+        console.log(methodResponse)
+        ctx.localStore.unshift({typeTerminal: variable.typeStruct, value: methodResponse.value});
 
-    if(designatorResult.typeStruct){
-
+    }
+    else{
+        ctx.localStore.unshift({typeTerminal: 1, value: varName})
+    }
+    /*
     let designator = this.visit(ctx.designator());
     if(!designator.propertyName){
         ctx.localStore.unshift({typeTerminal: 1, value: designator.variableName});
@@ -490,8 +529,6 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
         let variableName = designator.variableName + "." + designator.propertyName;
         ctx.localStore.unshift({typeTerminal: 1, value: variableName});
     }
-    }
-    /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
     if(leftParenthesis){
        
@@ -511,7 +548,6 @@ OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
     if (ctx.NUMBER().getSymbol().text.includes('.')){
         object.typeTerminal = 4;
     }
-
     ctx.localStore.unshift(object);
 };
 
