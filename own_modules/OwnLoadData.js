@@ -91,15 +91,16 @@ OwnLoadData.prototype.visitVarDecl = function(ctx) {
          let typeVar = this.visit(ctx.type(i));
          //para preguntar si es lista
          let isList = false;
-         //para insertar la declaracion de la variable en la lista allVars
-         let newVar = {}
-         newVar['var'] = identifier;
-         newVar['type'] = typeVar;
-         allVars.push(newVar);
          // si viene el token list: isList se hace true
          if(ctx.LIST()){
              isList = true;
          }
+         //para insertar la declaracion de la variable en la lista allVars
+         let newVar = {}
+         newVar['var'] = identifier;
+         newVar['type'] = typeVar;
+         newVar['isList'] = isList;
+         allVars.push(newVar);
 
          if(globalVar){
             //verificar contexto de los parametros en OwnTableSymbols arriba del warehouse.insertElement
@@ -125,7 +126,7 @@ OwnLoadData.prototype.visitClassDecl = function(ctx) {
             allVars[i][0] = es el identifier
             allVars[i][1] = es el type
             */
-            let parameter = warehouse.createParameter(element.var,element.type,'varDecl');
+            let parameter = warehouse.createParameter(element.var,element.type,false,'varDecl');
             parameters.push(parameter);
         }
         
@@ -157,7 +158,7 @@ OwnLoadData.prototype.visitMethodDecl = function(ctx) {
             allPars[i]['type'] = es el type
             */
             
-            let parameter = warehouse.createParameter(element.var,element.type,'formPars');
+            let parameter = warehouse.createParameter(element.var,element.type,false,'formPars');
             parameters.push(parameter); 
         }
     }
@@ -169,7 +170,7 @@ OwnLoadData.prototype.visitMethodDecl = function(ctx) {
             allVars[i]['var'] = es el identifier
             allVars[i]['type'] = es el type
             */
-            let parameter = warehouse.createParameter(element.var,element.type,'varDecl');
+            let parameter = warehouse.createParameter(element.var,element.type,element.isList,'varDecl');
             parameters.push(parameter); 
         }   
     }

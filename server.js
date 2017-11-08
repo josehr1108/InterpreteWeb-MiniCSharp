@@ -71,6 +71,7 @@ app.post('/parse',function (req, res) {
         //else{
             InterpreterTree = loadData.visit(tree);
             let listMethods = [];
+            
             for(let element of InterpreterTree.warehouse){
                 if(element.getClassName() === "complexElement" && element.getType()){
                     let data = {};

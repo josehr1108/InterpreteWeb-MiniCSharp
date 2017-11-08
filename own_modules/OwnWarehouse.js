@@ -85,9 +85,10 @@ class complexElement extends element{
 }
 
 class parameters {
-    constructor(name,type,reference){
+    constructor(name,type,isList,reference){
         this.name = name;
         this.type = type;
+        this.isList = isList;
         this.reference = reference;
     }
 
@@ -97,6 +98,10 @@ class parameters {
 
     getType(){
         return this.type;
+    }
+
+    getIsList(){
+        return this.isList;
     }
 
     getReference(){
@@ -157,8 +162,8 @@ warehouse.prototype.insertElement = function(warehouse,name,type,decl,isLista,is
     }
 }
 
-warehouse.prototype.createParameter = function(name,type,reference){
-    let parameter = new parameters(name,type,reference);
+warehouse.prototype.createParameter = function(name,type,isList,reference){
+    let parameter = new parameters(name,type,isList,reference);
     return parameter; 
 }
 

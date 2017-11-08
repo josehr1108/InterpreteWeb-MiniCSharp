@@ -60,12 +60,17 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
         if(parameters[i].reference == "varDecl"){
             localVar = {};
             localVar.name = parameters[i].name;
-            localParameter.value = undefined;
-            localParameter.type = parameters[i].type;
-            localParameter.reference = parameters[i].reference;
+            localVar.value = undefined;
+            if(parameters[i].isList){
+                localVar.value = [];
+            }
+            localVar.type = parameters[i].type;
+            localVar.reference = parameters[i].reference;
             localStore.unshift(localVar);
         }
     }
+    console.log(localStore); 
+    /*
     let newCtx = ctx.block();
     newCtx.localStore = localStore;
     this.visit(newCtx);
@@ -75,7 +80,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
         if (methodResponse.typeTerminal === 100){
             return methodResponse;
         }
-    }
+    }*/
 };
 
 OwnInterpreter.prototype.visitFormPars = function(ctx) {
@@ -140,20 +145,15 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
     conditionResponse ? console.log(true) : console.log(false);
     if(conditionResponse){
         let firstStatement = ctx.statement(0);
-        firstStatement.map(function(element){
-            return element.localStore = ctx.localStore;
-        });
+        firstStatement.localStore = ctx.localStore;
         this.visit(firstStatement);
     }
     else{
         let elseToken = ctx.ELSE();
         if(elseToken){
             let secondStatement = ctx.statement(1);
-            secondStatement.map(function(element){
-                return element.localStore = ctx.localStore;
-            });
+            secondStatement.localStore = ctx.localStore;
             this.visit(secondStatement);
-
         }
     }
 };
