@@ -68,7 +68,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
     }
     let newCtx = ctx.block();
     newCtx.localStore = localStore;
-    //this.visit(newCtx);
+    this.visit(newCtx);
     if(ctx.methodToExecute.typeStruct != 7){
         ctx.localStore[0] === "return" ? ctx.localStore.shift() : false;
         let methodResponse = ctx.localStore.shift();
@@ -137,7 +137,7 @@ OwnInterpreter.prototype.visitIfStatement = function(ctx) {
     this.visit(condition);
     let conditionResponse = ctx.localStore.shift();
     
-    //conditionResponse ? console.log(true) : console.log(false);
+    conditionResponse ? console.log(true) : console.log(false);
     if(conditionResponse){
         let firstStatement = ctx.statement(0);
         firstStatement.map(function(element){
@@ -615,6 +615,20 @@ function parseArray(array) {
 }
 
 function searchInArrays(array,elementSearch){
+    let response = false;
+    
+    for (const element of array) {
+        element.name === elementSearch.value ? response = element : false;
+    }
+
+    if(!response){
+        for (const element of warehouse.warehouse) {
+            element.name === elementSearch.value ? response = element : false;
+        }
+    }
+
+    return response;
+    /*
     let response = array.filter(function(element){
         return element.name === elementSearch.value;
     });
@@ -623,7 +637,7 @@ function searchInArrays(array,elementSearch){
             return element.name === elementSearch.value;
         });
     }
-    return response[0];
+    return response[0];*/
 }
 
 
