@@ -156,8 +156,6 @@ $(function () {  //document ready
                                     }
                                 }
                             }
-                            console.log("Parametros:");
-                            console.log(finalParameters);
                             $.ajax({
                                 type: "POST",
                                 url: '/runMethod',

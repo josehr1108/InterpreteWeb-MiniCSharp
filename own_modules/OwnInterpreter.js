@@ -240,7 +240,8 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
     }
 };
 
-OwnInterpreter.prototype.visitForeachStatement = function(ctx) {};
+OwnInterpreter.prototype.visitForeachStatement = function(ctx) {   
+};
 
 OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
     ctx.localStore.unshift("break");
@@ -276,7 +277,9 @@ OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
     this.visit(block);
 };
 
-OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {};
+OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
+
+};
 
 /*************************************************************************************************************/
 OwnInterpreter.prototype.visitBlock = function(ctx) {
@@ -487,7 +490,7 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
         let variableName = designator.variableName + "." + designator.propertyName;
         ctx.localStore.unshift({typeTerminal: 1, value: variableName});
     }
-
+    }
     /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
     if(leftParenthesis){
@@ -498,7 +501,7 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
             this.visit(ctx.actPars(0));
             
         }
-    }
+    }*/
 };
 
 OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
