@@ -73,17 +73,16 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
     let newCtx = ctx.block();
     newCtx.localStore = localStore;
     this.visit(newCtx);
-    /*if(ctx.methodToExecute.typeStruct != 7){
-        ctx.localStore[0] === "return" ? ctx.localStore.shift() : false;
-        let methodResponse = ctx.localStore.shift();
+    if(ctx.methodToExecute.typeStruct != 7){
+        localStore[0] === "return" ? localStore.shift() : false;
+        let methodResponse = localStore.shift();
         if (methodResponse.typeTerminal === 100){
             return methodResponse;
         }
-    }*/
+    }
 };
 
 OwnInterpreter.prototype.visitFormPars = function(ctx) {
-    return;
 };
 /*-------------------------------       Types      ---------------------------------------------------*/
 OwnInterpreter.prototype.visitIdentType = function(ctx) {
@@ -144,8 +143,6 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
         expression.localStore = ctx.localStore;
         this.visit(expression);
         let exprResult = ctx.localStore.shift();
-        console.log("ExprResult");
-        console.log(exprResult);
         if(variable){
             if(designatorResult.arrayPosition){
                 variable[designatorResult.arrayPosition] = exprResult;
@@ -167,9 +164,6 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     else if(leftPar.length){//llamada a metodo
 
     }
-    console.log("Variable:" + varName + ", valor despues:" + variable.value);
-    console.log("Almacen");
-    console.log(ctx.localStore);
 };
 
 OwnInterpreter.prototype.visitIfStatement = function(ctx) {
@@ -234,7 +228,8 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
     }
 };
 
-OwnInterpreter.prototype.visitForeachStatement = function(ctx) {};
+OwnInterpreter.prototype.visitForeachStatement = function(ctx) { 
+};
 
 OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
     ctx.localStore.unshift("break");
@@ -258,7 +253,6 @@ OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
 
 OwnInterpreter.prototype.visitReadStatement = function(ctx) {
     this.visit(ctx.designator());
-    return
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
