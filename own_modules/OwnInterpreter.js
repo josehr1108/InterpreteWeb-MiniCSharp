@@ -464,7 +464,7 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
         let variableName = designator.variableName + "." + designator.propertyName;
         ctx.localStore.unshift({typeTerminal: 1, value: variableName});
     }
-   
+
     /*
     let leftParenthesis = ctx.LEFT_PARENTHESIS();
     if(leftParenthesis){
