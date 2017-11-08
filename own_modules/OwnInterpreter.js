@@ -70,12 +70,10 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
             localStore.unshift(localVar);
         }
     }
-    console.log(localStore); 
-    /*
     let newCtx = ctx.block();
     newCtx.localStore = localStore;
     this.visit(newCtx);
-    if(ctx.methodToExecute.typeStruct != 7){
+    /*if(ctx.methodToExecute.typeStruct != 7){
         ctx.localStore[0] === "return" ? ctx.localStore.shift() : false;
         let methodResponse = ctx.localStore.shift();
         if (methodResponse.typeTerminal === 100){
@@ -120,6 +118,9 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     this.visit(identifier);
 
     let designatorResult = ctx.localStore.shift();
+    console.log("designatorResult");
+    console.log(designatorResult);
+
     let varName;    //nombre que trae el designator
     let variable;   //referencia a la variable
 
@@ -127,7 +128,9 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
         varName = designatorResult.variableName + "." + designatorResult.propertyName;
     else
         varName = designatorResult.variableName;
+
     variable = searchInArrays(ctx.localStore,{value: varName});
+    console.log(variable);
 
     let expression = ctx.expr();
     let actPars = ctx.actPars();
@@ -135,16 +138,20 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     let plusPlus = ctx.PLUS_PLUS();
     let minusMinus = ctx.MINUS_MINUS();
 
+    console.log("Variable:" + varName + ", valor antes:" + variable.value);
+
     if(expression){
         expression.localStore = ctx.localStore;
         this.visit(expression);
         let exprResult = ctx.localStore.shift();
+        console.log("ExprResult");
+        console.log(exprResult);
         if(variable){
             if(designatorResult.arrayPosition){
                 variable[designatorResult.arrayPosition] = exprResult;
             }
             else{
-                variable.value = exprResult;
+                variable.value = exprResult.value;
             }
         }
         else{
@@ -160,6 +167,9 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     else if(leftPar.length){//llamada a metodo
 
     }
+    console.log("Variable:" + varName + ", valor despues:" + variable.value);
+    console.log("Almacen");
+    console.log(ctx.localStore);
 };
 
 OwnInterpreter.prototype.visitIfStatement = function(ctx) {
@@ -529,7 +539,7 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
 
     if(ident2){
         returnData.propertyName = ident2.getSymbol().text;
-        ctx.localStore.unshift(returnData);
+
     }
     else if(expr.length){
         expr.localStore = ctx.localStore;
@@ -538,6 +548,7 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
         returnData.arrayPosition = response; ///suponiendo response es tipo entero
         ctx.localStore.unshift(returnData);
     }
+    ctx.localStore.unshift(returnData);
 };
 /*----------------------------------------------- Operadores Logicos y Matematicos ---------------------------------------------*/
 
