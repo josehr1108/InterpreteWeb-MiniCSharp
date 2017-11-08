@@ -10,6 +10,7 @@ const OwnTableSymbols  = require('./OwnWarehouse');
 let warehouse;
 let method;
 let results;
+
 //Costructor del analisis contextual
 function OwnInterpreter (methodToExecute,loadDataWarehouse){
     parserVisitor.call(this);
@@ -84,9 +85,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitFormPars = function(ctx) {
-
-    
-    return 
+    return;
 };
 /*-------------------------------       Types      ---------------------------------------------------*/
 OwnInterpreter.prototype.visitIdentType = function(ctx) {
@@ -116,10 +115,19 @@ OwnInterpreter.prototype.visitStringType = function(ctx) {
 /* ------------------------------------------- Statement ----------------------------------------------------------*/
 
 OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
-
     let identifier = ctx.designator();
     identifier.localStore = ctx.localStore;
-    let response = this.visit(identifier);
+    this.visit(identifier);
+
+    let designatorResult = ctx.localStore.shift();
+    let varName;    //nombre que trae el designator
+    let variable;   //referencia a la variable
+
+    if(designatorResult.propertyName)
+        varName = designatorResult.variableName + "." + designatorResult.propertyName;
+    else
+        varName = designatorResult.variableName;
+    variable = searchInArrays(ctx.localStore,{value: varName});
 
     let expression = ctx.expr();
     let actPars = ctx.actPars();
@@ -128,7 +136,26 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     let minusMinus = ctx.MINUS_MINUS();
 
     if(expression){
-        let asignExpression = this.visit(expression);
+        expression.localStore = ctx.localStore;
+        this.visit(expression);
+        let exprResult = ctx.localStore.shift();
+        if(variable){
+            if(designatorResult.arrayPosition){
+                variable[designatorResult.arrayPosition] = exprResult;
+            }
+            else{
+                variable.value = exprResult;
+            }
+        }
+        else{
+            ctx.localStore.push({name: varName ,value: exprResult.value ,type: exprResult.typeTerminal, reference: "varDecl"});
+        }
+    }
+    else if(plusPlus){
+        variable.value++;
+    }
+    else if(minusMinus){
+        variable.value--;
     }
     else if(leftPar.length){//llamada a metodo
 
@@ -197,8 +224,7 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
     }
 };
 
-OwnInterpreter.prototype.visitForeachStatement = function(ctx) {
-};
+OwnInterpreter.prototype.visitForeachStatement = function(ctx) {};
 
 OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
     ctx.localStore.unshift("break");
@@ -217,7 +243,7 @@ OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
         let exprReturn = {typeTerminal : -100, value: undefined}
         ctx.localStore.unshift(exprReturn);
     }
-    ctx.localStore.unshift("return")
+    ctx.localStore.unshift("return");
 };
 
 OwnInterpreter.prototype.visitReadStatement = function(ctx) {
@@ -233,14 +259,11 @@ OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
     let block = ctx.block();
     block.localStore = ctx.localStore;
     this.visit(block);
-
 };
 
-OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
-};
+OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {};
 
 /*************************************************************************************************************/
-
 OwnInterpreter.prototype.visitBlock = function(ctx) {
     let statement = ctx.statement();
     statement.map(function(element){
@@ -506,14 +529,15 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
 
     if(ident2){
         returnData.propertyName = ident2.getSymbol().text;
+        ctx.localStore.unshift(returnData);
     }
     else if(expr.length){
         expr.localStore = ctx.localStore;
         this.visit(expr);
         let response = ctx.localStore.shift();
         returnData.arrayPosition = response; ///suponiendo response es tipo entero
+        ctx.localStore.unshift(returnData);
     }
-    return returnData
 };
 /*----------------------------------------------- Operadores Logicos y Matematicos ---------------------------------------------*/
 
