@@ -117,8 +117,6 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     this.visit(identifier);
 
     let designatorResult = ctx.localStore.shift();
-    console.log("designatorResult");
-    console.log(designatorResult);
 
     let varName;    //nombre que trae el designator
     let variable;   //referencia a la variable
@@ -129,15 +127,12 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
         varName = designatorResult.variableName;
 
     variable = searchInArrays(ctx.localStore,{value: varName});
-    console.log(variable);
 
     let expression = ctx.expr();
     let actPars = ctx.actPars();
-    let leftPar = ctx.LEFT_PARENTHESIS();
+    let rightPar = ctx.RIGHT_PARENTHESIS();
     let plusPlus = ctx.PLUS_PLUS();
     let minusMinus = ctx.MINUS_MINUS();
-
-    console.log("Variable:" + varName + ", valor antes:" + variable.value);
 
     if(expression){
         expression.localStore = ctx.localStore;
@@ -161,8 +156,25 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
     else if(minusMinus){
         variable.value--;
     }
-    else if(leftPar.length){//llamada a metodo
-
+    else if(rightPar){    //llamada a metodo
+        if(actPars){
+            actPars.localStore = ctx.localStore;
+            this.visit(actPars);
+            let paramList = [];
+            let paramsAmount = variable.parameters.length;
+            for(let i = 0; i < paramsAmount;i++){
+                let actualParam = ctx.localStore.shift();
+                paramList.unshift(actualParam.value);
+            }
+            let lastMethod = method;
+            let actualMethod = {name: variable.name, parameters: paramList};
+            method = actualMethod;
+            let newMethod = variable.decl;
+            newMethod.methodToExecute = variable;
+            this.visit(newMethod);
+            method = lastMethod;
+            console.log(warehouse.warehouse);
+        }
     }
 };
 
@@ -228,8 +240,7 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
     }
 };
 
-OwnInterpreter.prototype.visitForeachStatement = function(ctx) { 
-};
+OwnInterpreter.prototype.visitForeachStatement = function(ctx) {};
 
 OwnInterpreter.prototype.visitBreakStatement = function(ctx) {
     ctx.localStore.unshift("break");
@@ -277,19 +288,12 @@ OwnInterpreter.prototype.visitBlock = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitActPars = function(ctx) {
-    let typeActPars = this.visit(ctx.expr(0));
-    
-     for (let i=1; i <= ctx.expr().length - 1; i++) {
-         if(typeActPars.typeTerminal === 3 || typeActPars.typeTerminal === 4){
-            typeActPars = this.visit(ctx.factor(i));
-         }
-         else{
-             // retorna 22 si se trato de multiplicar tipos diferentes
-             return 23
-         }  
-     }
- 
-     return typeActPars
+    let expressionsLength = ctx.expr().length;
+    for(let iterator = 0; iterator < expressionsLength; iterator++){
+        let currentExpr = ctx.expr(iterator);
+        currentExpr.localStore = ctx.localStore;
+        this.visit(currentExpr);
+    }
    
 };
 
@@ -455,28 +459,27 @@ OwnInterpreter.prototype.visitTerm = function(ctx) {
 /*------------------------------------------------------------- Factors -------------------------------------------------------*/
 
 OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
+    let identifier = ctx.designator();
+    identifier.localStore = ctx.localStore;
+    this.visit(identifier);
 
-    let designator = this.visit(ctx.designator());
-    if(!designator.propertyName){
-        ctx.localStore.unshift({typeTerminal: 1, value: designator.variableName});
+    let designatorResult = ctx.localStore.shift();
+
+    let varName;    //nombre que trae el designator
+    let variable;   //referencia a la variable
+
+    if(designatorResult.propertyName)
+        varName = designatorResult.variableName + "." + designatorResult.propertyName;
+    else
+        varName = designatorResult.variableName;
+
+    variable = searchInArrays(ctx.localStore,{value: varName});
+    console.log("designatorFactor");
+    console.log(variable);
+
+    if(designatorResult.typeStruct){
+
     }
-    else{
-        let variableName = designator.variableName + "." + designator.propertyName;
-        ctx.localStore.unshift({typeTerminal: 1, value: variableName});
-    }
-   
-    /*
-    let leftParenthesis = ctx.LEFT_PARENTHESIS();
-    if(leftParenthesis){
-       
-        let actPars = ctx.actPars();
-        if(actPars){
-         
-            this.visit(ctx.actPars(0));
-            
-        }
-    }
-    */
 };
 
 OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
@@ -649,24 +652,12 @@ function searchInArrays(array,elementSearch){
     for (const element of array) {
         element.name === elementSearch.value ? response = element : false;
     }
-
     if(!response){
         for (const element of warehouse.warehouse) {
             element.name === elementSearch.value ? response = element : false;
         }
     }
-
     return response;
-    /*
-    let response = array.filter(function(element){
-        return element.name === elementSearch.value;
-    });
-    if(response.length === 0){
-        response = warehouse.warehouse.filter(function(element){
-            return element.name === elementSearch.value;
-        });
-    }
-    return response[0];*/
 }
 
 
