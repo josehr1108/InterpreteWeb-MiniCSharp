@@ -7,6 +7,7 @@ editor.getSession().setMode("ace/mode/javascript");
 
 $(function () {  //document ready
     let methods = null;
+
     $('#tree').on("click",function (e) {
         if($('#tree').hasClass("disabled")){
             return;
@@ -17,6 +18,7 @@ $(function () {  //document ready
 
     $('#runButton').on('click',function (e) {
         let editorCode = editor.getValue();
+
         $.ajax({
             type: "POST",
             url: '/parse',
@@ -156,6 +158,12 @@ $(function () {  //document ready
                                     }
                                 }
                             }
+
+                            let instructions = getInstructionsArrayFromFunctionName(functionName);
+                            console.log("Lista de instrucciones");
+                            console.log(instructions);
+                            searchReadStatements(instructions);
+
                             $.ajax({
                                 type: "POST",
                                 url: '/runMethod',
@@ -186,4 +194,27 @@ $(function () {  //document ready
             divIsHidden = true;
         }
     });
+
+    function getInstructionsArrayFromFunctionName(functionName){
+        let editorCode = editor.getValue();
+        let regExString = functionName + '\\(([\\w + \\s](\\,)?)*\\)\\{[\\s\\S]*\\}';
+        let finalValue = editorCode.match(regExString,'i')[0];
+        let instructionsArray = finalValue.split('\n');
+        instructionsArray.shift();
+        return instructionsArray;
+    }
+
+    function searchReadStatements(instructions){
+        let methodRegex = /([a-zA-Z]+(\d)*)\(\s*([a-zA-Z]*(\d)*\s*\,?\s*)*\)/i;
+        let readRegex = /read\(([a-zA-Z]+(\d)*)\)\;/i;
+        for(let instruction of instructions){
+            if(instruction.match(readRegex)){
+                console.log("hay un read()");
+            }
+            else if(instruction.match(methodRegex)){
+                console.log("hay una funcion");
+            }
+
+        }
+    }
 });
