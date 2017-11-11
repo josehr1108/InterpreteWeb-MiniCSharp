@@ -34,6 +34,7 @@ OwnLoadData.prototype.visitProgram = function(ctx) {
     warehouse.insertElement(warehouse,'chr',null,null,null,null,null,[{'name':'i'}],false);
     warehouse.insertElement(warehouse,'ord',null,null,null,null,null,[{'name':'ch'}],false);
     warehouse.insertElement(warehouse,'len',null,null,null,null,null,[{'name':'ch'}],false);
+    warehouse.insertElement(warehouse,'add',1,null,null,null,null,[{'lista':'list',"value":"any"}],false);
 
     let constants = ctx.constDecl();
     let variables = ctx.varDecl();

@@ -235,12 +235,12 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
         let condition = ctx.condition();
         condition.localStore = ctx.localStore;
         this.visit(condition);
+        console.log("pila del while");
+        console.log(ctx.localStore);
         let conditionResponse = ctx.localStore.shift();
         if(conditionResponse){
             let statement = ctx.statement();
-            statement.map(function(element){
-                return element.localStore = ctx.localStore;
-            });
+            statement.localStore = ctx.localStore;
             this.visit(statement);
             let statementResponse = ctx.localStore.shift();
             if(statementResponse !== "break"){
