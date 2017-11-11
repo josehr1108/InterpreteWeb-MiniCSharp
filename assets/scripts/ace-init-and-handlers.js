@@ -159,10 +159,10 @@ $(function () {  //document ready
                                 }
                             }
 
-                            let instructions = getInstructionsArrayFromFunctionName(functionName);
+                            /*let instructions = getInstructionsArrayFromFunctionName(functionName);
                             console.log("Lista de instrucciones");
                             console.log(instructions);
-                            searchReadStatements(instructions);
+                            searchReadStatements(instructions);*/
 
                             $.ajax({
                                 type: "POST",
@@ -195,7 +195,7 @@ $(function () {  //document ready
         }
     });
 
-    function getInstructionsArrayFromFunctionName(functionName){
+    /*function getInstructionsArrayFromFunctionName(functionName){
         let editorCode = editor.getValue();
         let regExString = functionName + '\\(([\\w + \\s](\\,)?)*\\)\\{[\\s\\S]*\\}';
         let finalValue = editorCode.match(regExString,'i')[0];
@@ -204,17 +204,39 @@ $(function () {  //document ready
         return instructionsArray;
     }
 
-    function searchReadStatements(instructions){
-        let methodRegex = /([a-zA-Z]+(\d)*)\(\s*([a-zA-Z]*(\d)*\s*\,?\s*)*\)/i;
-        let readRegex = /read\(([a-zA-Z]+(\d)*)\)\;/i;
-        for(let instruction of instructions){
-            if(instruction.match(readRegex)){
-                console.log("hay un read()");
-            }
-            else if(instruction.match(methodRegex)){
-                console.log("hay una funcion");
-            }
+    let methodRegex = /([a-zA-Z]+(\d)*)\(\s*([a-zA-Z]*(\d)*\s*\,?\s*)*\)/i;
+    let readRegex = /read\(([a-zA-Z]+(\d)*)\)\;/i;
 
+    function searchReadStatements(instructions){
+        if(instructions.length == 0){
+            return;
+        }
+        else{
+            let instruction = instructions[0];
+            let matchedRead = instruction.match(readRegex);
+            let matchedMethod = instruction.match(methodRegex);
+            if(matchedRead){
+                console.warn("hay un read()");
+                instructions.shift();
+                searchReadStatements(instructions);
+            }
+            else if(matchedMethod){
+                let methodText = matchedMethod[0];
+                let split = methodText.split("(");
+                let methodName = split[0];
+                let methodInstructionsArray = getInstructionsArrayFromFunctionName(methodName);
+                console.warn("Viene inst de prueba()");
+                console.log(methodInstructionsArray);
+                instructions.shift();
+                let newArray = instructions.concat(methodInstructionsArray);
+                searchReadStatements(newArray);
+            }
+            else{
+                instructions.shift();
+                searchReadStatements(instructions);
+            }
         }
     }
+*/
+
 });
