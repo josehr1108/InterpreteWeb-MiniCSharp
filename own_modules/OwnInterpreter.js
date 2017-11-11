@@ -287,8 +287,8 @@ OwnInterpreter.prototype.visitReturnStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitReadStatement = function(ctx) {
-    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){}
-    this.visit(ctx.designator());
+    /*if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){}
+    this.visit(ctx.designator());*/
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
