@@ -172,8 +172,16 @@ $(function () {  //document ready
                                     console.log(res)
                                     let fullMsg = "";
                                     for(let messages of res.data){
-                                        let errorMsg = "<span class='Errors'>[Execution]   </span>"+messages+"."+"<br>";
-                                        fullMsg += errorMsg;
+                                        let executionMsg;
+                                        switch (messages.typeTerminal) {
+                                            case 99:
+                                                executionMsg = "<span class='Errors'>[Execution]   </span><span class='Errors'>Write   </span>"+messages.value+"."+"<br>";
+                                                break;
+                                            case 100:
+                                                executionMsg = "<span class='Errors'>[Execution]   </span><span class='Errors'>Method Return   </span>"+messages.value+"."+"<br>";
+                                                break;
+                                        }
+                                        fullMsg += executionMsg;
                                     }
                                     $('#methodLogger').html(fullMsg);
                                 },

@@ -28,9 +28,10 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     newCtx.methodToExecute = warehouseMethod.data;
 
     let methodResponse = this.visit(newCtx);
-    if(methodResponse){
-        results.push(methodResponse.value.substr(1,methodResponse.value.length-2));
+    if(methodResponse && methodResponse.value.includes("\"") ){
+        methodResponse.value = methodResponse.value.substr(1,methodResponse.value.length-2);
     }
+    results.push(methodResponse);
     
     //console.log(results)
     //console.log("finalPrograma")
@@ -311,15 +312,23 @@ OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
         expression.localStore = ctx.localStore;
         this.visit(expression);
         expressionResponse = ctx.localStore.shift();
+        expressionResponse.typeTerminal = 99;
+        try{
+            if(expressionResponse.value.includes("\"")){
+                expressionResponse.value = expressionResponse.value.substr(1,expressionResponse.value.length-2)
+            }
+        }catch(exception){
+
+        }
         let number = ctx.NUMBER();
         if(number){
             number = number.getSymbol().text;
             for (let i = 0; i < number; i++) {
-                results.push(expressionResponse.value.substr(1,expressionResponse.value.length-2));
+                results.push(expressionResponse);
             }
         }
         else{
-            results.push(expressionResponse.value);
+            results.push(expressionResponse);
         }
         
     }
