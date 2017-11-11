@@ -131,6 +131,7 @@ isLista     = Solo se usa en simpleTypes
 isConst     = Solo se usa en simpleTypes 
                 define si una variable es constante toma valores True / False
 typeStruct  = Solo se usa en complexTypes
+               -1: Metodos Predeclarados
                 0: Object (class)
                 1: Ident
                 2: Char

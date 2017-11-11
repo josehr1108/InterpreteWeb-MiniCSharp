@@ -10,7 +10,6 @@ const OwnTableSymbols  = require('./OwnWarehouse');
 let warehouse;
 let method;
 let results;
-let cont = 1;
 //Costructor del analisis contextual
 function OwnInterpreter (methodToExecute,loadDataWarehouse){
     parserVisitor.call(this);
@@ -29,8 +28,11 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     newCtx.methodToExecute = warehouseMethod.data;
 
     let methodResponse = this.visit(newCtx);
+    results.push(methodResponse.value);
+    //console.log(results)
     //console.log("finalPrograma")
     //console.log(methodResponse)
+    return results;
 };
 
 OwnInterpreter.prototype.visitConstDecl = function(ctx) {
@@ -70,7 +72,7 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
     }
     let newCtx = ctx.block();
     newCtx.localStore = localStore;
-    //console.log("La Pila Empiaza en " + cont)
+    //console.log("La Pila Empiaza en ")
     
     //console.log(localStore)
     this.visit(newCtx);
@@ -214,7 +216,7 @@ OwnInterpreter.prototype.visitForStatement = function(ctx) {
         condition.localStore = ctx.localStore;
         this.visit(condition);
         let conditionResponse = ctx.localStore.shift();
-
+        
         if(conditionResponse){
             let statement = ctx.statement();
             statement.map(function(element){
@@ -235,8 +237,6 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
         let condition = ctx.condition();
         condition.localStore = ctx.localStore;
         this.visit(condition);
-        console.log("pila del while");
-        console.log(ctx.localStore);
         let conditionResponse = ctx.localStore.shift();
         if(conditionResponse){
             let statement = ctx.statement();
@@ -253,7 +253,18 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
 
 OwnInterpreter.prototype.visitForeachStatement = function(ctx) {
     if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
-
+        let element = ctx.IDENT(0).getSymbol().text;
+        let elementType = this.visit(ctx.type());
+        ctx.localStore.unshift({name:element,type:elementType,decl: "foreach",isConst: false,value:undefined})
+        let elementList = ctx.IDENT(1).getSymbol().text;
+        elementList = searchInArrays(ctx.localStore,{value:elementList});
+        let block = ctx.block();
+        block.localStore = ctx.localStore;
+        for (const i in elementList.value) {
+            newElement = searchInArrays(ctx.localStore,{value:element});
+            newElement.value = elementList.value[i];
+            this.visit(block);
+        }
     }   
 };
 
@@ -292,8 +303,24 @@ OwnInterpreter.prototype.visitReadStatement = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
-    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){}
-    return
+    if(ctx.localStore[0] !== "break" || ctx.localStore[0] !== "return" ){
+        let expression = ctx.expr();
+        expression.localStore = ctx.localStore;
+        this.visit(expression);
+        expressionResponse = ctx.localStore.shift();
+        let number = ctx.NUMBER();
+        if(number){
+            number = number.getSymbol().text;
+            console.log(number)
+            for (let i = 0; i < number; i++) {
+                results.push(expressionResponse.value);
+            }
+        }
+        else{
+            results.push(expressionResponse.value);
+        }
+        
+    }
 };
 
 OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
@@ -304,7 +331,7 @@ OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
     }
 };
 
-OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
+OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {    
 };
 
 /*************************************************************************************************************/
@@ -533,11 +560,17 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
 
     let varName;    //nombre que trae el designator
     let variable;   //referencia a la variable
-
+    let arrayPosition;
     if(designatorResult.propertyName)
         varName = designatorResult.variableName + "." + designatorResult.propertyName;
     else
         varName = designatorResult.variableName;
+
+    if(designatorResult.arrayPosition){
+        arrayPosition = designatorResult.arrayPosition;
+    }
+    
+    
 
     variable = searchInArrays(ctx.localStore,{value: varName});
     if(variable.typeStruct){
@@ -564,10 +597,8 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
         //console.log("Pila Actual"+ cont)
         //console.log(ctx.localStore);
         //let LaPila = ctx.localStore.slice();
-        cont++
         let methodResponse = this.visit(newMethod);
         //console.log("Regrese de la llamada")
-        cont--
         //ctx.localStore = LaPila;
         //console.log("Pila despues del regreso" + cont)
         //console.log(ctx.localStore);
@@ -578,7 +609,7 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
 
     }
     else{
-        ctx.localStore.unshift({typeTerminal: 1, value: varName})
+        ctx.localStore.unshift({typeTerminal: 1, value: varName, position : arrayPosition})
         //console.log("Agrege a la plia")
         //console.log(ctx.localStore[0])
     }
@@ -656,7 +687,7 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
         this.visit(expr);
         let response = ctx.localStore.shift();
         returnData.arrayPosition = response; ///suponiendo response es tipo entero
-        ctx.localStore.unshift(returnData);
+        //ctx.localStore.unshift(returnData);
     }
     ctx.localStore.unshift(returnData);
     //console.log("Agrege a la plia")
