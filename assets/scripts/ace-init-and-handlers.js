@@ -169,7 +169,13 @@ $(function () {  //document ready
                                 url: '/runMethod',
                                 data: {name: functionName, parameters: finalParameters},
                                 success: function (res) {
-                                    $('#methodLogger').text('La miquita funcó');
+                                    console.log(res)
+                                    let fullMsg = "";
+                                    for(let messages of res.data){
+                                        let errorMsg = "<span class='Errors'>[Execution]   </span>"+messages+"."+"<br>";
+                                        fullMsg += errorMsg;
+                                    }
+                                    $('#methodLogger').html(fullMsg);
                                 },
                                 dataType: 'json'
                             });

@@ -28,7 +28,10 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
     newCtx.methodToExecute = warehouseMethod.data;
 
     let methodResponse = this.visit(newCtx);
-    results.push(methodResponse.value);
+    if(methodResponse){
+        results.push(methodResponse.value.substr(1,methodResponse.value.length-2));
+    }
+    
     //console.log(results)
     //console.log("finalPrograma")
     //console.log(methodResponse)
@@ -311,9 +314,8 @@ OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
         let number = ctx.NUMBER();
         if(number){
             number = number.getSymbol().text;
-            console.log(number)
             for (let i = 0; i < number; i++) {
-                results.push(expressionResponse.value);
+                results.push(expressionResponse.value.substr(1,expressionResponse.value.length-2));
             }
         }
         else{
