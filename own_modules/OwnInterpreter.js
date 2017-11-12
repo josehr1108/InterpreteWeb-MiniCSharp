@@ -10,6 +10,7 @@ const OwnTableSymbols  = require('./OwnWarehouse');
 let warehouse;
 let method;
 let results;
+
 //Costructor del analisis contextual
 function OwnInterpreter (methodToExecute,loadDataWarehouse){
     parserVisitor.call(this);
@@ -32,7 +33,7 @@ OwnInterpreter.prototype.visitProgram = function(ctx) {
         methodResponse.value = methodResponse.value.substr(1,methodResponse.value.length-2);
     }
     results.push(methodResponse);
-    
+
     //console.log(results)
     //console.log("finalPrograma")
     //console.log(methodResponse)
@@ -166,15 +167,23 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
             variable.value--;
         }
         else if(rightPar){    //llamada a metodo
+            let paramList = [];
             if(actPars){
                 actPars.localStore = ctx.localStore;
                 this.visit(actPars);
-                let paramList = [];
                 let paramsAmount = variable.parameters.length;
+                console.log("Cantidad de parametros:"+ paramsAmount);
                 for(let i = 0; i < paramsAmount;i++){
                     let actualParam = ctx.localStore.shift();
-                    paramList.unshift(actualParam.value);
+                    paramList.unshift(actualParam);
                 }
+            }
+            if(variable.name === "add") {
+                addFunction(paramList);
+                console.log("Nueva lista:");
+                console.log(paramList[0]);
+            }
+            else{
                 let lastMethod = method;
                 let actualMethod = {name: variable.name, parameters: paramList};
                 method = actualMethod;
@@ -220,7 +229,7 @@ OwnInterpreter.prototype.visitForStatement = function(ctx) {
         condition.localStore = ctx.localStore;
         this.visit(condition);
         let conditionResponse = ctx.localStore.shift();
-        
+
         if(conditionResponse){
             let statement = ctx.statement();
             statement.map(function(element){
@@ -330,7 +339,7 @@ OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
         else{
             results.push(expressionResponse);
         }
-        
+
     }
 };
 
@@ -342,7 +351,7 @@ OwnInterpreter.prototype.visitBlockStatement = function(ctx) {
     }
 };
 
-OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {    
+OwnInterpreter.prototype.visitSemicolonStatement = function(ctx) {
 };
 
 /*************************************************************************************************************/
@@ -580,10 +589,9 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
     if(designatorResult.arrayPosition){
         arrayPosition = designatorResult.arrayPosition;
     }
-    
-    
 
     variable = searchInArrays(ctx.localStore,{value: varName});
+
     if(variable.typeStruct){
         let actPars = ctx.actPars();
         let paramList = [];
@@ -593,34 +601,42 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
             let paramsAmount = variable.parameters.length;
             for(let i = 0; i < paramsAmount;i++){
                 let actualParam = ctx.localStore.shift();
-                paramList.unshift(actualParam.value);
+                paramList.unshift(actualParam);    //se cambió de actualParam.value a actualParam para todo el objeto
                 //console.log("Saque de la pila")
                 //console.log(actualParam)
             }
         }
-        let lastMethod = method;
-        let actualMethod = {name: variable.name, parameters: paramList};
-        method = actualMethod;
-        let newMethod = variable.decl;
-        newMethod.methodToExecute = variable;
-        //console.log("Voy a llamar a metodo")
-        
-        //console.log("Pila Actual"+ cont)
-        //console.log(ctx.localStore);
-        //let LaPila = ctx.localStore.slice();
-        let methodResponse = this.visit(newMethod);
-        //console.log("Regrese de la llamada")
-        //ctx.localStore = LaPila;
-        //console.log("Pila despues del regreso" + cont)
-        //console.log(ctx.localStore);
-        method = lastMethod;
-        ctx.localStore.unshift({typeTerminal: variable.typeStruct, value: methodResponse.value});
-        //console.log("Agrege a la plia")
-        //console.log(ctx.localStore[0])
+        if(variable.name === "len"){
+            let arrayLength = lenFunction(paramList);
+            ctx.localStore.unshift({typeTerminal: 3, value: arrayLength});
+        }
+        else if(variable.name === "chr"){
 
+        }
+        else{
+            let lastMethod = method;
+            let actualMethod = {name: variable.name, parameters: paramList};
+            method = actualMethod;
+            let newMethod = variable.decl;
+            newMethod.methodToExecute = variable;
+            //console.log("Voy a llamar a metodo")
+
+            //console.log("Pila Actual"+ cont)
+            //console.log(ctx.localStore);
+            //let LaPila = ctx.localStore.slice();
+            let methodResponse = this.visit(newMethod);
+            //console.log("Regrese de la llamada")
+            //ctx.localStore = LaPila;
+            //console.log("Pila despues del regreso" + cont)
+            //console.log(ctx.localStore);
+            method = lastMethod;
+            ctx.localStore.unshift({typeTerminal: variable.typeStruct, value: methodResponse.value});
+            //console.log("Agrege a la plia")
+            //console.log(ctx.localStore[0])
+        }
     }
     else{
-        ctx.localStore.unshift({typeTerminal: 1, value: varName, position : arrayPosition})
+        ctx.localStore.unshift({typeTerminal: 1, value: varName, position : arrayPosition});
         //console.log("Agrege a la plia")
         //console.log(ctx.localStore[0])
     }
@@ -691,7 +707,6 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
 
     if(ident2){
         returnData.propertyName = ident2.getSymbol().text;
-
     }
     else if(expr.length){
         expr.localStore = ctx.localStore;
@@ -819,5 +834,19 @@ function searchInArrays(array,elementSearch){
     return response;
 }
 
+function lenFunction(parameters){
+    let list = parameters[0];
+    return list.value.length;
+}
+
+function addFunction(parameters){
+    let list = parameters[0];
+    let paramValue = parameters[1];
+    list.value.push(paramValue.value);
+}
+
+function chrFunction(parameters) {
+
+}
 
 exports.OwnInterpreter = OwnInterpreter;

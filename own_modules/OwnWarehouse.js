@@ -153,10 +153,9 @@ parameters  = Solo se usa en complexTypes
 warehouse.prototype.insertElement = function(warehouse,name,type,decl,isLista,isConst,typeStruct,parameters,value){
     let element;
     if(typeStruct == null){
-        element = new simpleElement(name,type,decl,isLista,isConst,value)
+        element = new simpleElement(name,type,decl,isLista,isConst,value);
         warehouse.addElement(element)
     }
-
     else {
         element = new complexElement(name,type,decl,typeStruct,parameters);
         warehouse.addElement(element);
@@ -176,6 +175,6 @@ warehouse.prototype.searchElement = function(warehouse,name){
     }
     
     return {'success': false, 'data': -1};    
-}
+};
 
 exports.warehouse = warehouse;

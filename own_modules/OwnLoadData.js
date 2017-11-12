@@ -26,15 +26,14 @@ function OwnLoadData (){
 OwnLoadData.prototype = Object.create(parserVisitor.prototype);
 OwnLoadData.prototype.constructor = OwnLoadData;
 
-
 OwnLoadData.prototype.visitProgram = function(ctx) {
    
     //METODOS POR DEFECTO
-    warehouse.insertElement(warehouse,'null',null,null,null,null,null,null,null);
-    warehouse.insertElement(warehouse,'chr',null,null,null,null,null,[{'name':'i'}],false);
-    warehouse.insertElement(warehouse,'ord',null,null,null,null,null,[{'name':'ch'}],false);
-    warehouse.insertElement(warehouse,'len',null,null,null,null,null,[{'name':'ch'}],false);
-    warehouse.insertElement(warehouse,'add',1,null,null,null,null,[{'lista':'list',"value":"any"}],false);
+    warehouse.insertElement(warehouse,'null',null,null,null,null,-1,null,null);
+    warehouse.insertElement(warehouse,'chr',null,null,null,null,-1,[{'name':'i'}],false);
+    warehouse.insertElement(warehouse,'ord',null,null,null,null,-1,[{'name':'ch'}],false);
+    warehouse.insertElement(warehouse,'len',null,null,null,null,-1,[{'name':'ch'}],false);
+    warehouse.insertElement(warehouse,'add',1,null,null,null,-1,[{'lista':'list'},{'value':'any'}],false);
 
     let constants = ctx.constDecl();
     let variables = ctx.varDecl();
@@ -105,11 +104,13 @@ OwnLoadData.prototype.visitVarDecl = function(ctx) {
 
          if(globalVar){
             //verificar contexto de los parametros en OwnTableSymbols arriba del warehouse.insertElement
-            warehouse.insertElement(warehouse,identifier,typeVar,ctx,isList,false,null,null,undefined);
+             if(isList)
+                 warehouse.insertElement(warehouse,identifier,typeVar,ctx,isList,false,null,null,[]);
+             else
+                 warehouse.insertElement(warehouse,identifier,typeVar,ctx,isList,false,null,null,undefined);
          }
-         
+
     }
-    return
 };
 
 OwnLoadData.prototype.visitClassDecl = function(ctx) {
