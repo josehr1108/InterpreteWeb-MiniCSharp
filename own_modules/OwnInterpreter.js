@@ -610,8 +610,14 @@ OwnInterpreter.prototype.visitDesignatorFactor = function(ctx) {
             let arrayLength = lenFunction(paramList);
             ctx.localStore.unshift({typeTerminal: 3, value: arrayLength});
         }
-        else if(variable.name === "chr"){
-
+        else if(variable.name === "chr"){ //entero a caracter
+            let character = chrFunction(paramList);
+            ctx.localStore.unshift({typeTerminal: 2, value: character});
+        }
+        else if(variable.name === "ord"){ //entero a caracter
+            let intCharacterCode = ordFunction(paramList);
+            //console.log("el parametro char: "+ paramList[0].value + " retorno un codigo: "+ intCharacterCode);
+            ctx.localStore.unshift({typeTerminal: 3, value: intCharacterCode});
         }
         else{
             let lastMethod = method;
@@ -846,7 +852,15 @@ function addFunction(parameters){
 }
 
 function chrFunction(parameters) {
+    let integerParam = parameters[0].value;
+    let character = String.fromCharCode(integerParam);
+    return character;
+}
 
+function ordFunction(parameters) {
+    let charParam = parameters[0].value;
+    let result = charParam.charCodeAt(1);
+    return result;
 }
 
 exports.OwnInterpreter = OwnInterpreter;
