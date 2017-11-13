@@ -150,7 +150,8 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
             let exprResult = ctx.localStore.shift();
             if(variable){
                 if(designatorResult.arrayPosition){
-                    variable[designatorResult.arrayPosition] = exprResult;
+                    let position = parseInt(designatorResult.arrayPosition.value);
+                    variable.value[position] = exprResult.value;
                 }
                 else{
                     variable.value = exprResult.value;
@@ -172,7 +173,6 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
                 actPars.localStore = ctx.localStore;
                 this.visit(actPars);
                 let paramsAmount = variable.parameters.length;
-                console.log("Cantidad de parametros:"+ paramsAmount);
                 for(let i = 0; i < paramsAmount;i++){
                     let actualParam = ctx.localStore.shift();
                     paramList.unshift(actualParam);
@@ -180,8 +180,6 @@ OwnInterpreter.prototype.visitFirstDesignStatement = function(ctx) {
             }
             if(variable.name === "add") {
                 addFunction(paramList);
-                console.log("Nueva lista:");
-                console.log(paramList[0]);
             }
             else{
                 let lastMethod = method;
@@ -471,7 +469,6 @@ OwnInterpreter.prototype.visitCondFact = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitExpr = function(ctx) {
-    //console.log("Expre")
     let substractToken = ctx.SUBTRACTION();
     let firstTerm = ctx.term(0);
     firstTerm.localStore = ctx.localStore;
@@ -515,21 +512,15 @@ OwnInterpreter.prototype.visitExpr = function(ctx) {
 };
 
 OwnInterpreter.prototype.visitTerm = function(ctx) {
-    //console.log("Term")
     let firstFactor = ctx.factor(0);
+
     firstFactor.localStore = ctx.localStore;
-    this.visit(firstFactor)
+    this.visit(firstFactor);
     let factorResponse = ctx.localStore.shift();
-    //console.log("Saque de la pila")
-    //console.log(factorResponse)
     if(factorResponse.typeTerminal === 1){
         factorResponse = searchInArrays(ctx.localStore,factorResponse);
-        //console.log("Modifique Factor")
-        //console.log(factorResponse)
     }
-    ctx.localStore.unshift(factorResponse)
-    //console.log("Agrege a la pila")
-    //console.log(factorResponse)
+    ctx.localStore.unshift(factorResponse);
     // viene una multiplicacion;
     for (let i=1; i <= ctx.factor().length - 1; i++) {
         let secondFactor = ctx.factor(i);
@@ -652,12 +643,12 @@ OwnInterpreter.prototype.visitNumberFactor = function(ctx) {
     let number  = ctx.NUMBER().getSymbol().text;
     let object = {typeTerminal: 3, value:number};
 
-    if (ctx.NUMBER().getSymbol().text.includes('.')){
+    if(ctx.NUMBER().getSymbol().text.includes('.')){
         object.typeTerminal = 4;
     }
     ctx.localStore.unshift(object);
-    //console.log("Agrege a la plia")
-    //console.log(ctx.localStore[0])
+    //console.log("Pila de Designator:");
+    //console.log(ctx.localStore);
 };
 
 OwnInterpreter.prototype.visitCharconstFactor = function(ctx) {
@@ -711,13 +702,19 @@ OwnInterpreter.prototype.visitDesignator = function(ctx) {
     let ident2 = ctx.IDENT(1);
     let expr = ctx.expr();
 
+
     if(ident2){
         returnData.propertyName = ident2.getSymbol().text;
     }
-    else if(expr.length){
-        expr.localStore = ctx.localStore;
-        this.visit(expr);
+    else if(expr.length) {
+        //console.log("El expr es:");
+        //console.log(expr);
+        let finalExpr = expr[0];
+        finalExpr.localStore = ctx.localStore;
+        this.visit(finalExpr);
         let response = ctx.localStore.shift();
+        //console.log("El expression de designator [] es:");
+        //console.log(response);
         returnData.arrayPosition = response; ///suponiendo response es tipo entero
         //ctx.localStore.unshift(returnData);
     }
