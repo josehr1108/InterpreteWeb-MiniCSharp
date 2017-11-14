@@ -172,6 +172,7 @@ $(function () {  //document ready
                                     console.log(res)
                                     let fullMsg = "";
                                     for(let messages of res.data){
+                                        console.log("sejas puto")
                                         let executionMsg;
                                         switch (messages.typeTerminal) {
                                             case 99:
@@ -180,9 +181,12 @@ $(function () {  //document ready
                                             case 100:
                                                 executionMsg = "<span class='Errors'>[Execution]   </span><span class='Errors'>Method Return   </span>"+messages.value+"."+"<br>";
                                                 break;
+                                            default:
+                                                executionMsg = "";
                                         }
                                         fullMsg += executionMsg;
                                     }
+                                    console.log(fullMsg)
                                     $('#methodLogger').html(fullMsg);
                                 },
                                 dataType: 'json'

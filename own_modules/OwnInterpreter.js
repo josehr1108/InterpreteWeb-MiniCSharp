@@ -88,6 +88,10 @@ OwnInterpreter.prototype.visitMethodDecl = function(ctx) {
         if (methodResponse.typeTerminal === 100){
             return methodResponse;
         }
+        return {typeTerminal: -100, value: ''};
+    }
+    else{
+        return {typeTerminal: -100, value: ''};
     }
 };
 
@@ -235,9 +239,13 @@ OwnInterpreter.prototype.visitForStatement = function(ctx) {
             });
             this.visit(statement);
             let statementResponse = ctx.localStore.shift();
-            if(statementResponse !== "break"){
+            if(statementResponse !== "break" || statementResponse !== "return"){
                 ctx.localStore.unshift(statementResponse);
                 this.visit(ctx);
+            }
+
+            if(statementResponse === "return"){
+                ctx.localStore.unshift(statementResponse)
             }
         }
     }
@@ -254,9 +262,13 @@ OwnInterpreter.prototype.visitWhileStatement = function(ctx) {
             statement.localStore = ctx.localStore;
             this.visit(statement);
             let statementResponse = ctx.localStore.shift();
-            if(statementResponse !== "break"){
+            if(statementResponse !== "break" || statementResponse !== "return"){
                 ctx.localStore.unshift(statementResponse);
                 this.visit(ctx);
+            }
+            
+            if(statementResponse === "return"){
+                ctx.localStore.unshift(statementResponse)
             }
         }
     }
@@ -318,8 +330,11 @@ OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
         let expression = ctx.expr();
         expression.localStore = ctx.localStore;
         this.visit(expression);
-        expressionResponse = ctx.localStore.shift();
+        response = ctx.localStore.shift();
+        let expressionResponse = {};
         expressionResponse.typeTerminal = 99;
+        expressionResponse.value = response.value;
+        console.log(expressionResponse,"verga")
         try{
             if(expressionResponse.value.includes("\"")){
                 expressionResponse.value = expressionResponse.value.substr(1,expressionResponse.value.length-2)
