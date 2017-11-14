@@ -334,7 +334,6 @@ OwnInterpreter.prototype.visitWriteStatement = function(ctx) {
         let expressionResponse = {};
         expressionResponse.typeTerminal = 99;
         expressionResponse.value = response.value;
-        console.log(expressionResponse,"verga")
         try{
             if(expressionResponse.value.includes("\"")){
                 expressionResponse.value = expressionResponse.value.substr(1,expressionResponse.value.length-2)
